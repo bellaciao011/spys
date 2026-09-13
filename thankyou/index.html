@@ -1,0 +1,646 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from newtechaccess.com/thankyouen.html?step=skip3 by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 12 Apr 2026 01:59:17 GMT -->
+<head>
+<script>
+(function () {
+  var paramsAtuais = new URLSearchParams(window.location.search);
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("a");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+    try {
+      var url = new URL(link.href);
+      paramsAtuais.forEach(function(valor, chave) {
+        url.searchParams.set(chave, valor);
+      });
+      link.href = url.toString();
+    } catch (err) {}
+  });
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatWatch - App View AI — Thank You!</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
+
+
+<style>
+  :root {
+    --green: #00ff6a;
+    --green-dim: #00c450;
+    --green-dark: #00a040;
+    --red: #ff3b3b;
+    --orange: #ff9500;
+    --yellow: #ffd60a;
+    --bg: #030a05;
+    --card-bg: rgba(5,20,10,0.9);
+    --card-border: rgba(0,255,106,0.12);
+    --muted: #5a7a5a;
+    --terminal-bg: #0a0f0a;
+    --glow: 0 0 20px rgba(0,255,106,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: #e8ffe8;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #matrix-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    opacity: 0.14; pointer-events: none;
+  }
+
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+    pointer-events: none; z-index: 1;
+  }
+
+  .center-glow {
+    position: fixed; top: 40%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,255,106,0.05) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper {
+    position: relative; z-index: 2;
+    max-width: 500px; margin: 0 auto;
+    padding: 2rem 1.3rem 3rem;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1.1rem;
+  }
+
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes shimmer  { 0%{left:-60%} 100%{left:130%} }
+  @keyframes rotRing  { to { transform: rotate(360deg); } }
+  @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.65)} }
+  @keyframes checkPop { 0%{transform:scale(0) rotate(-20deg);opacity:0} 70%{transform:scale(1.15) rotate(3deg)} 100%{transform:scale(1) rotate(0);opacity:1} }
+  @keyframes glowPulse{ 0%,100%{box-shadow:0 0 20px rgba(0,255,106,.2)} 50%{box-shadow:0 0 45px rgba(0,255,106,.5)} }
+
+  /* ── LOGO ── */
+  .logo {
+    display: flex; align-items: center; gap: 0.6rem;
+    animation: fadeDown 0.6s ease both;
+  }
+  .logo-icon { width: 38px; height: 38px; filter: drop-shadow(var(--glow)); }
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-weight: 700; color: var(--green);
+    text-shadow: var(--glow); letter-spacing: 0.04em;
+  }
+
+  /* ── SUCCESS HERO ── */
+  .success-hero {
+    width: 100%; text-align: center;
+    animation: fadeUp 0.7s ease both;
+    padding: 0 0.5rem;
+  }
+
+  .check-wrap {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 40px rgba(0,255,106,0.5), 0 0 80px rgba(0,255,106,0.2);
+    margin-bottom: 1.3rem;
+    animation: checkPop 0.7s cubic-bezier(0.34,1.56,0.64,1) both, glowPulse 3s ease-in-out 0.7s infinite;
+  }
+  .check-wrap svg {
+    width: 36px; height: 36px;
+    stroke: #000; fill: none;
+    stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.3rem, 5.5vw, 1.9rem);
+    font-weight: 900; color: var(--green);
+    text-shadow: var(--glow);
+    letter-spacing: 0.03em; line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+  .hero-sub {
+    font-size: 0.9rem; color: var(--muted);
+    line-height: 1.55; font-weight: 400;
+  }
+
+  /* ── CARDS GENERIC ── */
+  .card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 1.2rem 1.3rem;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,106,0.04);
+    animation: fadeUp 0.6s ease both;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.35;
+  }
+  .corner { position: absolute; width: 12px; height: 12px; border-color: var(--green); border-style: solid; opacity: 0.3; }
+  .corner-tl{top:8px;left:8px;border-width:1px 0 0 1px}
+  .corner-tr{top:8px;right:8px;border-width:1px 1px 0 0}
+  .corner-bl{bottom:8px;left:8px;border-width:0 0 1px 1px}
+  .corner-br{bottom:8px;right:8px;border-width:0 1px 1px 0}
+
+  /* ── IMPORTANT BANNER ── */
+  .important-banner {
+    width: 100%;
+    background: rgba(255,149,0,0.08);
+    border: 1px solid rgba(255,149,0,0.25);
+    border-left: 3px solid var(--orange);
+    border-radius: 10px; padding: 0.9rem 1rem;
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .important-banner .imp-ico { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .important-banner p { font-size: 0.85rem; color: rgba(255,200,100,0.8); line-height: 1.55; }
+  .important-banner strong { color: rgba(255,220,100,0.95); }
+
+  /* ── ACCESS APP CARD ── */
+  .access-card {
+    width: 100%;
+    background: rgba(5,22,12,0.95);
+    border: 1.5px solid rgba(0,255,106,0.3);
+    border-radius: 14px; padding: 1.4rem 1.3rem;
+    text-align: center; position: relative; overflow: hidden;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+  .access-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.6;
+  }
+  .access-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.95rem, 4vw, 1.15rem);
+    font-weight: 900; color: #fff;
+    margin-bottom: 0.5rem; letter-spacing: 0.02em;
+  }
+  .access-title .hi { color: var(--green); text-shadow: var(--glow); }
+  .access-desc {
+    font-size: 0.87rem; color: rgba(255,255,255,0.55);
+    line-height: 1.6; margin-bottom: 1.2rem;
+  }
+  .access-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    width: 100%; padding: 1.05rem 1.5rem;
+    background: linear-gradient(135deg, var(--green-dim), var(--green));
+    border: 2.5px dashed rgba(255,255,255,0.5);
+    border-radius: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.75rem, 3.2vw, 0.9rem);
+    font-weight: 900; letter-spacing: 0.05em;
+    color: #04140a; text-decoration: none; cursor: pointer;
+    box-shadow: 0 4px 30px rgba(0,255,106,0.4);
+    animation: ctaPulse 2s infinite;
+    transition: transform 0.2s;
+  }
+  .access-btn:hover { transform: translateY(-2px); }
+  @keyframes ctaPulse {
+    0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.4), 0 0 0 0 rgba(0,255,106,.3)}
+    50%{box-shadow:0 6px 50px rgba(0,255,106,.65), 0 0 0 8px rgba(0,255,106,0)}
+  }
+
+  /* ── MEMBERS AREA CARD ── */
+  .members-card {
+    width: 100%;
+    background: rgba(5,22,12,0.95);
+    border: 1.5px solid rgba(0,255,106,0.25);
+    border-radius: 14px; padding: 1.3rem 1.3rem;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .members-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.5;
+  }
+  .members-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .members-ico { font-size: 2rem; }
+  .members-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+    font-weight: 900; color: var(--green);
+    text-shadow: 0 0 12px rgba(0,255,106,0.4);
+    letter-spacing: 0.02em; line-height: 1.3;
+  }
+  .members-desc {
+    font-size: 0.87rem; color: rgba(255,255,255,0.55);
+    line-height: 1.6; margin-bottom: 1rem;
+  }
+  .members-desc strong { color: rgba(255,255,255,0.85); }
+
+  .check-list { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1rem; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    font-size: 0.86rem; color: rgba(255,255,255,0.6); line-height: 1.4;
+  }
+  .check-item::before {
+    content: '✓'; color: var(--green);
+    font-weight: 700; flex-shrink: 0;
+    text-shadow: 0 0 8px rgba(0,255,106,0.5);
+  }
+
+  .members-notice {
+    background: rgba(0,255,106,0.05);
+    border: 1px solid rgba(0,255,106,0.15);
+    border-radius: 8px; padding: 0.7rem 0.9rem;
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    font-size: 0.8rem; color: var(--orange); line-height: 1.5;
+  }
+  .members-notice strong { color: var(--orange); }
+
+  /* ── HOW TO ACCESS ── */
+  .how-card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 1.3rem 1.3rem;
+    position: relative; overflow: hidden;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .how-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.3;
+  }
+  .how-title {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 900;
+    color: #fff; letter-spacing: 0.02em;
+    margin-bottom: 1rem;
+  }
+
+  .steps { display: flex; flex-direction: column; gap: 0.7rem; }
+  .step-item {
+    background: rgba(0,255,106,0.04);
+    border: 1px solid rgba(0,255,106,0.1);
+    border-radius: 10px; padding: 0.9rem 1rem;
+    display: flex; align-items: flex-start; gap: 0.85rem;
+  }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--green); color: #000;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    box-shadow: 0 0 10px rgba(0,255,106,0.4);
+  }
+  .step-content {}
+  .step-title { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+  .step-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── PRIVACY NOTICE ── */
+  .privacy-banner {
+    width: 100%;
+    background: rgba(255,149,0,0.06);
+    border: 1px solid rgba(255,149,0,0.18);
+    border-radius: 10px; padding: 0.9rem 1rem;
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    animation: fadeUp 0.6s 0.25s ease both;
+  }
+  .privacy-banner .priv-ico { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+  .privacy-banner p { font-size: 0.8rem; color: rgba(200,170,100,0.7); line-height: 1.55; }
+  .privacy-banner strong { color: rgba(220,190,100,0.9); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonial {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--green-dim);
+    border-radius: 12px; padding: 1rem 1.2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .testimonial p {
+    font-size: 0.86rem; color: rgba(255,255,255,0.5);
+    line-height: 1.6; font-style: italic;
+    margin-bottom: 0.6rem;
+  }
+  .testimonial-author {
+    font-size: 0.8rem; color: var(--green);
+    font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  /* ── SUPPORT CARD ── */
+  .support-card {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px; padding: 1.4rem 1.3rem;
+    text-align: center;
+    animation: fadeUp 0.6s ease both;
+  }
+  .support-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 900;
+    color: #fff; margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+  }
+  .support-desc {
+    font-size: 0.84rem; color: var(--muted);
+    margin-bottom: 1.1rem; line-height: 1.5;
+  }
+  .support-links {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .support-link {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.84rem; font-weight: 600;
+    color: var(--green); letter-spacing: 0.03em;
+    text-decoration: none;
+  }
+  .support-link svg {
+    width: 16px; height: 16px;
+    stroke: var(--green); fill: none;
+    stroke-width: 2; stroke-linecap: round;
+  }
+  .support-link.members { color: rgba(255,255,255,0.55); }
+  .support-link.members svg { stroke: rgba(255,255,255,0.4); }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center; padding-top: 0.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .footer p {
+    font-size: 0.72rem; color: rgba(255,255,255,0.18);
+    line-height: 1.7; letter-spacing: 0.03em;
+  }
+  .footer .disclaimer {
+    font-size: 0.65rem; color: rgba(255,255,255,0.1);
+    margin-top: 0.3rem;
+  }
+
+  /* ── TERMINAL BLOCK ── */
+  .terminal {
+    width: 100%;
+    background: var(--terminal-bg);
+    border: 1px solid rgba(0,255,106,0.12);
+    border-radius: 12px; overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+  }
+  .terminal-bar {
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0.5rem 0.9rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .t-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .t-dot.r { background: #ff5f57; }
+  .t-dot.y { background: #febc2e; }
+  .t-dot.g { background: #28c840; }
+  .t-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem; color: rgba(255,255,255,0.3);
+    letter-spacing: 0.04em; margin-left: 4px;
+  }
+  .terminal-body {
+    padding: 0.85rem 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem; line-height: 1.8;
+  }
+  .t-ok     { color: var(--green); }
+  .t-label  { color: rgba(255,255,255,0.35); }
+  .t-cursor {
+    display: inline-block; width: 8px; height: 14px;
+    background: var(--green); vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+<div class="center-glow"></div>
+
+<div class="wrapper">
+
+  <!-- LOGO -->
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 44 44" fill="none">
+      <circle cx="22" cy="22" r="21" stroke="#00ff6a" stroke-width="1.5" opacity="0.3"/>
+      <circle cx="22" cy="22" r="16" stroke="#00ff6a" stroke-width="1"/>
+      <path d="M10 22c0 0 5-8 12-8s12 8 12 8-5 8-12 8-12-8-12-8z" stroke="#00ff6a" stroke-width="1.6" stroke-linecap="round" fill="rgba(0,255,106,0.06)"/>
+      <circle cx="22" cy="22" r="3.5" fill="#00ff6a" opacity="0.9"/>
+      <circle cx="23.2" cy="20.8" r="1" fill="rgba(255,255,255,0.6)"/>
+      <line x1="22" y1="8" x2="22" y2="5" stroke="#00ff6a" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      <line x1="34.5" y1="15" x2="37" y2="13.5" stroke="#00ff6a" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+    </svg>
+    <span class="logo-text">ChatWatch - App View AI</span>
+  </div>
+
+  <!-- SUCCESS HERO -->
+  <div class="success-hero">
+    <div class="check-wrap">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="hero-title">Thank you for purchasing ChatWatch - App View AI!</div>
+    <p class="hero-sub">Your ChatWatch - App View AI account has been activated and your access is ready</p>
+  </div>
+
+  <!-- ACCESS APP CARD -->
+  <div class="access-card">
+    <div class="access-title">Click the link below to <span class="hi">access your app</span></div>
+    <p class="access-desc">Your account is already active — tap the button now to open ChatWatch - App View AI and start monitoring right away.</p>
+    <a class="access-btn" href="https://instascanapp.com">🔓 Access My App Now</a>
+  </div>
+
+  <!-- IMPORTANT BANNER -->
+  <div class="important-banner">
+    <span class="imp-ico">⚡</span>
+    <p><strong>Important:</strong> Check your email inbox for your login credentials. If you don't see it, check your spam folder.</p>
+  </div>
+
+  <!-- TERMINAL STATUS -->
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="t-dot r"></div>
+      <div class="t-dot y"></div>
+      <div class="t-dot g"></div>
+      <span class="t-title">ChatWatch - App View AI@secure-server — status</span>
+    </div>
+    <div class="terminal-body" id="terminal-status">
+    </div>
+  </div>
+
+  <!-- MEMBERS AREA CARD -->
+  <div class="members-card">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-br"></div>
+    <div class="members-header">
+      <span class="members-ico">🎓</span>
+      <div class="members-title">Exclusive Members Area with Video Lessons!</div>
+    </div>
+    <p class="members-desc">
+      In addition to ChatWatch - App View AI access, you'll receive <strong>exclusive access to our members area</strong> with:
+    </p>
+    <div class="check-list">
+      <div class="check-item">Step-by-step video tutorials on how to use all features</div>
+      <div class="check-item">Advanced monitoring strategies and techniques</div>
+      <div class="check-item">Tips to identify suspicious behaviors</div>
+      <div class="check-item">Regular updates with new features</div>
+    </div>
+    <div class="members-notice">
+      <span>📱</span>
+      <span><strong>Your members area access will be sent to your email within the next 10 minutes!</strong></span>
+    </div>
+  </div>
+
+  <!-- HOW TO ACCESS -->
+  <div class="how-card">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-br"></div>
+    <div class="how-title">
+      <span>📱</span> How to Access ChatWatch - App View AI
+    </div>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Check Your Email</div>
+          <div class="step-desc">We've sent your exclusive access link and login credentials to the email you provided during registration. The email should arrive within 5 minutes.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Access Your Dashboard</div>
+          <div class="step-desc">Use the link in your email to access your personal dashboard where you can start monitoring immediately.</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Enter Target Number</div>
+          <div class="step-desc">Once logged in, simply enter the phone number you want to monitor and let our advanced AI technology do the rest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY NOTICE -->
+  <div class="privacy-banner">
+    <span class="priv-ico">⚠️</span>
+    <p><strong>Privacy Notice:</strong> Use ChatWatch - App View AI responsibly and in accordance with local laws. This tool is designed for legitimate monitoring purposes only.</p>
+  </div>
+
+  <!-- TESTIMONIAL 1 -->
+  <div class="testimonial">
+    <div class="corner corner-tl"></div>
+    <p>"I finally discovered the truth I was looking for. ChatWatch - App View AI gave me the peace of mind I needed. The interface is incredibly easy to use, and the recovered messages feature is amazing!"</p>
+    <div class="testimonial-author">— Sarah M., Verified Customer</div>
+  </div>
+
+  <!-- TESTIMONIAL 2 -->
+  <div class="testimonial">
+    <div class="corner corner-tl"></div>
+    <p>"Worth every penny! The real-time tracking and deleted message recovery helped me understand what was really happening. Professional and discreet service."</p>
+    <div class="testimonial-author">— Michael R., Verified Customer</div>
+  </div>
+
+  <!-- SUPPORT CARD -->
+  <div class="support-card">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-br"></div>
+    <div class="support-title">Need Help? We're Here for You</div>
+    <p class="support-desc">Our support team is available 24/7 to assist you with any questions</p>
+    <div class="support-links">
+      <a href="mailto:suportwhatsdetect@gmail.com" class="support-link">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        suportwhatsdetect@gmail.com
+      </a>
+      <span class="support-link members">
+        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Members Area Support
+      </span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>© 2026 ChatWatch - App View AI. All rights reserved.</p>
+    <p class="disclaimer">This product is not affiliated with WhatsApp Inc.</p>
+  </div>
+
+</div><!-- /wrapper -->
+
+<!-- MATRIX CANVAS -->
+<script>
+const canvas = document.getElementById('matrix-canvas');
+const ctx    = canvas.getContext('2d');
+const chars  = 'アァカサタナハマヤラワガザダバパイキシチニヒミリギジヂビウクスツヌフムユルグズブプエケセテネヘメレゲゼデベオコソトノホモヨロヲゴゾドボヴン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+let cols, drops;
+function resize() {
+  canvas.width  = innerWidth;
+  canvas.height = innerHeight;
+  cols  = Math.floor(canvas.width / 18);
+  drops = Array(cols).fill(1).map(() => Math.floor(Math.random() * -50));
+}
+resize(); window.addEventListener('resize', resize);
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(3,10,5,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < cols; i++) {
+    const c = chars[Math.floor(Math.random() * chars.length)];
+    const y = drops[i] * 18, x = i * 18;
+    ctx.font = "bold 14px 'Courier New',monospace";
+    ctx.fillStyle = '#fff'; ctx.shadowColor = '#00ff6a'; ctx.shadowBlur = 8;
+    ctx.fillText(c, x, y);
+    ctx.fillStyle = `hsl(140,100%,${Math.random()*30+20}%)`; ctx.shadowBlur = 0;
+    ctx.fillText(chars[Math.floor(Math.random() * chars.length)], x, y - 18);
+    if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 45);
+</script>
+
+<!-- TERMINAL ANIMATION -->
+<script>
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+const termLines = [
+  { cls: 't-ok',    text: '[OK] Payment confirmed and processed' },
+  { cls: 't-ok',    text: '[OK] License successfully activated' },
+  { cls: 't-ok',    text: '[OK] ChatWatch - App View AI account created' },
+  { cls: 't-ok',    text: '[OK] Credentials sent to your email' },
+  { cls: 't-ok',    text: '[OK] Members area access unlocked' },
+  { cls: 't-label', text: '─────────────────────────────────' },
+  { cls: 't-ok',    text: '[OK] System ready — welcome to ChatWatch - App View AI!' },
+];
+
+async function runTerminal() {
+  const body = document.getElementById('terminal-status');
+  await sleep(600);
+
+  for (let i = 0; i < termLines.length; i++) {
+    const line = termLines[i];
+    await sleep(i === 0 ? 0 : 380);
+    const span = document.createElement('span');
+    span.className = line.cls;
+    span.style.di

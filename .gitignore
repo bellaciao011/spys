@@ -1,8 +1,0 @@
-# Arquivos sensíveis com chaves de API (evita bloqueio pelo GitHub Push Protection)
-**/config.php
-**/config.areaspy.php
-
-# Arquivos do sistema
-.DS_Store
-Thumbs.db
-*.log

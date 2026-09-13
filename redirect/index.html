@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html><html lang="en"><!-- Mirrored from newtechaccess.com/backredirecten.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 12 Apr 2026 00:55:25 GMT --><head>
+<script>
+(function () {
+  var paramsAtuais = new URLSearchParams(window.location.search);
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("a");
+    if (!link) return;
+    var href = link.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+    try {
+      var url = new URL(link.href);
+      paramsAtuais.forEach(function(valor, chave) {
+        url.searchParams.set(chave, valor);
+      });
+      link.href = url.toString();
+    } catch (err) {}
+  });
+})();
+</script>
+<!-- UTMify -->
+  
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatWatch - App View AI — Wait! Special Offer</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff6a;
+    --green-dim: #00c450;
+    --red: #ff3b3b;
+    --orange: #ff9500;
+    --bg: #030a05;
+    --glow: 0 0 20px rgba(0,255,106,0.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: #e8ffe8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── MATRIX CANVAS ── */
+  #matrix-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    opacity: 0.18; pointer-events: none;
+  }
+
+  /* scanlines */
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 1;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* center glow */
+  .bg-glow {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(0,255,106,0.06) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── POPUP OVERLAY ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 10;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: overlayIn 0.5s ease both;
+  }
+  @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+
+  /* ── POPUP CARD ── */
+  .popup {
+    position: relative; z-index: 20;
+    width: 100%; max-width: 440px;
+    background: rgba(4,14,8,0.97);
+    border: 1.5px solid rgba(0,255,106,0.35);
+    border-radius: 18px;
+    padding: 2.2rem 1.8rem 2rem;
+    text-align: center;
+    box-shadow:
+      0 0 0 1px rgba(0,255,106,0.08),
+      0 0 60px rgba(0,255,106,0.15),
+      0 0 120px rgba(0,255,106,0.06),
+      0 30px 60px rgba(0,0,0,0.7);
+    animation: popupIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popupIn {
+    from { opacity:0; transform:scale(0.7) translateY(30px); }
+    to   { opacity:1; transform:scale(1)   translateY(0); }
+  }
+
+  /* pulsing border glow */
+  .popup::before {
+    content: '';
+    position: absolute; inset: -2px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(0,255,106,0.3), transparent, rgba(0,255,106,0.2));
+    z-index: -1;
+    animation: borderPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes borderPulse {
+    0%,100% { opacity: 0.5; }
+    50%      { opacity: 1; }
+  }
+
+  /* top line accent */
+  .popup::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    border-radius: 18px 18px 0 0;
+    animation: borderPulse 2.5s ease-in-out infinite;
+  }
+
+  /* corner brackets */
+  .corner { position: absolute; width: 14px; height: 14px; border-color: var(--green); border-style: solid; opacity: 0.5; }
+  .c-tl { top: 10px; left: 10px;  border-width: 1.5px 0 0 1.5px; }
+  .c-tr { top: 10px; right: 10px; border-width: 1.5px 1.5px 0 0; }
+  .c-bl { bottom: 10px; left: 10px;  border-width: 0 0 1.5px 1.5px; }
+  .c-br { bottom: 10px; right: 10px; border-width: 0 1.5px 1.5px 0; }
+
+  /* ── LIVE badge ── */
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,59,59,0.1);
+    border: 1px solid rgba(255,59,59,0.4);
+    border-radius: 30px; padding: 0.35rem 0.9rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem; font-weight: 700;
+    color: #ff6868; letter-spacing: 0.16em;
+    text-transform: uppercase; margin-bottom: 1.3rem;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+    animation: blink 1s steps(1) infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  /* ── ICON ── */
+  .popup-icon {
+    font-size: 3rem; display: block;
+    margin-bottom: 0.7rem;
+    animation: iconBounce 2s ease-in-out infinite;
+  }
+  @keyframes iconBounce {
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    25%{transform:translateY(-6px) rotate(-5deg)}
+    75%{transform:translateY(-3px) rotate(3deg)}
+  }
+
+  /* ── HEADLINE ── */
+  .popup-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem; font-weight: 900;
+    color: var(--orange); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 0.5rem;
+    text-shadow: 0 0 18px rgba(255,149,0,0.6);
+  }
+
+  .popup-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.1rem, 5vw, 1.55rem);
+    font-weight: 900; color: #fff;
+    line-height: 1.2; letter-spacing: 0.02em;
+    margin-bottom: 0.7rem;
+  }
+  .popup-title .hi { color: var(--green); text-shadow: var(--glow); }
+
+  .popup-sub {
+    font-size: 0.88rem; color: rgba(255,255,255,0.45);
+    line-height: 1.6; margin-bottom: 1.4rem;
+    max-width: 340px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ── PRICE BLOCK ── */
+  .price-block {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.2rem; margin-bottom: 1.4rem;
+    background: rgba(0,255,106,0.04);
+    border: 1px solid rgba(0,255,106,0.12);
+    border-radius: 12px; padding: 1rem 1.2rem;
+    position: relative; overflow: hidden;
+  }
+  .price-block::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0.3;
+  }
+
+  .price-old {
+    text-align: center;
+  }
+  .price-old-label {
+    font-size: 0.65rem; color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.2rem;
+  }
+  .price-old-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem; font-weight: 900;
+    color: rgba(255,59,59,0.5);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+  }
+
+  .price-arrow {
+    font-size: 1.4rem; color: var(--green);
+    animation: arrowPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes arrowPulse { 0%,100%{transform:translateX(0);opacity:1} 50%{transform:translateX(5px);opacity:0.6} }
+
+  .price-new {
+    text-align: center;
+  }
+  .price-new-label {
+    font-size: 0.65rem; color: var(--green);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.2rem;
+    font-weight: 700;
+  }
+  .price-new-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--green);
+    text-shadow: 0 0 24px rgba(0,255,106,0.6);
+    line-height: 1;
+  }
+
+  .savings-badge {
+    display: inline-block;
+    background: rgba(0,255,106,0.12);
+    border: 1px solid rgba(0,255,106,0.3);
+    border-radius: 20px; padding: 0.2rem 0.7rem;
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--green); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-top: 0.25rem;
+  }
+
+  /* ── TIMER ── */
+  .timer-row {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    margin-bottom: 1.3rem;
+    font-size: 0.75rem; color: rgba(255,255,255,0.4);
+    letter-spacing: 0.04em;
+  }
+  .t-block {
+    background: rgba(255,59,59,0.1);
+    border: 1px solid rgba(255,59,59,0.25);
+    border-radius: 6px; padding: 0.2rem 0.5rem;
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 700;
+    color: var(--red); min-width: 36px; text-align: center;
+  }
+  .t-sep { color: rgba(255,59,59,0.5); font-weight: 700; }
+
+  /* ── CTA BUTTON ── */
+  .cta-btn {
+    width: 100%;
+    padding: 1.1rem 1.5rem;
+    background: linear-gradient(135deg, #00c450, #00ff6a);
+    border: 2.5px dashed rgba(255,255,255,0.5);
+    border-radius: 12px;
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(0.72rem, 3.2vw, 0.9rem);
+    font-weight: 900; letter-spacing: 0.06em;
+    color: #000; cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 30px rgba(0,255,106,0.4);
+    animation: ctaPulse 2s infinite;
+    margin-bottom: 0.85rem;
+    line-height: 1.35;
+    position: relative; overflow: hidden;
+  }
+  .cta-btn::before {
+    content: ''; position: absolute; top:-50%; left:-60%;
+    width:50%; height:200%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+  }
+  @keyframes ctaPulse {
+    0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.4), 0 0 0 0 rgba(0,255,106,.3)}
+    50%{box-shadow:0 6px 50px rgba(0,255,106,.65), 0 0 0 8px rgba(0,255,106,0)}
+  }
+  @keyframes shimmer { 0%{left:-60%} 100%{left:130%} }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.6); }
+
+  /* ── SKIP ── */
+  .skip-btn {
+    background: none; border: none;
+    font-size: 0.75rem; color: rgba(255,255,255,0.25);
+    cursor: pointer; text-decoration: underline;
+    text-underline-offset: 3px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.03em; transition: color 0.2s;
+    display: block; margin: 0 auto;
+  }
+  .skip-btn:hover { color: rgba(255,255,255,0.45); }
+
+  /* ── FOOTER ── */
+  .popup-footer {
+    margin-top: 1.2rem;
+    font-size: 0.68rem; color: rgba(255,255,255,0.15);
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+<div class="bg-glow"></div>
+
+<!-- POPUP OVERLAY -->
+<div class="overlay">
+  <div class="popup">
+    <div class="corner c-tl"></div>
+    <div class="corner c-tr"></div>
+    <div class="corner c-bl"></div>
+    <div class="corner c-br"></div>
+
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Exclusive Offer
+    </div>
+
+    <span class="popup-icon">🔓</span>
+
+    <div class="popup-label">⚡ Wait — Don't Leave!</div>
+
+    <h1 class="popup-title">
+      Get Full Access for<br>
+      <span class="hi">$19 Instead of $39</span>
+    </h1>
+
+    <p class="popup-sub">
+      You're about to miss out. We're offering you a
+      <strong style="color:rgba(255,255,255,0.75);">one-time exclusive discount</strong>
+      of $10 off — only available right now on this page.
+    </p>
+
+    <!-- Price comparison -->
+    <div class="price-block">
+      <div class="price-old">
+        <div class="price-old-label">Original Price</div>
+        <div class="price-old-val">$39</div>
+      </div>
+      <div class="price-arrow">→</div>
+      <div class="price-new">
+        <div class="price-new-label">Your Price Now</div>
+        <div class="price-new-val">$19</div>
+        <div class="savings-badge">Save $10</div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="timer-row">
+      ⏱ Offer expires in:
+      <div style="display:flex;align-items:center;gap:0.3rem;">
+        <div class="t-block" id="tm">14</div>
+        <span class="t-sep">:</span>
+        <div class="t-block" id="ts">59</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="cta-btn" onclick="claimOffer()">
+      Yes! Claim My $19 Discount Now
+    </button>
+
+    <button class="skip-btn" onclick="skipOffer()">
+      No thanks, I'll pay full price later
+    </button>
+
+    <div class="popup-footer">
+      🔒 Secure Payment · 30-Day Guarantee · Instant Access
+    </div>
+  </div>
+</div>
+
+<!-- MATRIX -->
+<script>
+const canvas = document.getElementById('matrix-canvas');
+const ctx    = canvas.getContext('2d');
+const chars  = 'アカサタナハマヤラワガザダバパイキシチニヒミリギジビウクスツヌフムユルグズブエケセテネヘメレゲゼデベオコソトノホモヨロヲゴゾドボヴン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+let cols, drops;
+
+function resize() {
+  canvas.width  = innerWidth;
+  canvas.height = innerHeight;
+  cols  = Math.floor(canvas.width / 18);
+  drops = Array(cols).fill(1).map(() => Math.floor(Math.random() * -60));
+}
+resize();
+window.addEventListener('resize', resize);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(3,10,5,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < cols; i++) {
+    const c = chars[Math.floor(Math.random() * chars.length)];
+    const y = drops[i] * 18, x = i * 18;
+    ctx.font = "bold 14px 'Courier New', monospace";
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = '#00ff6a';
+    ctx.shadowBlur  = 8;
+    ctx.fillText(c, x, y);
+    ctx.fillStyle = `hsl(140,100%,${Math.random()*30+18}%)`;
+    ctx.shadowBlur = 0;
+    ctx.fillText(chars[Math.floor(Math.random() * chars.length)], x, y - 18);
+    if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 45);
+</script>
+
+<!-- COUNTDOWN -->
+<script>
+let mins = 14, secs = 59;
+const tmEl = document.getElementById('tm');
+const tsEl = document.getElementById('ts');
+
+setInterval(() => {
+  secs--;
+  if (secs < 0) { secs = 59; mins--; }
+  if (mins < 0) { mins = 0; secs = 0; }
+  tmEl.textContent = String(mins).padStart(2, '0');
+  tsEl.textContent = String(secs).padStart(2, '0');
+}, 1000);
+
+function claimOffer() {
+  // Replace with your discounted checkout link
+  window.location.href = 'https://go.centerpag.com/PPU38CQEACK';
+}
+
+function skipOffer() {
+  window.history.back();
+}
+</script>
+
+
+
+
+
+</body></html>
