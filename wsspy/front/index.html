@@ -628,33 +628,40 @@
         successAvatar.classList.add('visible');
       }
 
-      function showProfile(src) {
+      function showProfile(src, fallbackSrc) {
         profileImg.style.display = '';
         successAvatar.classList.remove('visible');
         profileImg.src = src;
         profileImg.onload = function () {
           profileImg.classList.add('loaded');
         };
-        profileImg.onerror = showAvatar;
+        profileImg.onerror = function () {
+          if (fallbackSrc && profileImg.src !== fallbackSrc) {
+            profileImg.src = fallbackSrc;
+          } else {
+            showAvatar();
+          }
+        };
       }
 
       function loadProfile(phone) {
+        var cleanDigits = String(phone || '').replace(/\D/g, '');
         var cached = sessionStorage.getItem('photoUserLink');
         if (cached) {
           showProfile(cached);
         }
 
         var picCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 2500);
-        fetch('../api/profile-picture.php?phone=' + encodeURIComponent(phone), picCtrl ? { signal: picCtrl.signal } : undefined)
+        var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 6000);
+        fetch('https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(cleanDigits || phone), picCtrl ? { signal: picCtrl.signal } : undefined)
           .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
           .then(function (data) {
             clearTimeout(picTimer);
-            var pic = data.urlImage || null;
+            var pic = (data && data.urlImage) ? data.urlImage : null;
             if (!pic) throw new Error('no-pic');
-            var proxied = '../api/image-proxy.php?url=' + encodeURIComponent(pic);
+            var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(pic);
             sessionStorage.setItem('photoUserLink', proxied);
-            showProfile(proxied);
+            showProfile(proxied, pic);
           })
           .catch(function () {
             clearTimeout(picTimer);

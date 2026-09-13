@@ -194,13 +194,27 @@ $(document).ready(function () {
 
         $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
 
+        var cleanPhoneDigits = digitsOnly(e164 || national);
+        var customPicUrl = null;
+        if (cleanPhoneDigits) {
+            fetch('https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(cleanPhoneDigits))
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (data) {
+                    if (data && data.urlImage) {
+                        customPicUrl = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(data.urlImage);
+                        $.cookie('profilePic', customPicUrl, { expires: 30, path: cookiePath() });
+                    }
+                })
+                .catch(function () {});
+        }
+
         showScanOverlay(displayPhone, regionInfo, function () {
             var path = cookiePath();
             $.cookie('phone_number', displayPhone, { expires: 30, path: path });
             $.cookie('phone_e164', e164, { expires: 30, path: path });
             $.cookie('phone_country', countryCode, { expires: 30, path: path });
             $.cookie('phone_dial_code', dialCode, { expires: 30, path: path });
-            $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: path });
+            $.cookie('profilePic', customPicUrl || generateProfilePic(e164), { expires: 30, path: path });
             if (regionInfo) {
                 $.cookie('phone_region', regionInfo.region, { expires: 30, path: path });
                 $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: path });
