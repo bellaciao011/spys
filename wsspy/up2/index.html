@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>WhatSpy — Cross-Platform Scan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00ff6a;
+      --green-dim: #00c450;
+      --red: #ff3b3b;
+      --orange: #ff9500;
+      --purple: #a855f7;
+      --blue: #3b82f6;
+      --bg: #0d0a1a;
+      --card: rgba(20,12,40,0.95);
+      --card-border: rgba(168,85,247,0.15);
+      --muted: #6a4a8a;
+      --glow: 0 0 20px rgba(168,85,247,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #1a0a35 0%, #120820 40%, #0d0618 100%);
+      color: #e8f0ff;
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(168,85,247,0.08) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      background-position: 0 0, 15px 15px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .wrapper {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 480px;
+      padding: 2.5rem 1.4rem 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes rotRing  { to { transform: rotate(360deg); } }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 6px rgba(168,85,247,.3)} 50%{box-shadow:0 0 22px rgba(168,85,247,.7)} }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.35)} 50%{box-shadow:0 6px 50px rgba(0,255,106,.6)} }
+    @keyframes shimmer  { 0%{left:-60%} 100%{left:150%} }
+    @keyframes shimBar  { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes iconPop  { from{transform:scale(0) rotate(-20deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
+
+    #screen-scan {
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .scan-icon-wrap {
+      width: 80px; height: 80px;
+      position: relative; margin-bottom: 1.5rem;
+    }
+    .scan-icon-bg {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .scan-icon-bg::before {
+      content: '';
+      position: absolute; inset: -6px; border-radius: 50%;
+      border: 1.5px solid rgba(168,85,247,0.2);
+      animation: rotRing 5s linear infinite;
+    }
+    .scan-icon-bg::after {
+      content: '';
+      position: absolute; inset: -14px; border-radius: 50%;
+      border: 1px solid rgba(168,85,247,0.08);
+      animation: rotRing 9s linear infinite reverse;
+    }
+
+    .scan-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.1rem, 4.5vw, 1.45rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.03em; margin-bottom: 0.4rem;
+    }
+    .scan-sub {
+      font-size: 0.88rem; color: var(--muted);
+      font-weight: 400; margin-bottom: 1.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .progress-outer {
+      width: 100%; height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 30px; overflow: hidden;
+      margin-bottom: 0.5rem;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
+      border-radius: 30px;
+      width: 0%;
+      transition: width 0.4s ease;
+      position: relative;
+      box-shadow: 0 0 14px rgba(168,85,247,0.6);
+    }
+    .progress-inner::after {
+      content: '';
+      position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45));
+      border-radius: 30px;
+      animation: shimBar 1.2s infinite;
+    }
+    .progress-pct {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.88rem; font-weight: 700;
+      color: #a855f7; text-align: center;
+      margin-bottom: 1.5rem; letter-spacing: 0.08em;
+      text-shadow: 0 0 14px rgba(168,85,247,0.5);
+    }
+
+    .platforms-list { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .plat-row {
+      display: flex; align-items: center; gap: 0.9rem;
+      background: rgba(168,85,247,0.04);
+      border: 1px solid rgba(168,85,247,0.1);
+      border-left: 3px solid transparent;
+      border-radius: 10px; padding: 0.85rem 1rem;
+      transition: all 0.4s ease;
+    }
+    .plat-row.searching {
+      background: rgba(168,85,247,0.05);
+      border-color: rgba(168,85,247,0.15);
+      border-left-color: var(--purple);
+      animation: glowPulse 1.5s infinite;
+    }
+    .plat-row.found-hidden {
+      background: rgba(255,59,59,0.07);
+      border-color: rgba(255,59,59,0.2);
+      border-left-color: var(--red);
+    }
+    .plat-row.connected {
+      background: rgba(0,196,80,0.07);
+      border-color: rgba(0,196,80,0.2);
+      border-left-color: var(--green-dim);
+    }
+    .plat-row.pending { opacity: 0.4; }
+
+    .plat-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+    }
+    .plat-name {
+      font-size: 0.95rem; font-weight: 600;
+      color: rgba(255,255,255,0.75); flex: 1;
+      letter-spacing: 0.02em;
+    }
+    .plat-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem; font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+    .plat-status.green  { color: var(--green); }
+    .plat-status.red    { color: var(--red); }
+    .plat-status.purple { color: var(--purple); }
+    .plat-status.muted  { color: rgba(255,255,255,0.25); }
+
+    .plat-badge {
+      font-size: 0.72rem; font-weight: 600;
+      padding: 0.15rem 0.5rem; border-radius: 20px;
+      margin-left: 0.4rem; display: none;
+    }
+    .badge-red {
+      background: rgba(255,59,59,0.15); color: var(--red);
+      border: 1px solid rgba(255,59,59,0.3);
+    }
+
+    .plat-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(168,85,247,0.2);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 0.5rem; display: none;
+    }
+
+    #screen-upsell {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .warn-banner {
+      width: 100%; text-align: center;
+      padding: 1.5rem 1.2rem;
+      background: linear-gradient(135deg, rgba(255,149,0,0.08), rgba(220,50,50,0.06));
+      border: 1px solid rgba(255,149,0,0.25);
+      border-radius: 14px;
+      position: relative; overflow: hidden;
+    }
+    .warn-banner::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+      opacity: 0.7;
+    }
+    .warn-icon { font-size: 2.2rem; display: block; margin-bottom: 0.7rem; }
+    .warn-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1rem, 4.5vw, 1.3rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.01em; line-height: 1.3;
+      margin-bottom: 0.7rem;
+    }
+    .warn-sub {
+      font-size: 0.88rem; color: rgba(255,200,100,0.7);
+      line-height: 1.6; font-weight: 400;
+      max-width: 360px; margin: 0 auto;
+    }
+    .warn-sub strong { color: rgba(255,220,130,0.9); font-weight: 700; }
+
+    .scan-summary {
+      width: 100%;
+      background: rgba(20,10,40,0.95);
+      border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 12px; padding: 1rem 1.1rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .scan-sum-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+    .scan-sum-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.88rem;
+    }
+    .scan-sum-name {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.6); font-weight: 500;
+    }
+    .scan-sum-result { font-weight: 700; font-size: 0.82rem; }
+    .r-green { color: var(--green); }
+    .r-red   { color: var(--red); }
+    .r-muted { color: rgba(255,255,255,0.25); }
+
+    .offer-card {
+      width: 100%;
+      background: rgba(18,8,35,0.97);
+      border: 1.5px solid rgba(0,255,106,0.28);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 60px rgba(168,85,247,0.08), inset 0 1px 0 rgba(0,255,106,0.08);
+    }
+    .offer-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.45;
+    }
+
+    .offer-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4vw, 1.2rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.02em; line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+    .offer-card-title span { color: var(--green); }
+
+    .offer-card-desc {
+      font-size: 0.88rem; color: rgba(255,255,255,0.4);
+      line-height: 1.65; margin-bottom: 1.2rem;
+      max-width: 360px; margin-left: auto; margin-right: auto;
+    }
+    .offer-card-desc strong { color: rgba(255,255,255,0.7); }
+
+    .feature-list {
+      width: 100%; text-align: left;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-bottom: 1.3rem;
+    }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.88rem; color: rgba(255,255,255,0.65);
+      font-weight: 500; line-height: 1.4;
+    }
+    .feat-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(0,255,106,0.12); border: 1px solid rgba(0,255,106,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .feat-dot svg {
+      width: 10px; height: 10px;
+      stroke: var(--green); fill: none;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .upsell-charge-box {
+      width: 100%;
+      margin-bottom: 1.25rem;
+      padding: 1.15rem 1rem;
+      border-radius: 14px;
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+      opacity: 0.5;
+    }
+    .upsell-charge-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(168, 85, 247, 0.95);
+      margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      text-shadow: 0 0 28px rgba(0, 255, 106, 0.4);
+    }
+    .upsell-charge-currency {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.35);
+      text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.45;
+      margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 0.28rem 0.8rem;
+    }
+
+    .offer-price {
+      display: none;
+    }
+
+    .offer-cta {
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: linear-gradient(135deg, #00c450, #00ff6a);
+      border: 2.5px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.72rem, 3vw, 0.88rem);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: #000; cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 2.5s infinite;
+      margin-bottom: 0.9rem;
+      line-height: 1.4;
+      position: relative; overflow: hidden;
+    }
+    .offer-cta::before {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+    }
+    .offer-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.5); }
+    .offer-cta:disabled { opacity: 0.7; transform: none; animation: none; }
+
+    .offer-footer {
+      margin-top: 1.4rem;
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      text-align: center; letter-spacing: 0.04em;
+    }
+    .offer-copy {
+      margin-top: 0.35rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .offer-decline {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div id="screen-scan">
+
+    <div class="scan-icon-wrap">
+      <div class="scan-icon-bg">
+        <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+          <circle cx="21" cy="21" r="16" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+          <circle cx="21" cy="21" r="9"  stroke="#a855f7" stroke-width="2" opacity="0.75"/>
+          <circle cx="21" cy="21" r="3.5" fill="#a855f7"/>
+          <line x1="21" y1="5"  x2="21" y2="0"  stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
+          <line x1="37" y1="21" x2="42" y2="21" stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
+          <line x1="21" y1="37" x2="21" y2="42" stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
+          <line x1="5"  y1="21" x2="0"  y2="21" stroke="#a855f7" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scan-title">Cross-Platform Scan in Progress</div>
+    <div class="scan-sub">Analyzing target's digital footprint...</div>
+
+    <div class="progress-outer" style="width:100%;">
+      <div class="progress-inner" id="prog-fill"></div>
+    </div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+
+    <div class="platforms-list">
+      <div class="plat-row connected" id="plt-whatsapp">
+        <div class="plat-icon">💬</div>
+        <span class="plat-name">WhatsApp</span>
+        <span class="plat-status green">CONNECTED</span>
+        <span class="plat-badge badge-red" id="badge-wa"></span>
+      </div>
+      <div class="plat-row pending" id="plt-instagram">
+        <div class="plat-icon">📷</div>
+        <span class="plat-name">Instagram</span>
+        <span class="plat-status muted" id="st-instagram">—</span>
+        <span class="plat-badge badge-red" id="badge-ig">47 DMs hidden</span>
+      </div>
+      <div class="plat-row pending" id="plt-tiktok">
+        <div class="plat-icon">🎵</div>
+        <span class="plat-name">TikTok</span>
+        <span class="plat-status muted" id="st-tiktok">—</span>
+        <span class="plat-badge badge-red" id="badge-tt">12 secret chats</span>
+      </div>
+      <div class="plat-row pending" id="plt-snapchat">
+        <div class="plat-icon">👻</div>
+        <span class="plat-name">Snapchat</span>
+        <span class="plat-status muted" id="st-snapchat">—</span>
+        <div class="plat-spinner" id="spin-snap"></div>
+      </div>
+      <div class="plat-row pending" id="plt-gps">
+        <div class="plat-icon">📍</div>
+        <span class="plat-name">GPS Location</span>
+        <span class="plat-status muted" id="st-gps">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="screen-upsell">
+
+    <div class="warn-banner">
+      <span class="warn-icon">⚠️</span>
+      <div class="warn-title">WAIT! You're Only Seeing<br>30% of the Truth...</div>
+      <div class="warn-sub">
+        They might be having secret conversations on Instagram, Snapchat, or TikTok
+        <strong>RIGHT NOW</strong> — and you'd never know.
+      </div>
+    </div>
+
+    <div class="scan-summary">
+      <div class="scan-sum-title">Scan Results</div>
+      <div class="scan-sum-row">
+        <div class="scan-sum-name">💬 WhatsApp</div>
+        <span class="scan-sum-result r-green">✓ MONITORING</span>
+      </div>
+      <div class="scan-sum-row">
+        <div class="scan-sum-name">📷 Instagram</div>
+        <span class="scan-sum-result r-red">⚠ 47 DMs hidden</span>
+      </div>
+      <div class="scan-sum-row">
+        <div class="scan-sum-name">🎵 TikTok</div>
+        <span class="scan-sum-result r-red">⚠ 12 secret chats</span>
+      </div>
+      <div class="scan-sum-row">
+        <div class="scan-sum-name">👻 Snapchat</div>
+        <span class="scan-sum-result r-muted">🔒 Locked — upgrade required</span>
+      </div>
+      <div class="scan-sum-row">
+        <div class="scan-sum-name">📍 GPS Location</div>
+        <span class="scan-sum-result r-muted">🔒 Locked — upgrade required</span>
+      </div>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-card-title">
+        Spy — <span>360 Tracker:</span><br>
+        Track All Social Media + GPS
+      </div>
+      <div class="offer-card-desc">
+        Monitor Instagram, Facebook, TikTok, Snapchat, Twitter + real-time GPS location. See <strong>EVERYTHING</strong> they're hiding across ALL platforms.
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feat-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Instagram, TikTok, Snapchat, Facebook &amp; Twitter
+        </div>
+        <div class="feature-item">
+          <div class="feat-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Real-time GPS location
+        </div>
+        <div class="feature-item">
+          <div class="feat-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Hidden conversations and secret DMs
+        </div>
+        <div class="feature-item">
+          <div class="feat-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          Instant alerts 24 hours a day
+        </div>
+      </div>
+
+      <div class="upsell-charge-box">
+        <div class="upsell-charge-label">One-Time Add-On</div>
+        <div class="upsell-charge-row">
+          <span class="upsell-charge-amount">$65.00</span>
+          <span class="upsell-charge-currency">USD</span>
+        </div>
+        <div class="upsell-charge-note">This amount will be charged to your card today</div>
+        <span class="upsell-charge-badge">All platforms + GPS · Instant access</span>
+      </div>
+      <button type="button" id="offer-btn" class="offer-cta">Continue →</button>
+    </div>
+
+    <div class="offer-footer">
+      🔒 Secure Payment · 30-Day Guarantee · Instant Access
+    </div>
+    <div class="offer-copy">© 2026 WhatSpy. All rights reserved.</div>
+    <div class="offer-decline">
+      <a href="../up3/" id="decline-link">No thanks, skip this add-on</a>
+    </div>
+
+  </div>
+
+</div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function animatePct(fillEl, pctEl, from, to, duration) {
+    return new Promise(function (resolve) {
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(from + (to - from) * ease);
+        fillEl.style.width = val + '%';
+        pctEl.textContent = val + '%';
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  async function runScan() {
+    var fill = document.getElementById('prog-fill');
+    var pct  = document.getElementById('prog-pct');
+
+    await sleep(600);
+
+    var igRow = document.getElementById('plt-instagram');
+    igRow.classList.remove('pending');
+    igRow.classList.add('searching');
+    var stIg = document.getElementById('st-instagram');
+    stIg.className = 'plat-status purple';
+    stIg.textContent = 'SEARCHING...';
+    await animatePct(fill, pct, 0, 35, 1600);
+    igRow.classList.remove('searching');
+    igRow.classList.add('found-hidden');
+    stIg.className = 'plat-status red';
+    stIg.textContent = '⚠ FOUND';
+    document.getElementById('badge-ig').style.display = 'inline-block';
+    await sleep(300);
+
+    var ttRow = document.getElementById('plt-tiktok');
+    ttRow.classList.remove('pending');
+    ttRow.classList.add('searching');
+    var stTt = document.getElementById('st-tiktok');
+    stTt.className = 'plat-status purple';
+    stTt.textContent = 'SEARCHING...';
+    await animatePct(fill, pct, 35, 65, 1500);
+    ttRow.classList.remove('searching');
+    ttRow.classList.add('found-hidden');
+    stTt.className = 'plat-status red';
+    stTt.textContent = '⚠ FOUND';
+    document.getElementById('badge-tt').style.display = 'inline-block';
+    await sleep(300);
+
+    var snapRow = document.getElementById('plt-snapchat');
+    snapRow.classList.remove('pending');
+    snapRow.classList.add('searching');
+    var stSnap = document.getElementById('st-snapchat');
+    stSnap.className = 'plat-status purple';
+    stSnap.textContent = 'SEARCHING...';
+    document.getElementById('spin-snap').style.display = 'block';
+    await animatePct(fill, pct, 65, 77, 1200);
+
+    await sleep(900);
+
+    var scanEl = document.getElementById('screen-scan');
+    scanEl.style.transition = 'opacity 0.45s, transform 0.45s';
+    scanEl.style.opacity    = '0';
+    scanEl.style.transform  = 'translateY(-14px)';
+    await sleep(460);
+    scanEl.style.display = 'none';
+
+    document.getElementById('screen-upsell').style.display = 'flex';
+  }
+
+  if (window.FunnelUtm) FunnelUtm.persist();
+  runScan();
+  CheckoutNav.bindUpsell('up2');
+
+  (function () {
+    var link = document.getElementById('decline-link');
+    if (!link) return;
+    var base = link.getAttribute('href');
+    if (window.FunnelUtm) {
+      link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+    }
+  })();
+</script>
+
+</body>
+</html>

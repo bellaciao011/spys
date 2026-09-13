@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>WhatSpy — Full Stealth License</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00ff6a;
+      --green-dim: #00c450;
+      --green-deep: #00a840;
+      --red: #ff3b3b;
+      --orange: #ff9500;
+      --muted: #3a6a4a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #061a10 0%, #040e0a 40%, #020604 100%);
+      color: #e8fff0;
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,255,106,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,106,0.03) 1px, transparent 1px),
+        radial-gradient(circle, rgba(0,255,106,0.06) 1px, transparent 1px);
+      background-size: 40px 40px, 40px 40px, 60px 60px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .wrapper {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 480px;
+      padding: 2rem 1.4rem 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rotRing { to { transform: rotate(360deg); } }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 6px rgba(0,255,106,.3)} 50%{box-shadow:0 0 22px rgba(0,255,106,.7)} }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.35)} 50%{box-shadow:0 6px 50px rgba(0,255,106,.6)} }
+    @keyframes shimmer { 0%{left:-60%} 100%{left:150%} }
+    @keyframes shimBar { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes shieldPulse {
+      0%,100%{ transform:scale(1); filter:drop-shadow(0 0 8px rgba(0,255,106,.4)); }
+      50%{ transform:scale(1.06); filter:drop-shadow(0 0 22px rgba(0,255,106,.85)); }
+    }
+    @keyframes radarSweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes riskPulse {
+      0%,100%{ opacity:1; box-shadow:0 0 10px rgba(255,59,59,.25); }
+      50%{ opacity:.85; box-shadow:0 0 24px rgba(255,59,59,.55); }
+    }
+    @keyframes barFill { from{width:0} to{width:var(--bar-w)} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    .setup-banner {
+      width: 100%;
+      background: rgba(0,255,106,0.06);
+      border: 1px solid rgba(0,255,106,0.22);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(180,255,210,0.75);
+      letter-spacing: 0.06em;
+    }
+    .setup-banner strong { color: var(--green); }
+
+    #screen-scan {
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .scan-icon-wrap {
+      width: 96px; height: 96px;
+      position: relative; margin-bottom: 1.4rem;
+    }
+    .scan-icon-bg {
+      width: 96px; height: 96px; border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(0,255,106,0.22) 0%, rgba(0,255,106,0.05) 45%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      font-size: 2.4rem;
+      animation: shieldPulse 2s ease-in-out infinite;
+    }
+    .scan-icon-bg::before {
+      content: '';
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 1.5px solid rgba(0,255,106,0.28);
+      border-top-color: var(--green);
+      animation: rotRing 4s linear infinite;
+    }
+    .scan-icon-bg::after {
+      content: '';
+      position: absolute; inset: 10px; border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 0deg, rgba(0,255,106,0.35) 40deg, transparent 70deg);
+      animation: radarSweep 2.8s linear infinite;
+      opacity: 0.7;
+      mask: radial-gradient(circle, transparent 55%, #000 56%);
+      -webkit-mask: radial-gradient(circle, transparent 55%, #000 56%);
+    }
+    .scan-icon-glyph {
+      position: relative; z-index: 2;
+      line-height: 1;
+      filter: drop-shadow(0 0 12px rgba(0,255,106,.6));
+    }
+
+    .scan-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1rem, 4.5vw, 1.35rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.03em; margin-bottom: 0.4rem;
+      text-shadow: 0 0 24px rgba(0,255,106,0.25);
+    }
+    .scan-sub {
+      font-size: 0.88rem; color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-outer {
+      width: 100%; height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 30px; overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #00a840, #00c450, #00ff6a);
+      border-radius: 30px; width: 0%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 14px rgba(0,255,106,0.55);
+      position: relative;
+    }
+    .progress-inner::after {
+      content: '';
+      position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45));
+      border-radius: 30px;
+      animation: shimBar 1.2s infinite;
+    }
+    .progress-pct {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--green); text-align: center;
+      margin-bottom: 1.4rem; letter-spacing: 0.08em;
+    }
+
+    .log-list { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .log-row {
+      display: flex; align-items: center; gap: 0.85rem;
+      background: rgba(0,255,106,0.03);
+      border: 1px solid rgba(0,255,106,0.1);
+      border-left: 3px solid transparent;
+      border-radius: 10px; padding: 0.85rem 1rem;
+      transition: all 0.4s ease;
+      text-align: left;
+    }
+    .log-row.searching { border-left-color: var(--green); animation: glowPulse 1.5s infinite; }
+    .log-row.found {
+      background: rgba(255,59,59,0.07);
+      border-color: rgba(255,59,59,0.2);
+      border-left-color: var(--red);
+    }
+    .log-row.done {
+      background: rgba(0,196,80,0.07);
+      border-color: rgba(0,196,80,0.2);
+      border-left-color: var(--green-dim);
+    }
+    .log-row.pending { opacity: 0.4; }
+
+    .log-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+    }
+    .log-body { flex: 1; min-width: 0; }
+    .log-title { font-size: 0.92rem; font-weight: 600; color: rgba(255,255,255,0.78); }
+    .log-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      margin-top: 0.15rem;
+    }
+    .log-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; flex-shrink: 0;
+    }
+    .log-status.blue { color: var(--green); }
+    .log-status.red { color: var(--red); }
+    .log-status.green { color: var(--green); }
+    .log-status.orange { color: var(--orange); }
+    .log-status.muted { color: rgba(255,255,255,0.25); }
+
+    .log-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(0,255,106,0.2);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    #screen-upsell {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .warn-banner {
+      width: 100%; text-align: center;
+      padding: 1.5rem 1.2rem;
+      background: linear-gradient(135deg, rgba(255,59,59,0.12), rgba(0,255,106,0.04));
+      border: 1px solid rgba(255,59,59,0.35);
+      border-radius: 14px;
+      animation: riskPulse 2.4s ease-in-out infinite;
+    }
+    .warn-icon { font-size: 2.2rem; display: block; margin-bottom: 0.7rem; }
+    .warn-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.55rem;
+      animation: blink 1.6s infinite;
+    }
+    .warn-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4.5vw, 1.25rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.7rem;
+    }
+    .warn-sub {
+      font-size: 0.88rem; color: rgba(180,255,210,0.7);
+      line-height: 1.6; max-width: 360px; margin: 0 auto;
+    }
+    .warn-sub strong { color: #b8ffd0; font-weight: 700; }
+
+    .risk-meter {
+      width: 100%;
+      background: rgba(6,18,12,0.95);
+      border: 1px solid rgba(255,59,59,0.25);
+      border-radius: 14px;
+      padding: 1.15rem 1.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .risk-meter::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.6;
+    }
+    .risk-meter-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-bottom: 0.55rem;
+    }
+    .risk-meter-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .risk-meter-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.85);
+      letter-spacing: 0.06em;
+    }
+    .risk-meter-level {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.05rem; font-weight: 900; color: var(--red);
+      text-shadow: 0 0 16px rgba(255,59,59,0.5);
+      letter-spacing: 0.08em;
+    }
+    .risk-bars {
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .risk-bar-row {
+      display: flex; align-items: center; gap: 0.65rem;
+    }
+    .risk-bar-name {
+      font-size: 0.72rem; color: rgba(255,255,255,0.4);
+      width: 88px; flex-shrink: 0; text-align: left;
+    }
+    .risk-bar-track {
+      flex: 1; height: 6px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px; overflow: hidden;
+    }
+    .risk-bar-fill {
+      height: 100%; border-radius: 20px;
+      width: var(--bar-w);
+      animation: barFill 1.2s ease both;
+    }
+    .risk-bar-fill.high {
+      background: linear-gradient(90deg, #ff3b3b, #ff6b3b);
+      box-shadow: 0 0 10px rgba(255,59,59,0.45);
+    }
+    .risk-bar-fill.med {
+      background: linear-gradient(90deg, #ff9500, #ffb340);
+      box-shadow: 0 0 10px rgba(255,149,0,0.35);
+    }
+
+    .offer-card {
+      width: 100%;
+      background: rgba(4,14,10,0.98);
+      border: 1.5px solid rgba(0,255,106,0.32);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      box-shadow:
+        0 0 60px rgba(0,255,106,0.1),
+        inset 0 1px 0 rgba(0,255,106,0.08);
+      position: relative;
+    }
+    .offer-card::before {
+      content: '';
+      position: absolute; inset: -1px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(0,255,106,0.25), transparent 40%, transparent 60%, rgba(0,255,106,0.12));
+      z-index: -1;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .offer-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4.2vw, 1.2rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .offer-card-title span { color: var(--green); text-shadow: 0 0 18px rgba(0,255,106,0.4); }
+    .offer-card-desc {
+      font-size: 0.88rem; color: rgba(255,255,255,0.42);
+      line-height: 1.65; margin-bottom: 1.2rem;
+    }
+    .offer-card-desc strong { color: rgba(255,255,255,0.78); }
+
+    .feature-list {
+      width: 100%; text-align: left;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-bottom: 1.3rem;
+    }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.88rem; color: rgba(255,255,255,0.68);
+      font-weight: 500; line-height: 1.4;
+    }
+    .feat-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(0,255,106,0.12); border: 1px solid rgba(0,255,106,0.4);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; color: var(--green); font-size: 0.65rem;
+      box-shadow: 0 0 8px rgba(0,255,106,0.2);
+    }
+
+    .compare-mini {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-bottom: 1.3rem;
+    }
+    .compare-col {
+      border-radius: 12px;
+      padding: 0.85rem 0.75rem;
+      text-align: center;
+    }
+    .compare-col.std {
+      background: rgba(255,59,59,0.06);
+      border: 1px solid rgba(255,59,59,0.22);
+    }
+    .compare-col.stealth {
+      background: rgba(0,255,106,0.06);
+      border: 1px solid rgba(0,255,106,0.28);
+      box-shadow: 0 0 20px rgba(0,255,106,0.08);
+    }
+    .compare-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .compare-col.std .compare-label { color: rgba(255,100,100,0.7); }
+    .compare-col.stealth .compare-label { color: rgba(0,255,106,0.75); }
+    .compare-status {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem; font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+    .compare-col.std .compare-status { color: var(--red); }
+    .compare-col.stealth .compare-status { color: var(--green); }
+    .compare-note {
+      font-size: 0.72rem; margin-top: 0.3rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .upsell-charge-box {
+      width: 100%; margin-bottom: 1.25rem;
+      padding: 1.15rem 1rem; border-radius: 14px;
+      background: rgba(0, 255, 106, 0.07);
+      border: 1px solid rgba(0, 255, 106, 0.3);
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.55;
+    }
+    .upsell-charge-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(0, 255, 106, 0.9); margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 0.4rem; margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-weight: 900; color: var(--green); line-height: 1;
+      text-shadow: 0 0 28px rgba(0, 255, 106, 0.45);
+    }
+    .upsell-charge-currency {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem; color: rgba(255,255,255,0.55);
+      line-height: 1.45; margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgba(200,255,220,0.8);
+      background: rgba(0,255,106,0.08);
+      border: 1px solid rgba(0,255,106,0.22);
+      border-radius: 20px; padding: 0.28rem 0.8rem;
+    }
+
+    .offer-cta {
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: linear-gradient(135deg, #00c450, #00ff6a);
+      border: 2.5px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.72rem, 3vw, 0.88rem);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: #000; cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 2.5s infinite;
+      margin-bottom: 0.9rem;
+      line-height: 1.4;
+      position: relative; overflow: hidden;
+    }
+    .offer-cta::before {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+    }
+    .offer-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.5); }
+    .offer-cta:disabled { opacity: 0.7; transform: none; animation: none; }
+
+    .offer-footer {
+      margin-top: 1.2rem;
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      text-align: center; letter-spacing: 0.04em;
+    }
+    .offer-copy {
+      margin-top: 0.35rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .offer-decline {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="setup-banner">
+    Account activation: <strong>98%</strong> — stealth license pending
+  </div>
+
+  <div id="screen-scan">
+
+    <div class="scan-icon-wrap">
+      <div class="scan-icon-bg">
+        <span class="scan-icon-glyph">🛡️</span>
+      </div>
+    </div>
+
+    <div class="scan-title">Stealth Integrity Scan</div>
+    <div class="scan-sub">Checking detection surface on target device...</div>
+
+    <div class="progress-outer">
+      <div class="progress-inner" id="prog-fill"></div>
+    </div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+
+    <div class="log-list">
+      <div class="log-row pending" id="log-fp">
+        <div class="log-icon">🧬</div>
+        <div class="log-body">
+          <div class="log-title">Device fingerprint</div>
+          <div class="log-meta" id="meta-fp">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-fp">—</span>
+      </div>
+      <div class="log-row pending" id="log-alerts">
+        <div class="log-icon">⚠️</div>
+        <div class="log-body">
+          <div class="log-title">WhatsApp security alerts</div>
+          <div class="log-meta" id="meta-alerts">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-alerts">—</span>
+      </div>
+      <div class="log-row pending" id="log-sync">
+        <div class="log-icon">📡</div>
+        <div class="log-body">
+          <div class="log-title">Background sync signals</div>
+          <div class="log-meta" id="meta-sync">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-sync">—</span>
+      </div>
+      <div class="log-row pending" id="log-anti">
+        <div class="log-icon">🔒</div>
+        <div class="log-body">
+          <div class="log-title">Anti-detection layer</div>
+          <div class="log-meta" id="meta-anti">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-anti">—</span>
+        <div class="log-spinner" id="spin-anti"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-upsell">
+
+    <div class="warn-banner">
+      <span class="warn-icon">🛡️</span>
+      <div class="warn-label">CRITICAL: Detection Risk Detected</div>
+      <div class="warn-title">Without Full Stealth, they may receive a security alert</div>
+      <div class="warn-sub">
+        Your connection is active — but the scan found an
+        <strong>exposed detection surface</strong>. Activate permanent stealth before they notice.
+      </div>
+    </div>
+
+    <div class="risk-meter">
+      <div class="risk-meter-label">Live threat assessment</div>
+      <div class="risk-meter-row">
+        <span class="risk-meter-title">DETECTION RISK</span>
+        <span class="risk-meter-level">HIGH</span>
+      </div>
+      <div class="risk-bars">
+        <div class="risk-bar-row">
+          <span class="risk-bar-name">Fingerprint</span>
+          <div class="risk-bar-track"><div class="risk-bar-fill high" style="--bar-w:92%"></div></div>
+        </div>
+        <div class="risk-bar-row">
+          <span class="risk-bar-name">WA Alerts</span>
+          <div class="risk-bar-track"><div class="risk-bar-fill high" style="--bar-w:88%"></div></div>
+        </div>
+        <div class="risk-bar-row">
+          <span class="risk-bar-name">Sync Trace</span>
+          <div class="risk-bar-track"><div class="risk-bar-fill med" style="--bar-w:74%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-card-title">
+        Full Stealth License<br>
+        <span>Permanent Anti-Detection</span>
+      </div>
+      <div class="offer-card-desc">
+        Unlock <strong>permanent anti-detection, ghost mode, and zero icons or notifications</strong>
+        on the target device — so they never see a security alert.
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Ghost Mode — invisible presence on target
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Disable WhatsApp security alerts
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Lifetime stealth status
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Priority anti-detection updates
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Invisible GPS &amp; background sync
+        </div>
+      </div>
+
+      <div class="compare-mini">
+        <div class="compare-col std">
+          <div class="compare-label">Standard</div>
+          <div class="compare-status">EXPOSED</div>
+          <div class="compare-note">Alerts possible</div>
+        </div>
+        <div class="compare-col stealth">
+          <div class="compare-label">Full Stealth</div>
+          <div class="compare-status">INVISIBLE</div>
+          <div class="compare-note">Zero traces</div>
+        </div>
+      </div>
+
+      <div class="upsell-charge-box">
+        <div class="upsell-charge-label">Full Stealth License</div>
+        <div class="upsell-charge-row">
+          <span class="upsell-charge-amount">$157.00</span>
+          <span class="upsell-charge-currency">USD</span>
+        </div>
+        <div class="upsell-charge-note">This amount will be charged to your card today</div>
+        <span class="upsell-charge-badge">Lifetime anti-detection · Instant activation</span>
+      </div>
+
+      <button type="button" id="offer-btn" class="offer-cta">Continue →</button>
+    </div>
+
+    <div class="offer-footer">🔒 Secure Payment · 30-Day Guarantee · Instant Access</div>
+    <div class="offer-copy">© 2026 WhatSpy. All rights reserved.</div>
+    <div class="offer-decline">
+      <a href="../up8/" id="decline-link">No thanks, skip this add-on</a>
+    </div>
+  </div>
+</div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function animatePct(fillEl, pctEl, from, to, duration) {
+    return new Promise(function (resolve) {
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(from + (to - from) * ease);
+        fillEl.style.width = val + '%';
+        pctEl.textContent = val + '%';
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  async function runScan() {
+    var fill = document.getElementById('prog-fill');
+    var pct = document.getElementById('prog-pct');
+    await sleep(400);
+
+    var fp = document.getElementById('log-fp');
+    fp.classList.remove('pending');
+    fp.classList.add('searching');
+    document.getElementById('st-fp').className = 'log-status blue';
+    document.getElementById('st-fp').textContent = 'SCANNING...';
+    document.getElementById('meta-fp').textContent = 'Reading device signature...';
+    await animatePct(fill, pct, 0, 28, 1100);
+    fp.classList.remove('searching');
+    fp.classList.add('found');
+    document.getElementById('st-fp').className = 'log-status red';
+    document.getElementById('st-fp').textContent = 'EXPOSED';
+    document.getElementById('meta-fp').textContent = 'Fingerprint visible to target';
+    await sleep(450);
+    fp.classList.remove('found');
+    fp.classList.add('done');
+    document.getElementById('st-fp').className = 'log-status green';
+    document.getElementById('st-fp').textContent = 'SHIELDED';
+    document.getElementById('meta-fp').textContent = 'Partial shield applied — incomplete';
+    await sleep(250);
+
+    var alerts = document.getElementById('log-alerts');
+    alerts.classList.remove('pending');
+    alerts.classList.add('searching');
+    document.getElementById('st-alerts').className = 'log-status blue';
+    document.getElementById('st-alerts').textContent = 'SCANNING...';
+    document.getElementById('meta-alerts').textContent = 'Probing WA security layer...';
+    await animatePct(fill, pct, 28, 55, 1100);
+    alerts.classList.remove('searching');
+    alerts.classList.add('found');
+    document.getElementById('st-alerts').className = 'log-status red';
+    document.getElementById('st-alerts').textContent = 'RISK DETECTED';
+    document.getElementById('meta-alerts').textContent = 'Security alert pathway open';
+    await sleep(280);
+
+    var sync = document.getElementById('log-sync');
+    sync.classList.remove('pending');
+    sync.classList.add('searching');
+    document.getElementById('st-sync').className = 'log-status blue';
+    document.getElementById('st-sync').textContent = 'SCANNING...';
+    document.getElementById('meta-sync').textContent = 'Tracing background packets...';
+    await animatePct(fill, pct, 55, 78, 1000);
+    sync.classList.remove('searching');
+    sync.classList.add('found');
+    document.getElementById('st-sync').className = 'log-status orange';
+    document.getElementById('st-sync').textContent = 'TRACEABLE';
+    document.getElementById('meta-sync').textContent = 'Sync signals can be detected';
+    await sleep(280);
+
+    var anti = document.getElementById('log-anti');
+    anti.classList.remove('pending');
+    anti.classList.add('searching');
+    document.getElementById('st-anti').className = 'log-status blue';
+    document.getElementById('st-anti').textContent = 'SCANNING...';
+    document.getElementById('spin-anti').style.display = 'block';
+    document.getElementById('meta-anti').textContent = 'Checking stealth license...';
+    await animatePct(fill, pct, 78, 96, 1000);
+    anti.classList.remove('searching');
+    anti.classList.add('found');
+    document.getElementById('st-anti').className = 'log-status red';
+    document.getElementById('st-anti').textContent = 'LOCKED';
+    document.getElementById('meta-anti').textContent = 'Full Stealth required';
+    document.getElementById('spin-anti').style.display = 'none';
+    await sleep(600);
+
+    var scanEl = document.getElementById('screen-scan');
+    scanEl.style.transition = 'opacity 0.45s, transform 0.45s';
+    scanEl.style.opacity = '0';
+    scanEl.style.transform = 'translateY(-14px)';
+    await sleep(460);
+    scanEl.style.display = 'none';
+    document.getElementById('screen-upsell').style.display = 'flex';
+    if (window.UpsellPriceToggle) UpsellPriceToggle.apply();
+    if (window.CheckoutNav) CheckoutNav.bindUpsell('up7');
+  }
+
+  if (window.FunnelUtm) FunnelUtm.persist();
+  runScan();
+
+  history.pushState({}, '', location.href);
+  history.pushState({}, '', location.href);
+  window.onpopstate = function () {
+    setTimeout(function () { location.href = '../up8/'; }, 1);
+  };
+
+  (function () {
+    var link = document.getElementById('decline-link');
+    if (!link) return;
+    var base = link.getAttribute('href');
+    if (window.FunnelUtm) {
+      link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+    }
+  })();
+</script>
+</body>
+</html>

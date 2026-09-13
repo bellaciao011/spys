@@ -1,0 +1,7 @@
+<Files "config.php">
+    Require all denied
+</Files>
+
+<FilesMatch "^(queue\.json|sent-log\.json|subscribers\.json)$">
+    Require all denied
+</FilesMatch>

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>WhatSpy — VIP Priority Processing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00ff6a;
+      --green-dim: #00c450;
+      --red: #ff3b3b;
+      --orange: #ff9500;
+      --yellow: #f59e0b;
+      --purple: #a855f7;
+      --muted: #6a5a8a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #1a0a35 0%, #120820 40%, #0d0618 100%);
+      color: #e8f0ff;
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(168,85,247,0.07) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      background-position: 0 0, 15px 15px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .wrapper {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 500px;
+      padding: 2.5rem 1.4rem 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+
+    @keyframes fadeUp    { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin      { to { transform: rotate(360deg); } }
+    @keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    @keyframes shimmer   { 0%{left:-60%} 100%{left:150%} }
+    @keyframes ctaPulse  { 0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.35)} 50%{box-shadow:0 6px 50px rgba(0,255,106,.65)} }
+    @keyframes queueTick { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    @keyframes slideIn   { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+
+    #screen-queue {
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hourglass-wrap {
+      font-size: 3.5rem; margin-bottom: 1.2rem;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .queue-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.02em; margin-bottom: 0.4rem;
+    }
+    .queue-sub {
+      font-size: 0.88rem; color: var(--muted);
+      margin-bottom: 1.6rem; letter-spacing: 0.02em;
+    }
+
+    .position-card {
+      width: 100%;
+      background: rgba(30,18,55,0.9);
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 14px; padding: 1.4rem 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .pos-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .pos-number {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.8rem, 10vw, 3.8rem);
+      font-weight: 900; color: var(--orange);
+      line-height: 1; margin-bottom: 0.4rem;
+      text-shadow: 0 0 30px rgba(245,158,11,0.4);
+    }
+    .pos-of {
+      font-size: 0.85rem; color: rgba(255,255,255,0.4);
+    }
+
+    .stats-list {
+      width: 100%;
+      background: rgba(20,12,38,0.85);
+      border: 1px solid rgba(168,85,247,0.12);
+      border-radius: 12px; padding: 0.3rem 0;
+      margin-bottom: 1rem;
+    }
+    .stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1.1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.55); font-weight: 500;
+    }
+    .stat-val { font-weight: 700; font-size: 0.9rem; }
+    .val-white  { color: #fff; }
+    .val-orange { color: var(--orange); }
+    .val-green  { color: var(--green); }
+
+    .proc-progress-wrap { width: 100%; margin-bottom: 0.5rem; }
+    .proc-bar-outer {
+      width: 100%; height: 6px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px; overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .proc-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #d97706, #f59e0b);
+      border-radius: 20px; width: 8%;
+      position: relative;
+      box-shadow: 0 0 10px rgba(245,158,11,0.5);
+      transition: width 0.7s ease-out;
+    }
+    .proc-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: rgba(255,255,255,0.3);
+      text-align: center; letter-spacing: 0.06em;
+      margin-bottom: 0.8rem;
+    }
+
+    .activity-feed {
+      width: 100%;
+      display: flex; flex-direction: column; gap: 0.3rem;
+      margin-bottom: 1.2rem;
+    }
+    .activity-item {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: rgba(255,255,255,0.35);
+      display: flex; align-items: center; gap: 0.5rem;
+      animation: slideIn 0.4s ease both;
+    }
+    .activity-item .act-check {
+      color: var(--green); font-size: 0.7rem;
+    }
+    .act-vip { color: rgba(245,158,11,0.7); }
+
+    .vip-teaser {
+      width: 100%;
+      background: rgba(0,196,80,0.06);
+      border: 1px solid rgba(0,255,106,0.2);
+      border-radius: 12px; padding: 1.2rem 1.2rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .vip-teaser::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.5;
+    }
+    .vip-check {
+      font-size: 1.3rem; margin-bottom: 0.5rem; display: block;
+      color: var(--green);
+    }
+    .vip-teaser-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.82rem; font-weight: 900;
+      color: var(--green); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.4rem;
+      text-shadow: 0 0 16px rgba(0,255,106,0.4);
+    }
+    .vip-teaser-desc {
+      font-size: 0.84rem; color: rgba(255,255,255,0.45);
+      line-height: 1.55;
+    }
+    .vip-teaser-desc strong { color: rgba(255,255,255,0.75); }
+
+    #screen-upsell {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .priority-banner {
+      width: 100%;
+      background: rgba(30,25,10,0.95);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 10px; padding: 0.9rem 1rem;
+      display: flex; align-items: flex-start; gap: 0.7rem;
+    }
+    .priority-banner-check { color: var(--green); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .priority-banner-text { font-size: 0.84rem; color: rgba(245,200,80,0.85); line-height: 1.5; }
+    .priority-banner-text strong { color: rgba(255,220,100,0.95); }
+
+    .upsell-headline {
+      width: 100%; text-align: center;
+      padding: 0 0.5rem;
+    }
+    .upsell-headline h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.1rem, 5vw, 1.6rem);
+      font-weight: 900; color: #fff;
+      line-height: 1.25; letter-spacing: 0.01em;
+      margin-bottom: 0;
+    }
+
+    .comparison-block {
+      width: 100%;
+      background: rgba(20,12,40,0.9);
+      border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 12px; padding: 1.1rem;
+      margin-bottom: -0.3rem;
+    }
+    .comparison-block.standard {
+      border-left: 3px solid rgba(255,59,59,0.5);
+    }
+    .comparison-block.vip {
+      border-left: 3px solid rgba(0,255,106,0.5);
+    }
+    .comp-label {
+      font-size: 0.88rem; font-weight: 700;
+      margin-bottom: 0.35rem; line-height: 1.4;
+    }
+    .comp-label.std { color: rgba(255,255,255,0.7); }
+    .comp-label.vip-lbl { color: rgba(255,255,255,0.7); }
+    .comp-label strong.red { color: var(--red); }
+    .comp-label strong.green { color: var(--green); }
+    .comp-desc { font-size: 0.83rem; color: rgba(255,255,255,0.4); line-height: 1.55; }
+    .comp-desc strong { color: rgba(255,255,255,0.7); }
+
+    .table-card {
+      width: 100%;
+      background: rgba(18,10,36,0.95);
+      border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 14px; padding: 1.3rem 1.2rem;
+    }
+    .table-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem; font-weight: 900;
+      color: #fff; text-align: center;
+      margin-bottom: 1.2rem; letter-spacing: 0.02em;
+    }
+    .comp-cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;
+    }
+    .comp-col {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 1rem 0.9rem;
+    }
+    .comp-col.vip-col {
+      background: rgba(0,196,80,0.06);
+      border-color: rgba(0,255,106,0.2);
+    }
+    .comp-col-icon { font-size: 1.5rem; margin-bottom: 0.4rem; display: block; }
+    .comp-col-title {
+      font-size: 0.82rem; font-weight: 700;
+      margin-bottom: 0.7rem; color: rgba(255,255,255,0.7);
+    }
+    .comp-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .comp-col ul li {
+      font-size: 0.78rem; color: rgba(255,255,255,0.45);
+      line-height: 1.35; padding-left: 1rem; position: relative;
+    }
+    .comp-col ul li::before { content: '•'; position: absolute; left: 0; color: rgba(255,255,255,0.25); }
+    .comp-col.vip-col ul li { color: rgba(200,255,220,0.75); }
+    .comp-col.vip-col ul li::before { content: '✓'; color: var(--green); font-size: 0.7rem; }
+
+    .included-card {
+      width: 100%;
+      background: rgba(14,8,30,0.95);
+      border: 1.5px solid rgba(0,255,106,0.2);
+      border-radius: 14px; padding: 1.4rem 1.2rem;
+      position: relative; overflow: hidden;
+    }
+    .included-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.35;
+    }
+    .included-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem; font-weight: 900;
+      color: #fff; text-align: center;
+      margin-bottom: 1.1rem; letter-spacing: 0.02em;
+    }
+    .included-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.6rem; margin-bottom: 1rem;
+    }
+    .included-item {
+      background: rgba(0,196,80,0.05);
+      border: 1px solid rgba(0,255,106,0.12);
+      border-radius: 8px; padding: 0.7rem 0.8rem;
+      display: flex; align-items: flex-start; gap: 0.5rem;
+    }
+    .inc-check {
+      color: var(--green); font-size: 0.8rem; flex-shrink: 0; margin-top: 1px;
+    }
+    .inc-text { font-size: 0.78rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+    .inc-text strong { color: rgba(255,255,255,0.85); display: block; margin-bottom: 0.1rem; }
+    .included-foot {
+      text-align: center;
+      font-size: 0.82rem; color: rgba(255,255,255,0.35);
+      font-style: italic; line-height: 1.5;
+    }
+    .included-foot strong { color: rgba(255,255,255,0.6); font-style: normal; }
+
+    .urgency-card {
+      width: 100%;
+      background: rgba(40,8,8,0.85);
+      border: 1px solid rgba(255,59,59,0.3);
+      border-radius: 12px; padding: 1.2rem 1.2rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .urgency-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.5;
+    }
+    .urgency-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem; font-weight: 900;
+      color: var(--red); letter-spacing: 0.04em;
+      margin-bottom: 0.7rem;
+    }
+    .urgency-text {
+      font-size: 0.84rem; color: rgba(255,200,200,0.6);
+      line-height: 1.6; margin-bottom: 0.7rem;
+    }
+    .urgency-text strong { color: rgba(255,220,220,0.85); }
+
+    .cta-card {
+      width: 100%;
+      background: rgba(10,20,14,0.97);
+      border: 1.5px solid rgba(0,255,106,0.28);
+      border-radius: 16px; padding: 1.8rem 1.5rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,255,106,0.06);
+    }
+    .cta-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.45;
+    }
+    .cta-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4vw, 1.2rem);
+      font-weight: 900; color: #fff;
+      line-height: 1.3; margin-bottom: 0.6rem;
+      letter-spacing: 0.02em;
+    }
+    .cta-price {
+      display: none;
+    }
+
+    .upsell-charge-box {
+      width: 100%;
+      margin-bottom: 1.25rem;
+      padding: 1.15rem 1rem;
+      border-radius: 14px;
+      background: rgba(0, 255, 106, 0.06);
+      border: 1px solid rgba(0, 255, 106, 0.25);
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.45;
+    }
+    .upsell-charge-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0, 255, 106, 0.9);
+      margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+      text-shadow: 0 0 28px rgba(0, 255, 106, 0.45);
+    }
+    .upsell-charge-currency {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.35);
+      text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.55);
+      line-height: 1.45;
+      margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 0.28rem 0.8rem;
+    }
+
+    .offer-cta {
+      width: 100%;
+      padding: 1.15rem 1.5rem;
+      background: linear-gradient(135deg, #00c450, #00ff6a);
+      border: 2.5px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.72rem, 3vw, 0.9rem);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: #000; cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 2.5s infinite;
+      margin-bottom: 0.9rem;
+      line-height: 1.4;
+      position: relative; overflow: hidden;
+    }
+    .offer-cta::before {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+    }
+    .offer-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.5); }
+    .offer-cta:disabled { opacity: 0.7; transform: none; animation: none; }
+
+    .offer-footer {
+      margin-top: 1.2rem;
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      text-align: center; letter-spacing: 0.04em;
+    }
+    .offer-copy {
+      margin-top: 0.35rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .offer-decline {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div id="screen-queue">
+
+    <div class="hourglass-wrap">⏳</div>
+
+    <div class="queue-title">Processing Your Request</div>
+    <div class="queue-sub">You've been placed in the standard processing queue</div>
+
+    <div class="position-card">
+      <div class="pos-label">YOUR POSITION IN QUEUE</div>
+      <div class="pos-number" id="queue-num">#118</div>
+      <div class="pos-of">of <span id="queue-total">203</span> users waiting</div>
+    </div>
+
+    <div class="stats-list">
+      <div class="stat-row">
+        <span class="stat-label">⏱ Estimated wait time:</span>
+        <span class="stat-val val-white">~6 hours</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🖥 Server load:</span>
+        <span class="stat-val val-orange">83% capacity</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">⚡ Processing speed:</span>
+        <span class="stat-val val-green">VIP Available</span>
+      </div>
+    </div>
+
+    <div class="proc-progress-wrap">
+      <div class="proc-bar-outer">
+        <div class="proc-bar-inner" id="proc-bar"></div>
+      </div>
+      <div class="proc-label">Processing...</div>
+    </div>
+
+    <div class="activity-feed" id="activity-feed">
+      <div class="activity-item">
+        <span class="act-check">✅</span>
+        <span>user_***8k — processed <span class="act-vip">(VIP member)</span></span>
+      </div>
+      <div class="activity-item">
+        <span class="act-check">✅</span>
+        <span>anon_***2m — processed <span class="act-vip">(VIP member)</span></span>
+      </div>
+    </div>
+
+    <div class="vip-teaser">
+      <span class="vip-check">✓</span>
+      <div class="vip-teaser-title">VIP FAST LANE AVAILABLE</div>
+      <div class="vip-teaser-desc">
+        Skip the entire queue. Get your results in
+        <strong>24 hours, instead of 5 days.</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="screen-upsell">
+
+    <div class="priority-banner">
+      <span class="priority-banner-check">✓</span>
+      <div class="priority-banner-text">
+        <strong>Priority Access:</strong> Skip the 24–72 hour wait!
+        Add VIP priority processing + instant results to your account.
+      </div>
+    </div>
+
+    <div class="upsell-headline">
+      <h1>Get Results in 24 hours<br>Instead of 5 Days</h1>
+    </div>
+
+    <div class="comparison-block standard">
+      <div class="comp-label std">
+        <strong>Standard Processing (What You Have Now):</strong>
+      </div>
+      <div class="comp-desc">
+        Your data sits in a queue with thousands of other users.
+        <strong>Wait 72–120 hours</strong> before seeing any results.
+        By then, critical evidence may already be gone.
+      </div>
+    </div>
+
+    <div class="comparison-block vip">
+      <div class="comp-label vip-lbl">
+        <strong>VIP Priority Processing (Instant Access):</strong>
+      </div>
+      <div class="comp-desc">
+        Jump to the front of the line. Your data is processed
+        <strong>FIRST</strong>, every time. See deleted messages, photos, and locations
+        in <strong>under 24 hours</strong> — Not in 5 days.
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-card-title">Standard vs VIP Priority</div>
+      <div class="comp-cols">
+        <div class="comp-col">
+          <span class="comp-col-icon">⏳</span>
+          <div class="comp-col-title">Standard Processing:</div>
+          <ul>
+            <li>Wait 72–120h for results</li>
+            <li>Data processed in order with thousands of others</li>
+            <li>No priority support</li>
+            <li>Risk losing critical evidence while waiting</li>
+          </ul>
+        </div>
+        <div class="comp-col vip-col">
+          <span class="comp-col-icon">✓</span>
+          <div class="comp-col-title">VIP Priority Processing:</div>
+          <ul>
+            <li>Immediate results within 24 hours</li>
+            <li>Your data processed FIRST</li>
+            <li>24/7 premium support</li>
+            <li>Real-time notifications &amp; alerts</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="included-card">
+      <div class="included-title">What's Included in VIP Priority</div>
+      <div class="included-grid">
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>Instant Results:</strong> Data processed in minutes, not days</div>
+        </div>
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>Skip The Queue:</strong> Your requests always go first</div>
+        </div>
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>Real-Time Alerts:</strong> Get notified the moment new data appears</div>
+        </div>
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>24/7 VIP Support:</strong> Priority assistance whenever you need</div>
+        </div>
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>Dedicated Resources:</strong> Faster servers, better performance</div>
+        </div>
+        <div class="included-item">
+          <span class="inc-check">✓</span>
+          <div class="inc-text"><strong>Lifetime VIP Status:</strong> Priority access forever</div>
+        </div>
+      </div>
+      <div class="included-foot">
+        Stop waiting 5 days. With VIP Priority, you get
+        <strong>answers in minutes.</strong>
+      </div>
+    </div>
+
+    <div class="urgency-card">
+      <div class="urgency-title">VIP Priority — Only Available During Setup</div>
+      <div class="urgency-text">
+        VIP Priority can only be added to your account during initial setup.
+        <strong>Once you leave this page, your account will be locked into standard processing with 72–120 hour delays.</strong>
+      </div>
+      <div class="urgency-text">
+        <strong>Don't make this mistake:</strong> Thousands of users regret not adding VIP Priority.
+        They waste days waiting for results while critical evidence disappears.
+        By the time they see the data, it's too late. Add it now and get instant access!
+      </div>
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-card-title">5 Days is Too Long to Wait for The Truth</div>
+      <div class="upsell-charge-box">
+        <div class="upsell-charge-label">VIP Priority Add-On</div>
+        <div class="upsell-charge-row">
+          <span class="upsell-charge-amount">$97.00</span>
+          <span class="upsell-charge-currency">USD</span>
+        </div>
+        <div class="upsell-charge-note">This amount will be charged to your card today</div>
+        <span class="upsell-charge-badge">Skip the queue · Results in minutes</span>
+      </div>
+      <button type="button" id="offer-btn" class="offer-cta">Continue →</button>
+    </div>
+
+    <div class="offer-footer">
+      🔒 Secure Payment · 30-Day Guarantee · Instant Access
+    </div>
+    <div class="offer-copy">© 2026 WhatSpy. All rights reserved.</div>
+    <div class="offer-decline">
+      <a href="../up5/" id="decline-link">No thanks, skip this add-on</a>
+    </div>
+
+  </div>
+
+</div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  var queueNum = 118;
+  var barPct = 8;
+
+  function setProgress(pct) {
+    var bar = document.getElementById('proc-bar');
+    if (!bar) return;
+    barPct = Math.max(barPct, Math.min(46, pct));
+    bar.style.width = barPct.toFixed(1) + '%';
+  }
+
+  function tickQueue() {
+    var el = document.getElementById('queue-num');
+    var tot = document.getElementById('queue-total');
+    if (!el) return;
+    if (Math.random() > 0.6 && queueNum > 110) {
+      queueNum--;
+      el.textContent = '#' + queueNum;
+      setProgress(barPct + 2.2);
+    }
+    var t = parseInt(tot.textContent, 10);
+    if (Math.random() > 0.7 && t > 195) {
+      tot.textContent = t - 1;
+    }
+  }
+
+  function animateProgressBar() {
+    var start = Date.now();
+    var duration = 5200;
+    var from = 8;
+    var to = 40;
+
+    function frame() {
+      var queueEl = document.getElementById('screen-queue');
+      if (!queueEl || queueEl.style.display === 'none') return;
+
+      var elapsed = Date.now() - start;
+      var t = Math.min(1, elapsed / duration);
+      var eased = 1 - Math.pow(1 - t, 2);
+      setProgress(from + (to - from) * eased);
+
+      if (t < 1) requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  var activityLines = [
+    'user_***4r — processed (VIP member)',
+    'anon_***7x — processed (VIP member)',
+    'user_***9p — processed (VIP member)',
+    'anon_***3k — processed (VIP member)',
+    'user_***1w — processed (VIP member)'
+  ];
+  var actIdx = 0;
+  function addActivity() {
+    var feed = document.getElementById('activity-feed');
+    if (!feed || actIdx >= activityLines.length) return;
+    var div = document.createElement('div');
+    div.className = 'activity-item';
+    div.innerHTML = '<span class="act-check">✅</span><span>' + activityLines[actIdx].replace('(VIP member)', '<span class="act-vip">(VIP member)</span>') + '</span>';
+    feed.appendChild(div);
+    while (feed.children.length > 3) feed.removeChild(feed.firstChild);
+    actIdx++;
+  }
+
+  setInterval(tickQueue, 2800);
+  setInterval(addActivity, 3500);
+  animateProgressBar();
+
+  async function runQueue() {
+    await sleep(5500);
+
+    var queueEl = document.getElementById('screen-queue');
+    queueEl.style.transition = 'opacity 0.45s, transform 0.45s';
+    queueEl.style.opacity = '0';
+    queueEl.style.transform = 'translateY(-14px)';
+    await sleep(460);
+    queueEl.style.display = 'none';
+
+    document.getElementById('screen-upsell').style.display = 'flex';
+    if (window.UpsellPriceToggle) UpsellPriceToggle.apply();
+  }
+
+  if (window.FunnelUtm) FunnelUtm.persist();
+  runQueue();
+  CheckoutNav.bindUpsell('up4');
+
+  (function () {
+    var link = document.getElementById('decline-link');
+    if (!link) return;
+    var base = link.getAttribute('href');
+    if (window.FunnelUtm) {
+      link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+    }
+  })();
+</script>
+
+</body>
+</html>

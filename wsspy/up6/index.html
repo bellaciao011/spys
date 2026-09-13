@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>WhatSpy — Call &amp; Voice Vault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00ff6a;
+      --green-dim: #00c450;
+      --red: #ff3b3b;
+      --orange: #ff9500;
+      --blue: #3b82f6;
+      --cyan: #06b6d4;
+      --muted: #4a6a8a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #0a1828 0%, #081220 40%, #040810 100%);
+      color: #e8f4ff;
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(59,130,246,0.07) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .wrapper {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 480px;
+      padding: 2rem 1.4rem 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rotRing { to { transform: rotate(360deg); } }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 6px rgba(59,130,246,.3)} 50%{box-shadow:0 0 22px rgba(59,130,246,.7)} }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.35)} 50%{box-shadow:0 6px 50px rgba(0,255,106,.6)} }
+    @keyframes shimmer { 0%{left:-60%} 100%{left:150%} }
+    @keyframes shimBar { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes wave { 0%,100%{transform:scaleY(0.35)} 50%{transform:scaleY(1)} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    .setup-banner {
+      width: 100%;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(180,210,255,0.75);
+      letter-spacing: 0.06em;
+    }
+    .setup-banner strong { color: var(--cyan); }
+
+    #screen-scan {
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .scan-icon-wrap {
+      width: 80px; height: 80px;
+      position: relative; margin-bottom: 1.4rem;
+    }
+    .scan-icon-bg {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; font-size: 2rem;
+    }
+    .scan-icon-bg::before {
+      content: '';
+      position: absolute; inset: -6px; border-radius: 50%;
+      border: 1.5px solid rgba(59,130,246,0.25);
+      animation: rotRing 5s linear infinite;
+    }
+
+    .scan-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1rem, 4.5vw, 1.35rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.03em; margin-bottom: 0.4rem;
+    }
+    .scan-sub {
+      font-size: 0.88rem; color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .waveform-wrap {
+      width: 100%;
+      height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 3px; margin-bottom: 1.2rem;
+      padding: 0 0.5rem;
+    }
+    .wave-bar {
+      width: 4px; height: 36px;
+      background: linear-gradient(180deg, var(--cyan), var(--blue));
+      border-radius: 4px;
+      transform-origin: center;
+      animation: wave 1.1s ease-in-out infinite;
+      opacity: 0.85;
+    }
+
+    .progress-outer {
+      width: 100%; height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 30px; overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #3b82f6, #06b6d4);
+      border-radius: 30px; width: 0%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 14px rgba(59,130,246,0.55);
+      position: relative;
+    }
+    .progress-inner::after {
+      content: '';
+      position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45));
+      border-radius: 30px;
+      animation: shimBar 1.2s infinite;
+    }
+    .progress-pct {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--cyan); text-align: center;
+      margin-bottom: 1.4rem; letter-spacing: 0.08em;
+    }
+
+    .log-list { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .log-row {
+      display: flex; align-items: center; gap: 0.85rem;
+      background: rgba(59,130,246,0.04);
+      border: 1px solid rgba(59,130,246,0.1);
+      border-left: 3px solid transparent;
+      border-radius: 10px; padding: 0.85rem 1rem;
+      transition: all 0.4s ease;
+      text-align: left;
+    }
+    .log-row.searching { border-left-color: var(--blue); animation: glowPulse 1.5s infinite; }
+    .log-row.found {
+      background: rgba(255,59,59,0.07);
+      border-color: rgba(255,59,59,0.2);
+      border-left-color: var(--red);
+    }
+    .log-row.done {
+      background: rgba(0,196,80,0.07);
+      border-color: rgba(0,196,80,0.2);
+      border-left-color: var(--green-dim);
+    }
+    .log-row.pending { opacity: 0.4; }
+
+    .log-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+    }
+    .log-body { flex: 1; min-width: 0; }
+    .log-title { font-size: 0.92rem; font-weight: 600; color: rgba(255,255,255,0.78); }
+    .log-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      margin-top: 0.15rem;
+    }
+    .log-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; flex-shrink: 0;
+    }
+    .log-status.blue { color: var(--cyan); }
+    .log-status.red { color: var(--red); }
+    .log-status.green { color: var(--green); }
+    .log-status.muted { color: rgba(255,255,255,0.25); }
+
+    .log-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(59,130,246,0.2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    #screen-upsell {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .warn-banner {
+      width: 100%; text-align: center;
+      padding: 1.5rem 1.2rem;
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(6,182,212,0.06));
+      border: 1px solid rgba(59,130,246,0.28);
+      border-radius: 14px;
+    }
+    .warn-icon { font-size: 2.2rem; display: block; margin-bottom: 0.7rem; }
+    .warn-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4.5vw, 1.25rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.7rem;
+    }
+    .warn-sub {
+      font-size: 0.88rem; color: rgba(180,210,255,0.75);
+      line-height: 1.6; max-width: 360px; margin: 0 auto;
+    }
+    .warn-sub strong { color: #b8dcff; font-weight: 700; }
+
+    .evidence-card {
+      width: 100%;
+      background: rgba(8,18,32,0.95);
+      border: 1px solid rgba(59,130,246,0.15);
+      border-radius: 12px; padding: 1rem 1.1rem;
+    }
+    .evidence-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .evidence-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.88rem;
+    }
+    .evidence-row:last-child { border-bottom: none; }
+    .ev-label { color: rgba(255,255,255,0.55); }
+    .ev-val { font-weight: 700; }
+    .ev-red { color: var(--red); }
+    .ev-orange { color: var(--orange); }
+    .ev-muted { color: rgba(255,255,255,0.25); }
+
+    .recording-preview {
+      width: 100%;
+      background: rgba(59,130,246,0.06);
+      border: 1px dashed rgba(59,130,246,0.25);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex; align-items: center; gap: 0.9rem;
+    }
+    .rec-play {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(59,130,246,0.2);
+      border: 1px solid rgba(59,130,246,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .rec-info { flex: 1; text-align: left; }
+    .rec-title { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); }
+    .rec-sub {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      margin-top: 0.2rem;
+    }
+    .rec-badge {
+      font-size: 0.68rem; font-weight: 700;
+      color: var(--red); animation: blink 1.5s infinite;
+    }
+
+    .offer-card {
+      width: 100%;
+      background: rgba(6,14,26,0.97);
+      border: 1.5px solid rgba(59,130,246,0.3);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(59,130,246,0.08);
+    }
+    .offer-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.92rem, 4vw, 1.15rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .offer-card-title span { color: var(--cyan); }
+    .offer-card-desc {
+      font-size: 0.88rem; color: rgba(255,255,255,0.42);
+      line-height: 1.65; margin-bottom: 1.2rem;
+    }
+    .offer-card-desc strong { color: rgba(255,255,255,0.72); }
+
+    .feature-list {
+      width: 100%; text-align: left;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-bottom: 1.3rem;
+    }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.88rem; color: rgba(255,255,255,0.65);
+      font-weight: 500; line-height: 1.4;
+    }
+    .feat-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; color: var(--cyan); font-size: 0.65rem;
+    }
+
+    .upsell-charge-box {
+      width: 100%; margin-bottom: 1.25rem;
+      padding: 1.15rem 1rem; border-radius: 14px;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.28);
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      opacity: 0.5;
+    }
+    .upsell-charge-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(96, 165, 250, 0.95); margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 0.4rem; margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-weight: 900; color: var(--cyan); line-height: 1;
+      text-shadow: 0 0 28px rgba(6, 182, 212, 0.45);
+    }
+    .upsell-charge-currency {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem; color: rgba(255,255,255,0.55);
+      line-height: 1.45; margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 0.28rem 0.8rem;
+    }
+
+    .offer-cta {
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: linear-gradient(135deg, #00c450, #00ff6a);
+      border: 2.5px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.72rem, 3vw, 0.88rem);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: #000; cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 2.5s infinite;
+      margin-bottom: 0.9rem;
+      line-height: 1.4;
+      position: relative; overflow: hidden;
+    }
+    .offer-cta::before {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+    }
+    .offer-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.5); }
+    .offer-cta:disabled { opacity: 0.7; transform: none; animation: none; }
+
+    .offer-footer {
+      margin-top: 1.2rem;
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      text-align: center; letter-spacing: 0.04em;
+    }
+    .offer-copy {
+      margin-top: 0.35rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .offer-decline {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="setup-banner">
+    Account activation: <strong>96%</strong> — voice vault pending
+  </div>
+
+  <div id="screen-scan">
+
+    <div class="scan-icon-wrap">
+      <div class="scan-icon-bg">🎙️</div>
+    </div>
+
+    <div class="scan-title">Call &amp; Audio Analysis</div>
+    <div class="scan-sub">Recovering deleted recordings and voice notes...</div>
+
+    <div class="waveform-wrap" id="waveform">
+      <div class="wave-bar" style="animation-delay:0s"></div>
+      <div class="wave-bar" style="animation-delay:0.08s"></div>
+      <div class="wave-bar" style="animation-delay:0.16s"></div>
+      <div class="wave-bar" style="animation-delay:0.24s"></div>
+      <div class="wave-bar" style="animation-delay:0.32s"></div>
+      <div class="wave-bar" style="animation-delay:0.4s"></div>
+      <div class="wave-bar" style="animation-delay:0.48s"></div>
+      <div class="wave-bar" style="animation-delay:0.56s"></div>
+      <div class="wave-bar" style="animation-delay:0.64s"></div>
+      <div class="wave-bar" style="animation-delay:0.72s"></div>
+      <div class="wave-bar" style="animation-delay:0.8s"></div>
+      <div class="wave-bar" style="animation-delay:0.88s"></div>
+      <div class="wave-bar" style="animation-delay:0.96s"></div>
+      <div class="wave-bar" style="animation-delay:1.04s"></div>
+      <div class="wave-bar" style="animation-delay:1.12s"></div>
+    </div>
+
+    <div class="progress-outer">
+      <div class="progress-inner" id="prog-fill"></div>
+    </div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+
+    <div class="log-list">
+      <div class="log-row done" id="log-calls">
+        <div class="log-icon">📞</div>
+        <div class="log-body">
+          <div class="log-title">Call history</div>
+          <div class="log-meta">Last 90 days</div>
+        </div>
+        <span class="log-status green">INDEXED</span>
+      </div>
+      <div class="log-row pending" id="log-voice">
+        <div class="log-icon">🎤</div>
+        <div class="log-body">
+          <div class="log-title">Deleted voice notes</div>
+          <div class="log-meta" id="meta-voice">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-voice">—</span>
+      </div>
+      <div class="log-row pending" id="log-recordings">
+        <div class="log-icon">🔊</div>
+        <div class="log-body">
+          <div class="log-title">Call recordings</div>
+          <div class="log-meta" id="meta-rec">Waiting for scan...</div>
+        </div>
+        <span class="log-status muted" id="st-rec">—</span>
+      </div>
+      <div class="log-row pending" id="log-late">
+        <div class="log-icon">🌙</div>
+        <div class="log-body">
+          <div class="log-title">Suspicious late-night calls</div>
+          <div class="log-meta" id="meta-late">Time pattern analysis</div>
+        </div>
+        <span class="log-status muted" id="st-late">—</span>
+        <div class="log-spinner" id="spin-late"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-upsell">
+
+    <div class="warn-banner">
+      <span class="warn-icon">📞</span>
+      <div class="warn-title">14 Calls &amp; Voice Notes<br>Flagged as Suspicious</div>
+      <div class="warn-sub">
+        Text messages don't tell the whole story. The scan found
+        <strong>deleted audio and off-hours calls</strong> — but the vault is locked.
+      </div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-title">Evidence detected</div>
+      <div class="evidence-row">
+        <span class="ev-label">📞 Calls recovered</span>
+        <span class="ev-val ev-red">14 flagged</span>
+      </div>
+      <div class="evidence-row">
+        <span class="ev-label">🎤 Deleted voice notes</span>
+        <span class="ev-val ev-red">8 found</span>
+      </div>
+      <div class="evidence-row">
+        <span class="ev-label">🌙 Calls after 11 PM</span>
+        <span class="ev-val ev-orange">6 occurrences</span>
+      </div>
+      <div class="evidence-row">
+        <span class="ev-label">🔊 Full recordings</span>
+        <span class="ev-val ev-muted">🔒 Vault locked</span>
+      </div>
+    </div>
+
+    <div class="recording-preview">
+      <div class="rec-play">▶</div>
+      <div class="rec-info">
+        <div class="rec-title">Voice note — unknown contact</div>
+        <div class="rec-sub">0:47 · deleted 3 days ago · encrypted audio</div>
+      </div>
+      <span class="rec-badge">LOCKED</span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-card-title">
+        Call &amp; Voice Vault:<br>
+        <span>Recover Deleted Audio (90 Days)</span>
+      </div>
+      <div class="offer-card-desc">
+        Listen to <strong>deleted voice notes, call recordings, and full call history</strong>.
+        The proof they'd never send in a text — available now in your dashboard.
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Deleted WhatsApp voice notes
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Call recordings &amp; history (90 days)
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Suspicious late-night call filter
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Secure download in Stalkea panel
+        </div>
+      </div>
+
+      <div class="upsell-charge-box">
+        <div class="upsell-charge-label">One-Time Add-On</div>
+        <div class="upsell-charge-row">
+          <span class="upsell-charge-amount">$127.00</span>
+          <span class="upsell-charge-currency">USD</span>
+        </div>
+        <div class="upsell-charge-note">This amount will be charged to your card today</div>
+        <span class="upsell-charge-badge">Deleted audio · 90 days · Instant access</span>
+      </div>
+
+      <button type="button" id="offer-btn" class="offer-cta">Continue →</button>
+    </div>
+
+    <div class="offer-footer">🔒 Secure Payment · 30-Day Guarantee · Instant Access</div>
+    <div class="offer-copy">© 2026 WhatSpy. All rights reserved.</div>
+    <div class="offer-decline">
+      <a href="../up7/" id="decline-link">No thanks, skip this add-on</a>
+    </div>
+  </div>
+</div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function animatePct(fillEl, pctEl, from, to, duration) {
+    return new Promise(function (resolve) {
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(from + (to - from) * ease);
+        fillEl.style.width = val + '%';
+        pctEl.textContent = val + '%';
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  async function runScan() {
+    var fill = document.getElementById('prog-fill');
+    var pct = document.getElementById('prog-pct');
+    await sleep(500);
+
+    var voice = document.getElementById('log-voice');
+    voice.classList.remove('pending');
+    voice.classList.add('searching');
+    document.getElementById('st-voice').className = 'log-status blue';
+    document.getElementById('st-voice').textContent = 'SCANNING...';
+    document.getElementById('meta-voice').textContent = 'Decoding audio...';
+    await animatePct(fill, pct, 0, 35, 1500);
+    voice.classList.remove('searching');
+    voice.classList.add('found');
+    document.getElementById('st-voice').className = 'log-status red';
+    document.getElementById('st-voice').textContent = '8 FOUND';
+    document.getElementById('meta-voice').textContent = '8 voice notes recovered';
+    await sleep(300);
+
+    var rec = document.getElementById('log-recordings');
+    rec.classList.remove('pending');
+    rec.classList.add('searching');
+    document.getElementById('st-rec').className = 'log-status blue';
+    document.getElementById('st-rec').textContent = 'SCANNING...';
+    document.getElementById('meta-rec').textContent = 'Rebuilding call logs...';
+    await animatePct(fill, pct, 35, 68, 1400);
+    rec.classList.remove('searching');
+    rec.classList.add('found');
+    document.getElementById('st-rec').className = 'log-status red';
+    document.getElementById('st-rec').textContent = '14 FOUND';
+    document.getElementById('meta-rec').textContent = '14 calls flagged';
+    await sleep(300);
+
+    var late = document.getElementById('log-late');
+    late.classList.remove('pending');
+    late.classList.add('searching');
+    document.getElementById('st-late').className = 'log-status blue';
+    document.getElementById('st-late').textContent = 'SCANNING...';
+    document.getElementById('spin-late').style.display = 'block';
+    document.getElementById('meta-late').textContent = 'Analyzing time patterns...';
+    await animatePct(fill, pct, 68, 92, 1200);
+    late.classList.remove('searching');
+    late.classList.add('found');
+    document.getElementById('st-late').className = 'log-status red';
+    document.getElementById('st-late').textContent = '6 FOUND';
+    document.getElementById('meta-late').textContent = 'Night pattern detected';
+    document.getElementById('spin-late').style.display = 'none';
+    await sleep(700);
+
+    var scanEl = document.getElementById('screen-scan');
+    scanEl.style.transition = 'opacity 0.45s, transform 0.45s';
+    scanEl.style.opacity = '0';
+    scanEl.style.transform = 'translateY(-14px)';
+    await sleep(460);
+    scanEl.style.display = 'none';
+    document.getElementById('screen-upsell').style.display = 'flex';
+    if (window.UpsellPriceToggle) UpsellPriceToggle.apply();
+    if (window.CheckoutNav) CheckoutNav.bindUpsell('up6');
+  }
+
+  if (window.FunnelUtm) FunnelUtm.persist();
+  runScan();
+
+  (function () {
+    var link = document.getElementById('decline-link');
+    if (!link) return;
+    var base = link.getAttribute('href');
+    if (window.FunnelUtm) {
+      link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+    }
+  })();
+</script>
+</body>
+</html>

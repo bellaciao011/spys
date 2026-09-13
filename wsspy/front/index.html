@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatSpy — Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://vz-c7bbc1ea-a33.b-cdn.net" crossorigin>
+  <link rel="dns-prefetch" href="https://vz-c7bbc1ea-a33.b-cdn.net">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --acid: #00ff88;
+      --acid2: #00e5ff;
+      --red: #ff2d55;
+      --yellow: #ffd60a;
+      --bg: #020408;
+      --surface: rgba(0, 255, 136, 0.04);
+      --border: rgba(0, 255, 136, 0.15);
+      --red-surface: rgba(255, 45, 85, 0.06);
+      --red-border: rgba(255, 45, 85, 0.25);
+      --text: #e8f4f0;
+      --muted: #4a6a5a;
+      --radius: 12px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 0 0 80px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 45, 85, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 45, 85, 0.018) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb1 { width: 300px; height: 300px; background: rgba(255, 45, 85, 0.06); top: -80px; right: -60px; }
+    .orb2 { width: 200px; height: 200px; background: rgba(0, 255, 136, 0.04); bottom: 200px; left: -60px; animation-delay: -4s; }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+    @keyframes shimmer { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+    @keyframes ctaGlow { 0%, 100% { box-shadow: 0 4px 20px rgba(0, 255, 136, 0.4); } 50% { box-shadow: 0 4px 50px rgba(0, 255, 136, 0.7); } }
+    @keyframes ctaPulse { 0%, 100% { box-shadow: 0 4px 30px rgba(255, 45, 85, 0.5); } 50% { box-shadow: 0 4px 50px rgba(255, 45, 85, 0.8); } }
+    @keyframes shine { 0% { left: -100%; } 100% { left: 200%; } }
+
+    .page {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .alert-banner {
+      background: linear-gradient(135deg, rgba(255, 45, 85, 0.2), rgba(255, 45, 85, 0.1));
+      border-bottom: 3px solid var(--red);
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ff6b7a;
+      line-height: 1.5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert-banner::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 45, 85, 0.15), transparent);
+      animation: shine 3s linear infinite;
+    }
+
+    .alert-banner span { color: #fff; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      margin: 0 12px;
+    }
+
+    .card.red { background: var(--red-surface); border-color: var(--red-border); }
+
+    .sec-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 16px;
+      margin: 0 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--acid), var(--acid2), transparent);
+    }
+
+    .report-badge {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #000;
+      background: linear-gradient(135deg, var(--acid), var(--acid2));
+      padding: 5px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.08em;
+    }
+
+    .profile-image {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--acid);
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+      transition: opacity 0.4s, transform 0.3s;
+    }
+
+    .profile-image.loaded {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+
+    .success-avatar {
+      display: none;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.05));
+      border: 2px solid var(--acid);
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .success-avatar.visible { display: flex; }
+
+    .phone-pill {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--acid);
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.25);
+      padding: 5px 18px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+    }
+
+    .findings { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
+    .findings li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .findings li .icon {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      background: rgba(255, 45, 85, 0.12);
+      border: 1px solid rgba(255, 45, 85, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .findings li strong { color: #ff6b7a; }
+
+    .ss-wrap {
+      margin: 0 12px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .ss-wrap img { width: 100%; display: block; filter: blur(7px) brightness(0.5); }
+
+    .ss-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(2, 4, 8, 0.6);
+      text-align: center;
+      padding: 16px;
+    }
+
+    .lock-icon { font-size: 2.2rem; }
+    .ss-label { font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700; color: var(--acid); letter-spacing: 0.06em; }
+    .ss-sub { font-size: 0.72rem; color: var(--muted); }
+
+    .map-card {
+      margin: 0 12px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .map-header {
+      background: var(--surface);
+      padding: 12px 16px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--acid);
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.08em;
+    }
+
+    #map { height: 260px; width: 100%; }
+
+    .video-wrap {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .video-wrap video { width: 100%; display: block; aspect-ratio: 9/16; background: #000; object-fit: cover; }
+
+    .video-unmute {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      cursor: pointer;
+      background: rgba(255, 45, 85, 0.9);
+      border: 2px solid rgba(255, 45, 85, 0.5);
+      border-radius: 14px;
+      padding: 14px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: ctaPulse 2s ease-in-out infinite;
+    }
+
+    .video-unmute .u-icon { font-size: 1.6rem; line-height: 1; }
+    .video-unmute .u-text { font-size: 0.82rem; font-weight: 700; color: #fff; white-space: nowrap; }
+
+    .pricing-card {
+      background: linear-gradient(145deg, rgba(0, 255, 136, 0.06), rgba(0, 229, 255, 0.03));
+      border: 1px solid rgba(0, 255, 136, 0.25);
+      border-radius: 20px;
+      padding: 28px 22px;
+      margin: 0 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--acid), var(--acid2), var(--acid));
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      background: rgba(255, 214, 10, 0.12);
+      border: 1px solid rgba(255, 214, 10, 0.3);
+      color: var(--yellow);
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      letter-spacing: 0.08em;
+    }
+
+    .pricing-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+
+    .pricing-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; text-align: left; }
+    .pricing-features li { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
+    .pricing-features li .check { color: var(--acid); font-size: 1rem; flex-shrink: 0; }
+
+    .guarantee {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 255, 136, 0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+
+    .guarantee img { width: 48px; flex-shrink: 0; }
+    .guarantee-text { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .guarantee-text strong { color: var(--text); display: block; font-size: 0.82rem; margin-bottom: 2px; }
+
+    .btn-cta {
+      display: block;
+      width: 100%;
+      padding: 20px 16px;
+      background: linear-gradient(135deg, #00c853, #00e5ff);
+      border: none;
+      border-radius: 14px;
+      color: #000;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      animation: ctaGlow 1.8s ease-in-out infinite;
+      line-height: 1.4;
+    }
+
+    .btn-cta .btn-sub {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      opacity: 0.8;
+      margin-top: 4px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .urgency-note { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+    .urgency-note span { color: var(--red); font-weight: 700; }
+
+    .section-label {
+      margin: 0 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .testimonials { display: flex; flex-direction: column; gap: 10px; margin: 0 12px; }
+
+    .testimonial {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .testimonial-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .testimonial-name { font-size: 0.85rem; font-weight: 700; }
+    .testimonial-stars { font-size: 0.75rem; color: var(--yellow); }
+    .testimonial-text { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="page">
+    <div class="alert-banner">⚠️ <span>CRITICAL ALERT!</span> Our algorithm detected suspicious activity with <span>98% accuracy.</span></div>
+
+    <div class="profile-card">
+      <div class="report-badge">📋 REPORT EXPORTED — 98% ACCURACY</div>
+      <img id="profileImage" class="profile-image" src="../images/default-profile.jpg" alt="">
+      <div class="success-avatar" id="successAvatar">🕵️</div>
+      <div id="phoneNumber" class="phone-pill"></div>
+      <div style="font-size:0.78rem;color:var(--muted);text-align:center;">
+        <span style="color:#ff6b7a;font-weight:700;">58 suspicious messages found</span>
+      </div>
+    </div>
+
+    <div class="card red">
+      <div class="sec-title">🔍 Analysis Results</div>
+      <ul class="findings">
+        <li><span class="icon">🔴</span><span><strong>3 archived conversations</strong> with a contact in constant communication</span></li>
+        <li><span class="icon">🔴</span><span>A password-protected app contains <strong>21 photos and 9 videos</strong> of explicit content</span></li>
+        <li><span class="icon">🔴</span><span>This contact frequently sends: <strong>"Can you talk now?"</strong></span></li>
+      </ul>
+    </div>
+
+    <div style="margin:0 12px;">
+      <div class="card" style="padding:10px 14px 8px;border-radius:var(--radius) var(--radius) 0 0;margin:0;">
+        <div class="sec-title" style="margin:0;">📲 Conversation Log — last 30 days</div>
+      </div>
+      <div class="ss-wrap" style="margin:0;border-radius:0 0 var(--radius) var(--radius);border-top:none;">
+        <img src="../images/Untitled-1.jpg" alt="" loading="lazy" decoding="async">
+        <div class="ss-overlay">
+          <span class="lock-icon">🔒</span>
+          <div class="ss-label">CONTENT LOCKED</div>
+          <div class="ss-sub">Access the app to see full messages</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin:0 12px;">
+      <div class="card" style="padding:10px 14px 8px;border-radius:var(--radius) var(--radius) 0 0;margin:0;">
+        <div class="sec-title" style="margin:0;">📷 Photos and Videos Detected</div>
+      </div>
+      <div class="ss-wrap" style="margin:0;border-radius:0 0 var(--radius) var(--radius);border-top:none;">
+        <img src="../images/print-02-confidencial-v2-1.jpg" alt="" loading="lazy" decoding="async">
+        <div class="ss-overlay">
+          <span class="lock-icon">🔞</span>
+          <div class="ss-label">CENSORED CONTENT</div>
+          <div class="ss-sub">Unlock the app to see uncensored</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-card">
+      <div class="map-header">🛰️ GPS TRACKING — RECENT DEVICE LOCATION</div>
+      <div id="map"></div>
+    </div>
+
+    <div style="margin:0 12px;">
+      <div class="card" style="padding:10px 14px 8px;margin:0;border-radius:var(--radius) var(--radius) 0 0;">
+        <div class="sec-title" style="margin:0;">🎥 How WhatSpy Works</div>
+      </div>
+      <div class="video-wrap" style="margin:0;border-radius:0 0 var(--radius) var(--radius);border-top:none;">
+        <video id="player" playsinline preload="auto" muted autoplay></video>
+        <div class="video-unmute" id="unmuteBtn">
+          <span class="u-icon">🔇</span>
+          <span class="u-text">Tap to listen</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-badge">⚡ TODAY ONLY — LIMITED OFFER</div>
+      <div class="pricing-title">FULL ACCESS TO ALL DATA</div>
+      <div class="pricing-sub">The app is free. You only pay a symbolic fee to keep our system running.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✅</span>Full access to WhatsApp conversations</li>
+        <li><span class="check">✅</span>Photos and videos without censorship</li>
+        <li><span class="check">✅</span>Real-time location tracking</li>
+        <li><span class="check">✅</span>Deleted messages recovered</li>
+        <li><span class="check">✅</span>Access to other social networks</li>
+        <li><span class="check">✅</span>100% silent and invisible monitoring</li>
+      </ul>
+      <div class="guarantee">
+        
+        <div class="guarantee-text">
+          <strong>Full 30-Day Guarantee</strong>
+          If you are not satisfied, we refund you with no questions asked.
+        </div>
+      </div>
+      <button type="button" class="btn-cta" id="ctaButton">
+        🔒 PAY THE FEE AND ACCESS THE FILES
+        <span class="btn-sub">Immediate access • 100% secure payment</span>
+      </button>
+      <div class="urgency-note">🔒 Secure payment • <span>⏳️ This offer expires soon</span> • 24/7 support</div>
+    </div>
+
+    <div class="section-label">💬 What our users say</div>
+    <div class="testimonials">
+      <div class="testimonial">
+        <div class="testimonial-header">
+          <div class="avatar">👩</div>
+          <div>
+            <div class="testimonial-name">Mary G.</div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-text">"I couldn't believe what I found. In 3 minutes I had access to everything. The app works exactly as promised. I recommend it 100%."</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-header">
+          <div class="avatar">👨</div>
+          <div>
+            <div class="testimonial-name">John M.</div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-text">"I had suspicions for months. After using this, I found everything I needed to know. Discreet, fast and very easy to use."</div>
+      </div>
+      <div class="testimonial">
+        <div class="testimonial-header">
+          <div class="avatar">👩</div>
+          <div>
+            <div class="testimonial-name">Sarah R.</div>
+            <div class="testimonial-stars">★★★★★</div>
+          </div>
+        </div>
+        <div class="testimonial-text">"I discovered conversations that had been hidden for 8 months. Thanks to this I was able to make the right decision. Worth every penny."</div>
+      </div>
+    </div>
+
+    <div style="margin:0 12px;">
+      <button type="button" class="btn-cta" id="ctaButton2">
+        🔓 ACCESS THE DATA NOW
+        <span class="btn-sub">Offer valid for a limited time only</span>
+      </button>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/back-redirect.js?v=wsspy1"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function getParam(p) { return new URLSearchParams(window.location.search).get(p); }
+
+      var tel = getParam('tel') || getParam('celular')
+        || sessionStorage.getItem('funnel_tel')
+        || sessionStorage.getItem('funnel_celular');
+      var phoneEl = document.getElementById('phoneNumber');
+      var profileImg = document.getElementById('profileImage');
+      var successAvatar = document.getElementById('successAvatar');
+
+      function bindCheckoutButtons() {
+        if (window.CheckoutNav && typeof CheckoutNav.bindFront === 'function') {
+          CheckoutNav.bindFront();
+          return;
+        }
+        ['ctaButton', 'ctaButton2'].forEach(function (id) {
+          var btn = document.getElementById(id);
+          if (!btn) return;
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.style.opacity = '0.75';
+            if (window.CheckoutNav && typeof CheckoutNav.toCheckout === 'function') {
+              CheckoutNav.toCheckout('front');
+              return;
+            }
+            if (window.CheckoutConfig) {
+              window.location.href = CheckoutConfig.url('front');
+            }
+          });
+        });
+      }
+
+      bindCheckoutButtons();
+
+      function showAvatar() {
+        profileImg.style.display = 'none';
+        successAvatar.classList.add('visible');
+      }
+
+      function showProfile(src) {
+        profileImg.style.display = '';
+        successAvatar.classList.remove('visible');
+        profileImg.src = src;
+        profileImg.onload = function () {
+          profileImg.classList.add('loaded');
+        };
+        profileImg.onerror = showAvatar;
+      }
+
+      function loadProfile(phone) {
+        var cached = sessionStorage.getItem('photoUserLink');
+        if (cached) {
+          showProfile(cached);
+        }
+
+        var picCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 2500);
+        fetch('../api/profile-picture.php?phone=' + encodeURIComponent(phone), picCtrl ? { signal: picCtrl.signal } : undefined)
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+          .then(function (data) {
+            clearTimeout(picTimer);
+            var pic = data.urlImage || null;
+            if (!pic) throw new Error('no-pic');
+            var proxied = '../api/image-proxy.php?url=' + encodeURIComponent(pic);
+            sessionStorage.setItem('photoUserLink', proxied);
+            showProfile(proxied);
+          })
+          .catch(function () {
+            clearTimeout(picTimer);
+            if (!cached) showAvatar();
+          });
+      }
+
+      if (tel) {
+        phoneEl.textContent = '+' + tel;
+        loadProfile(tel);
+      } else {
+        phoneEl.textContent = '';
+        showAvatar();
+      }
+
+      if (window.FunnelUtm) FunnelUtm.persist();
+
+      var src = 'https://vz-c7bbc1ea-a33.b-cdn.net/2f5a9dc6-df7f-4d69-abc9-010d92eb6ab0/playlist.m3u8';
+      var video = document.getElementById('player');
+      var unmuteBtn = document.getElementById('unmuteBtn');
+      var userPaused = false;
+
+      function startVideo() {
+        video.muted = true;
+        video.play().catch(function () {});
+      }
+
+      if (video.canPlayType('application/vnd.apple.mpegURL')) {
+        video.src = src;
+        video.addEventListener('loadedmetadata', startVideo);
+      } else if (window.Hls && window.Hls.isSupported()) {
+        var hls = new Hls({ maxBufferLength: 30 });
+        hls.loadSource(src);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, startVideo);
+      }
+
+      video.addEventListener('pause', function () {
+        if (!userPaused) setTimeout(function () { video.play().catch(function () {}); }, 100);
+      });
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible' && !userPaused) video.play().catch(function () {});
+      });
+
+      window.addEventListener('focus', function () {
+        if (video.paused && !userPaused) video.play().catch(function () {});
+      });
+
+      setInterval(function () {
+        if (video.paused && !userPaused && video.readyState >= 2) video.play().catch(function () {});
+      }, 2000);
+
+      unmuteBtn.addEventListener('click', function () {
+        video.muted = false;
+        video.play().catch(function () {});
+        unmuteBtn.style.display = 'none';
+      });
+
+      function renderMap(lat, lng) {
+        var icon = L.divIcon({
+          html: '<div style="background:#ff2d55;width:16px;height:16px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px rgba(255,45,85,0.8);"></div>',
+          className: '',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        });
+        var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([lat, lng], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        for (var i = 0; i < 3; i++) {
+          var mlat = lat + (Math.random() * 0.012 - 0.006);
+          var mlng = lng + (Math.random() * 0.012 - 0.006);
+          var m = L.marker([mlat, mlng], { icon: icon }).addTo(map);
+          if (i === 0) m.bindPopup('📍 Suspicious location detected').openPopup();
+        }
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+      }
+
+      fetch('https://get.geojs.io/v1/ip/geo.json')
+        .then(function (r) { return r.json(); })
+        .then(function (data) { renderMap(parseFloat(data.latitude), parseFloat(data.longitude)); })
+        .catch(function () { renderMap(40.7128, -74.006); });
+
+      if (window.BackRedirect) BackRedirect.init({ mobileOnly: true });
+    });
+  </script>
+</body>
+</html>

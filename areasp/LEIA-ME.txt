@@ -1,0 +1,18 @@
+AREASP — área de membros (cópia limpa)
+======================================
+
+Pasta: /areasp/
+Base: área de membros (sem admin de abandono)
+
+Removido nesta cópia:
+  - Recuperação de carrinho (webhook status 12, SMS recovery, cron-sms-recovery)
+  - Verificação/lookup de e-mail do checkout (spp_checkout_email / checkout-email-lookup)
+
+Webhook PerfectPay (somente venda aprovada 2/8/10):
+  https://stalkea.app/areasp/api/perfectpay-webhook.php
+
+Cron horário:
+  https://stalkea.app/areasp/api/cron-hourly.php?key=...
+
+panel_url em config.php:
+  https://stalkea.app/areasp

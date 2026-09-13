@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>SECURITY SYSTEM — CRITICAL ALERT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05070a;
+      --panel: #0d1219;
+      --border: #1a2230;
+      --text: #c8d1dc;
+      --green: #00ff9c;
+      --amber: #ffb627;
+      --red: #ff3e4d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    #hacker-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 10, 0.99);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .popup-box {
+      background: #050505;
+      border: 2px solid var(--border);
+      width: 100%;
+      max-width: 500px;
+      padding: 35px;
+      border-radius: 12px;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .redirect-notice {
+      margin-top: 30px;
+      color: #fff;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 18px;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+
+    #redirect-seconds {
+      color: var(--green);
+      font-weight: 800;
+      font-size: 24px;
+      text-shadow: 0 0 10px var(--green);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    .data-leak-box {
+      background: rgba(255, 62, 77, 0.1);
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 62, 77, 0.3);
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .data-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(255, 62, 77, 0.2);
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    #main-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 1s;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    .blink-red {
+      animation: blinker 1s linear infinite;
+      color: var(--red);
+      font-weight: 800;
+      font-size: 32px;
+      text-transform: uppercase;
+      display: block;
+      text-align: center;
+    }
+
+    @keyframes blinker { 50% { opacity: 0; } }
+
+    .vulnerability-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 30px 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .premium-box {
+      background: linear-gradient(135deg, rgba(0, 255, 156, 0.1) 0%, rgba(5, 7, 10, 1) 100%);
+      border: 1px solid var(--green);
+      padding: 25px;
+      border-radius: 8px;
+      margin: 25px 0;
+      text-align: center;
+    }
+
+    .warning-footer {
+      background: rgba(255, 182, 39, 0.05);
+      border-left: 4px solid var(--amber);
+      padding: 25px;
+      font-size: 15px;
+      color: #d1d1d1;
+      margin-top: 30px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .timer-container {
+      background: #000;
+      border: 1px solid var(--red);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    #countdown {
+      color: var(--red);
+      font-size: 24px;
+      font-weight: 800;
+      text-shadow: 0 0 10px rgba(255, 62, 77, 0.5);
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #00ff9c;
+      color: #000;
+      text-align: center;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 800;
+      border-radius: 12px;
+      font-family: 'Share Tech Mono', monospace;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(0, 255, 156, 0.4);
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-btn:hover { filter: brightness(1.05); }
+
+    .offer-decline {
+      margin: 0.5rem auto 1.5rem;
+      text-align: center;
+      max-width: 400px;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+
+    .upsell-charge-box {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 1.25rem;
+      padding: 1.15rem 1rem;
+      border-radius: 12px;
+      background: rgba(255, 62, 77, 0.08);
+      border: 1px solid rgba(255, 62, 77, 0.35);
+      text-align: center;
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.5;
+    }
+    .upsell-charge-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(2rem, 8vw, 2.65rem);
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(0, 255, 156, 0.35);
+    }
+    .upsell-charge-currency {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(200, 209, 220, 0.45);
+      text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem;
+      color: rgba(200, 209, 220, 0.65);
+      line-height: 1.45;
+      margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(200, 209, 220, 0.75);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 0.28rem 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="hacker-overlay">
+    <div class="popup-box">
+      <h2 style="color:var(--red); font-size: 22px; font-weight: 800; margin-bottom: 15px;">⚠️ EXPOSURE RISK DETECTED</h2>
+      <p style="color: #888; font-size: 13px; margin-bottom: 15px;">Target device antivirus blocked the connection. Leaked data:</p>
+      <div class="data-leak-box">
+        <div class="data-item"><span style="color: var(--amber);">SOURCE IP:</span><span id="user-ip" style="color: #fff; font-weight: bold;">...</span></div>
+        <div class="data-item"><span style="color: var(--amber);">LOCATION:</span><span style="color: #fff; font-weight: bold;">COORDINATES ACTIVE</span></div>
+        <div class="data-item"><span style="color: var(--amber);">STATUS:</span><span style="color: var(--red); font-weight: bold;">EXPOSED</span></div>
+      </div>
+      <p style="color: var(--green); font-size: 12px; margin-top: 10px;">Initiating protocol...</p>
+    </div>
+    <div class="redirect-notice">REDIRECTING IN <span id="redirect-seconds">6</span> SECONDS</div>
+  </div>
+
+  <div id="main-content">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <span class="blink-red">Attention!</span>
+    </div>
+
+    <div class="vulnerability-card">
+      <p style="font-size: 19px; font-weight: 600; line-height: 1.5;">
+        At this moment, your data is <span style="color: var(--red);">VULNERABLE</span> on the target device, and we have only a few minutes to reverse the process.
+      </p>
+    </div>
+
+    <div class="premium-box">
+      <p style="font-size: 17px; color: #fff;">
+        We can activate our tool in <b>PREMIUM mode</b> and wipe all your traces right now.
+      </p>
+    </div>
+
+    <div class="warning-footer">
+      <p style="color: var(--amber); font-weight: 800; margin-bottom: 12px; text-transform: uppercase; font-size: 13px;">❗ EXTREME CAUTION:</p>
+      <p>If for any reason you cancel the purchase of our tool, our program <b>automatically stops protecting your data!</b></p>
+      <p style="margin-top: 15px; font-weight: 600; color: #fff;">Unfortunately, this is an automatic process. The system simply shuts down, and your data will remain completely exposed.</p>
+    </div>
+
+    <div class="timer-container">
+      <span style="color: #fff; font-size: 14px; display: block;">ONLY <span id="countdown">05:00</span> MINUTES LEFT BEFORE YOUR DATA IS EXPOSED</span>
+    </div>
+
+    <div class="upsell-charge-box">
+      <div class="upsell-charge-label">Premium Protection Add-On</div>
+      <div class="upsell-charge-row">
+        <span class="upsell-charge-amount">$79.00</span>
+        <span class="upsell-charge-currency">USD</span>
+      </div>
+      <div class="upsell-charge-note">This amount will be charged to your card today</div>
+      <span class="upsell-charge-badge">Wipe traces · Secure your data now</span>
+    </div>
+    <button type="button" id="cta-btn" class="cta-btn">Continue →</button>
+    <div class="offer-decline">
+      <a href="../up4/" id="decline-link">No thanks, skip this add-on</a>
+    </div>
+  </div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+    if (window.FunnelUtm) FunnelUtm.persist();
+    CheckoutNav.bindUpsell('up3');
+
+    (function () {
+      var link = document.getElementById('decline-link');
+      if (!link) return;
+      var base = link.getAttribute('href');
+      if (window.FunnelUtm) {
+        link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+      }
+    })();
+
+    fetch('https://api.ipify.org?format=json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { document.getElementById('user-ip').textContent = d.ip; })
+      .catch(function () { document.getElementById('user-ip').textContent = '192.168.0.1'; });
+
+    var tl = 6;
+    var rt = setInterval(function () {
+      tl--;
+      document.getElementById('redirect-seconds').textContent = tl;
+      if (tl <= 0) {
+        clearInterval(rt);
+        document.getElementById('hacker-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        setTimeout(function () {
+          document.getElementById('main-content').style.opacity = '1';
+        }, 50);
+        startTimer(300);
+      }
+    }, 1000);
+
+    function startTimer(d) {
+      var t = d;
+      var display = document.getElementById('countdown');
+      setInterval(function () {
+        var m = parseInt(t / 60, 10);
+        var s = parseInt(t % 60, 10);
+        display.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+        if (--t < 0) t = 0;
+      }, 1000);
+    }
+
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () { history.go(1); };
+  </script>
+</body>
+</html>

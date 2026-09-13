@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=front/">
+  <title>Redirecting...</title>
+  <script src="js/funnel-utm.js?v=wsspy1"></script>
+  <script>
+    if (window.FunnelUtm) FunnelUtm.persist();
+    window.location.replace(
+      window.FunnelUtm ? FunnelUtm.appendToPath('front/') : 'front/' + window.location.search
+    );
+  </script>
+</head>
+<body>
+  <p>Redirecting…</p>
+</body>
+</html>

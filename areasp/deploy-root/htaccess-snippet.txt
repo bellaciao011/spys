@@ -1,0 +1,6 @@
+# AREASP — opcional. Sem recuperação de carrinho, links curtos s/d não são usados.
+# Copie para public_html/.htaccess apenas se precisar de redirects próprios.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>

@@ -1,0 +1,385 @@
+<html><head>
+<meta charset="utf-8"></head><body><h2 class="title">📞 Tracked Calls</h2>
+
+
+<div class="corpo-modal text-dark">
+    <p class="text-dark monospace p-12">View calls tracked by our system. See who called whom, whether the call was answered, and how long it lasted — all organized for easy review.</p>
+    
+    <div class="container">
+  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">
+          <div>
+              <img src="../../assets/img/icons/receive.png" width="25">
+              <p class="p-12 mb-0 text-dark">Incoming</p>
+          </div>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">
+        <div>
+            <img src="../../assets/img/icons/missing.png" width="25">
+            <p class="p-12 mb-0 text-dark">Missed</p>
+        </div>
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3" aria-selected="false">
+          <img src="../../assets/img/icons/call.png" width="25">
+          <p class="p-12 mb-0 text-dark">Outgoing</p>
+        </button>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <div style="max-height: 68vh; overflow-y: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 50%;" class="p-12">Number</th>
+                <th class="p-12">Status</th>
+                <th class="p-12">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:23:35</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:07:03</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:12:07</td>
+              </tr>
+                        <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:23</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:01:43</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:33:25</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:18:13</td>
+              </tr>
+            <tr>
+                <td class="p-12">(31) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:01:23</td>
+              </tr>
+            <tr>
+                <td class="p-12">(13) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:10</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:23</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:12:09</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:33</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:10</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:35:37</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:46:35</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:11</td>
+              </tr>
+            <tr>
+                <td class="p-12">(14) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:03:45</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:00:13</td>
+              </tr>
+            <tr>
+                <td class="p-12">(33) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:01:17</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-primary">Incoming</td>
+                <td class="p-12">00:36:34</td>
+              </tr>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+         </div>
+    </div>
+    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <div style="max-height: 68vh; overflow-y: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 50%;" class="p-12">Number</th>
+                <th class="p-12">Status</th>
+                <th class="p-12">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+                        <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(31) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(13) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(14) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12">(33) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-danger">Missed</td>
+                <td class="p-12">00:00:00</td>
+              </tr>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+    </div>
+</div>
+    
+        <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        <div style="max-height: 68vh; overflow-y: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 50%;" class="p-12">Number</th>
+                <th class="p-12">Status</th>
+                <th class="p-12">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:13:55</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:02:01</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:01:04</td>
+              </tr>
+                        <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:22</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:04:45</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:13:45</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:11:11</td>
+              </tr>
+            <tr>
+                <td class="p-12">(31) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:01:23</td>
+              </tr>
+            <tr>
+                <td class="p-12">(13) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:10</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:23</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:11:09</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:43</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:16</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:15:34</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:36:15</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:31</td>
+              </tr>
+            <tr>
+                <td class="p-12">(14) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:04:25</td>
+              </tr>
+            <tr>
+                <td class="p-12">(21) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:00:13</td>
+              </tr>
+            <tr>
+                <td class="p-12">(33) 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:01:17</td>
+              </tr>
+            <tr>
+                <td class="p-12"><span class="ddUser"></span> 99<span class="text-blur">XXX-XXXX</span></td>
+                <td class="p-12 text-success">Outgoing</td>
+                <td class="p-12">00:36:34</td>
+              </tr>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+    </div>
+</div>
+    </div>
+        </div>
+            </div></body></html>

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>WhatSpy — AI Behavior Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #00ff6a;
+      --green-dim: #00c450;
+      --red: #ff3b3b;
+      --orange: #ff9500;
+      --purple: #a855f7;
+      --violet: #c084fc;
+      --purple-deep: #7c3aed;
+      --muted: #7a5a9a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #1a0a2e 0%, #0f0618 40%, #08040e 100%);
+      color: #f3e8ff;
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        radial-gradient(circle, rgba(168,85,247,0.08) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px, 30px 30px;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+      pointer-events: none; z-index: 1;
+    }
+
+    .wrapper {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 480px;
+      padding: 2rem 1.4rem 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rotRing { to { transform: rotate(360deg); } }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 6px rgba(168,85,247,.3)} 50%{box-shadow:0 0 22px rgba(168,85,247,.7)} }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 4px 30px rgba(0,255,106,.35)} 50%{box-shadow:0 6px 50px rgba(0,255,106,.6)} }
+    @keyframes shimmer { 0%{left:-60%} 100%{left:150%} }
+    @keyframes shimBar { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes brainPulse {
+      0%,100%{transform:scale(1); filter:drop-shadow(0 0 8px rgba(168,85,247,.4))}
+      50%{transform:scale(1.06); filter:drop-shadow(0 0 20px rgba(192,132,252,.75))}
+    }
+    @keyframes scoreGlow {
+      0%,100%{filter:drop-shadow(0 0 8px rgba(255,59,59,.35))}
+      50%{filter:drop-shadow(0 0 22px rgba(255,59,59,.7))}
+    }
+    @keyframes lockBlink { 0%,100%{opacity:1} 50%{opacity:.45} }
+
+    .setup-banner {
+      width: 100%;
+      background: rgba(168,85,247,0.08);
+      border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 10px;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(220,190,255,0.75);
+      letter-spacing: 0.06em;
+    }
+    .setup-banner strong { color: var(--violet); }
+
+    #screen-scan {
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .scan-icon-wrap {
+      width: 88px; height: 88px;
+      position: relative; margin-bottom: 1.4rem;
+    }
+    .scan-icon-bg {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,85,247,0.22) 0%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; font-size: 2.4rem;
+      animation: brainPulse 2s ease-in-out infinite;
+    }
+    .scan-icon-bg::before {
+      content: '';
+      position: absolute; inset: -6px; border-radius: 50%;
+      border: 1.5px solid rgba(168,85,247,0.3);
+      animation: rotRing 5s linear infinite;
+    }
+    .scan-icon-bg::after {
+      content: '';
+      position: absolute; inset: -14px; border-radius: 50%;
+      border: 1px dashed rgba(192,132,252,0.2);
+      animation: rotRing 12s linear infinite reverse;
+    }
+
+    .scan-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1rem, 4.5vw, 1.3rem);
+      font-weight: 900; color: #fff;
+      letter-spacing: 0.03em; margin-bottom: 0.4rem;
+    }
+    .scan-sub {
+      font-size: 0.88rem; color: var(--muted);
+      margin-bottom: 1.3rem; letter-spacing: 0.02em;
+    }
+
+    .scan-score-mini {
+      width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: 1.2rem;
+    }
+    .scan-score-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .scan-score-value {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.4rem, 10vw, 3.2rem);
+      font-weight: 900; color: var(--violet);
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(168,85,247,0.55);
+    }
+    .scan-score-value span {
+      font-size: 0.45em; color: rgba(255,255,255,0.3);
+      font-weight: 700;
+    }
+
+    .progress-outer {
+      width: 100%; height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 30px; overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .progress-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #a855f7, #c084fc);
+      border-radius: 30px; width: 0%;
+      transition: width 0.4s ease;
+      box-shadow: 0 0 14px rgba(168,85,247,0.55);
+      position: relative;
+    }
+    .progress-inner::after {
+      content: '';
+      position: absolute; right: 0; top: 0; bottom: 0; width: 30px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45));
+      border-radius: 30px;
+      animation: shimBar 1.2s infinite;
+    }
+    .progress-pct {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--violet); text-align: center;
+      margin-bottom: 1.4rem; letter-spacing: 0.08em;
+    }
+
+    .log-list { width: 100%; display: flex; flex-direction: column; gap: 0.55rem; }
+
+    .log-row {
+      display: flex; align-items: center; gap: 0.85rem;
+      background: rgba(168,85,247,0.04);
+      border: 1px solid rgba(168,85,247,0.1);
+      border-left: 3px solid transparent;
+      border-radius: 10px; padding: 0.85rem 1rem;
+      transition: all 0.4s ease;
+      text-align: left;
+    }
+    .log-row.searching { border-left-color: var(--purple); animation: glowPulse 1.5s infinite; }
+    .log-row.found {
+      background: rgba(255,59,59,0.07);
+      border-color: rgba(255,59,59,0.2);
+      border-left-color: var(--red);
+    }
+    .log-row.anomaly {
+      background: rgba(255,149,0,0.07);
+      border-color: rgba(255,149,0,0.2);
+      border-left-color: var(--orange);
+    }
+    .log-row.pending { opacity: 0.4; }
+
+    .log-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+    }
+    .log-body { flex: 1; min-width: 0; }
+    .log-title { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.78); }
+    .log-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; color: rgba(255,255,255,0.35);
+      margin-top: 0.15rem;
+    }
+    .log-status {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; flex-shrink: 0;
+    }
+    .log-status.purple { color: var(--violet); }
+    .log-status.red { color: var(--red); }
+    .log-status.orange { color: var(--orange); }
+    .log-status.muted { color: rgba(255,255,255,0.25); }
+
+    .log-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(168,85,247,0.2);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    #screen-upsell {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .warn-banner {
+      width: 100%; text-align: center;
+      padding: 1.5rem 1.2rem;
+      background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(255,59,59,0.06));
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 14px;
+    }
+    .warn-icon { font-size: 2.2rem; display: block; margin-bottom: 0.7rem; }
+    .warn-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.95rem, 4.5vw, 1.2rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .warn-sub {
+      font-size: 0.88rem; color: rgba(220,190,255,0.75);
+      line-height: 1.6; max-width: 360px; margin: 0 auto;
+    }
+    .warn-sub strong { color: #e9d5ff; font-weight: 700; }
+
+    .score-gauge-wrap {
+      width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 1.4rem 1rem 1.2rem;
+      background: rgba(18,8,32,0.95);
+      border: 1px solid rgba(168,85,247,0.2);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-gauge-wrap::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+      opacity: 0.6;
+    }
+
+    .score-ring {
+      width: 180px; height: 180px;
+      position: relative;
+      margin-bottom: 0.9rem;
+      animation: scoreGlow 2.2s ease-in-out infinite;
+    }
+    .score-ring svg {
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+    }
+    .score-ring-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 10;
+    }
+    .score-ring-fill {
+      fill: none;
+      stroke: url(#scoreGrad);
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-dasharray: 502.65;
+      stroke-dashoffset: 502.65;
+      transition: stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .score-ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .score-ring-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 3rem; font-weight: 900;
+      color: #fff; line-height: 1;
+      text-shadow: 0 0 24px rgba(255,59,59,0.5);
+    }
+    .score-ring-max {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.08em; margin-top: 0.15rem;
+    }
+    .score-risk-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem; font-weight: 900;
+      color: var(--red);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+      text-shadow: 0 0 16px rgba(255,59,59,0.4);
+    }
+
+    .score-locked {
+      width: 100%;
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 0.2rem;
+    }
+    .score-locked-blur {
+      padding: 0.7rem 0.9rem;
+      background: rgba(168,85,247,0.06);
+      border: 1px solid rgba(168,85,247,0.12);
+      border-radius: 10px;
+      filter: blur(4px);
+      user-select: none;
+      pointer-events: none;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.55;
+      text-align: left;
+    }
+    .score-locked-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(8,4,14,0.45);
+      border-radius: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--violet);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: lockBlink 1.8s infinite;
+    }
+
+    .flag-chips {
+      width: 100%;
+      display: flex; flex-wrap: wrap;
+      gap: 0.45rem; justify-content: center;
+    }
+    .flag-chip {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.35rem 0.7rem;
+      border-radius: 20px;
+      background: rgba(255,59,59,0.1);
+      border: 1px solid rgba(255,59,59,0.3);
+      color: #ff8a8a;
+    }
+
+    .offer-card {
+      width: 100%;
+      background: rgba(14,6,24,0.97);
+      border: 1.5px solid rgba(168,85,247,0.32);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(168,85,247,0.1);
+    }
+    .offer-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.92rem, 4vw, 1.15rem);
+      font-weight: 900; color: #fff; line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .offer-card-title span { color: var(--violet); }
+    .offer-card-desc {
+      font-size: 0.88rem; color: rgba(255,255,255,0.42);
+      line-height: 1.65; margin-bottom: 1.2rem;
+    }
+    .offer-card-desc strong { color: rgba(255,255,255,0.72); }
+
+    .feature-list {
+      width: 100%; text-align: left;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      font-size: 0.88rem; color: rgba(255,255,255,0.65);
+      font-weight: 500; line-height: 1.4;
+    }
+    .feat-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.35);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px; color: var(--violet); font-size: 0.65rem;
+    }
+
+    .premium-grid {
+      width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .premium-item {
+      background: rgba(168,85,247,0.06);
+      border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 10px;
+      padding: 0.65rem 0.55rem;
+      text-align: center;
+    }
+    .premium-item-icon { font-size: 1.1rem; display: block; margin-bottom: 0.25rem; }
+    .premium-item-text {
+      font-size: 0.72rem; font-weight: 600;
+      color: rgba(255,255,255,0.55); line-height: 1.3;
+    }
+
+    .upsell-charge-box {
+      width: 100%; margin-bottom: 1.25rem;
+      padding: 1.15rem 1rem; border-radius: 14px;
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      position: relative;
+    }
+    .upsell-charge-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+      opacity: 0.5;
+    }
+    .upsell-charge-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(192, 132, 252, 0.95); margin-bottom: 0.6rem;
+    }
+    .upsell-charge-row {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 0.4rem; margin-bottom: 0.4rem;
+    }
+    .upsell-charge-amount {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-weight: 900; color: var(--violet); line-height: 1;
+      text-shadow: 0 0 28px rgba(168, 85, 247, 0.45);
+    }
+    .upsell-charge-currency {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .upsell-charge-note {
+      font-size: 0.82rem; color: rgba(255,255,255,0.55);
+      line-height: 1.45; margin-bottom: 0.55rem;
+    }
+    .upsell-charge-badge {
+      display: inline-block;
+      font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 0.28rem 0.8rem;
+    }
+
+    .offer-cta {
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: linear-gradient(135deg, #00c450, #00ff6a);
+      border: 2.5px dashed rgba(255,255,255,0.5);
+      border-radius: 12px;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.72rem, 3vw, 0.88rem);
+      font-weight: 900; letter-spacing: 0.05em;
+      color: #000; cursor: pointer;
+      transition: all 0.3s;
+      animation: ctaPulse 2.5s infinite;
+      margin-bottom: 0.9rem;
+      line-height: 1.4;
+      position: relative; overflow: hidden;
+    }
+    .offer-cta::before {
+      content: ''; position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg); animation: shimmer 2.5s infinite;
+    }
+    .offer-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,255,106,.5); }
+    .offer-cta:disabled { opacity: 0.7; transform: none; animation: none; }
+
+    .offer-footer {
+      margin-top: 1.2rem;
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      text-align: center; letter-spacing: 0.04em;
+    }
+    .offer-copy {
+      margin-top: 0.35rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .offer-decline {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .offer-decline a {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .offer-decline a:hover { color: rgba(255,255,255,0.48); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="setup-banner">
+    Account activation: <strong>99%</strong> — AI report locked
+  </div>
+
+  <div id="screen-scan">
+
+    <div class="scan-icon-wrap">
+      <div class="scan-icon-bg">🧠</div>
+    </div>
+
+    <div class="scan-title">AI Model v3.2 — Behavior Analysis</div>
+    <div class="scan-sub">Scoring intercept buffers and risk patterns...</div>
+
+    <div class="scan-score-mini">
+      <div class="scan-score-label">Live Risk Score</div>
+      <div class="scan-score-value"><span id="scan-score-num">0</span><span>/100</span></div>
+    </div>
+
+    <div class="progress-outer">
+      <div class="progress-inner" id="prog-fill"></div>
+    </div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+
+    <div class="log-list">
+      <div class="log-row pending" id="log-late">
+        <div class="log-icon">🌙</div>
+        <div class="log-body">
+          <div class="log-title">Late-night activity clusters</div>
+          <div class="log-meta" id="meta-late">Queueing neural pass...</div>
+        </div>
+        <span class="log-status muted" id="st-late">—</span>
+      </div>
+      <div class="log-row pending" id="log-deleted">
+        <div class="log-icon">🗑️</div>
+        <div class="log-body">
+          <div class="log-title">Deleted message spikes</div>
+          <div class="log-meta" id="meta-deleted">Waiting for buffer...</div>
+        </div>
+        <span class="log-status muted" id="st-deleted">—</span>
+      </div>
+      <div class="log-row pending" id="log-cross">
+        <div class="log-icon">📡</div>
+        <div class="log-body">
+          <div class="log-title">Cross-platform contact patterns</div>
+          <div class="log-meta" id="meta-cross">Correlating signals...</div>
+        </div>
+        <span class="log-status muted" id="st-cross">—</span>
+      </div>
+      <div class="log-row pending" id="log-loc">
+        <div class="log-icon">📍</div>
+        <div class="log-body">
+          <div class="log-title">Location deviations</div>
+          <div class="log-meta" id="meta-loc">Geo-pattern scan pending</div>
+        </div>
+        <span class="log-status muted" id="st-loc">—</span>
+        <div class="log-spinner" id="spin-loc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-upsell">
+
+    <div class="warn-banner">
+      <span class="warn-icon">⚠️</span>
+      <div class="warn-title">AI Detected High-Risk<br>Behavior Patterns</div>
+      <div class="warn-sub">
+        Model v3.2 scored multiple <strong>anomaly clusters</strong> across timing, deletions, and location signals.
+        Full interpretation is <strong>locked</strong>.
+      </div>
+    </div>
+
+    <div class="score-gauge-wrap">
+      <div class="score-ring">
+        <svg viewBox="0 0 180 180" aria-hidden="true">
+          <defs>
+            <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#a855f7"/>
+              <stop offset="55%" stop-color="#ff3b3b"/>
+              <stop offset="100%" stop-color="#ff6b6b"/>
+            </linearGradient>
+          </defs>
+          <circle class="score-ring-bg" cx="90" cy="90" r="80"/>
+          <circle class="score-ring-fill" id="score-ring-fill" cx="90" cy="90" r="80"/>
+        </svg>
+        <div class="score-ring-center">
+          <div class="score-ring-num" id="upsell-score-num">87</div>
+          <div class="score-ring-max">/ 100</div>
+        </div>
+      </div>
+      <div class="score-risk-label">High Risk</div>
+
+      <div class="score-locked">
+        <div class="score-locked-blur">
+          Pattern cluster #A7 · confidence 0.94 · nocturnal messaging density elevated · contact graph deviation +3.2σ · deletion velocity spike at 02:14 · geo drift outside baseline radius
+        </div>
+        <div class="score-locked-overlay">🔒 Details locked — unlock report</div>
+      </div>
+    </div>
+
+    <div class="flag-chips">
+      <span class="flag-chip">🌙 Late-night calls</span>
+      <span class="flag-chip">🗑️ Deleted spikes</span>
+      <span class="flag-chip">💘 Dating signals</span>
+      <span class="flag-chip">📍 Location anomalies</span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-card-title">
+        Complete AI Forensic<br>
+        <span>Behavior Report</span>
+      </div>
+      <div class="offer-card-desc">
+        Stop guessing. Unlock the full AI report —
+        <strong>risk score, behavior flags, 14-day timeline, pattern interpretation</strong>.
+        Updates while deep analysis runs.
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Risk Score AI v3.2
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Behavior flags &amp; patterns
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          14-day activity timeline
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          PDF-ready report in Stalkea panel
+        </div>
+        <div class="feature-item">
+          <span class="feat-dot">✓</span>
+          Live score updates during analysis window
+        </div>
+      </div>
+
+      <div class="premium-grid">
+        <div class="premium-item">
+          <span class="premium-item-icon">🧬</span>
+          <span class="premium-item-text">Neural pattern map</span>
+        </div>
+        <div class="premium-item">
+          <span class="premium-item-icon">📊</span>
+          <span class="premium-item-text">Risk breakdown</span>
+        </div>
+        <div class="premium-item">
+          <span class="premium-item-icon">📅</span>
+          <span class="premium-item-text">14-day timeline</span>
+        </div>
+        <div class="premium-item">
+          <span class="premium-item-icon">📄</span>
+          <span class="premium-item-text">Exportable PDF</span>
+        </div>
+      </div>
+
+      <div class="upsell-charge-box">
+        <div class="upsell-charge-label">AI Forensic Report</div>
+        <div class="upsell-charge-row">
+          <span class="upsell-charge-amount">$197.00</span>
+          <span class="upsell-charge-currency">USD</span>
+        </div>
+        <div class="upsell-charge-note">This amount will be charged to your card today</div>
+        <span class="upsell-charge-badge">Full AI report · Instant unlock</span>
+      </div>
+
+      <button type="button" id="offer-btn" class="offer-cta">Continue →</button>
+    </div>
+
+    <div class="offer-footer">🔒 Secure Payment · 30-Day Guarantee · Instant Access</div>
+    <div class="offer-copy">© 2026 WhatSpy. All rights reserved.</div>
+    <div class="offer-decline">
+      <a href="../thankyou/" id="decline-link">No thanks, continue to my account</a>
+    </div>
+  </div>
+</div>
+
+  <script src="../js/funnel-utm.js?v=wsspy1"></script>
+  <script src="../js/checkout-config.js?v=wsspy1"></script>
+  <script src="../js/checkout-nav.js?v=wsspy1"></script>
+  <script src="../js/upsell-price-toggle.js?v=wsspy1"></script>
+<script>
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function animatePct(fillEl, pctEl, from, to, duration) {
+    return new Promise(function (resolve) {
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(from + (to - from) * ease);
+        fillEl.style.width = val + '%';
+        pctEl.textContent = val + '%';
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  function animateScore(el, from, to, duration) {
+    return new Promise(function (resolve) {
+      var start = performance.now();
+      function frame(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        el.textContent = String(Math.round(from + (to - from) * ease));
+        if (t < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  function setRing(score) {
+    var ring = document.getElementById('score-ring-fill');
+    if (!ring) return;
+    var circ = 2 * Math.PI * 80;
+    var offset = circ * (1 - Math.min(Math.max(score, 0), 100) / 100);
+    ring.style.strokeDashoffset = String(offset);
+  }
+
+  async function runScan() {
+    var fill = document.getElementById('prog-fill');
+    var pct = document.getElementById('prog-pct');
+    var scoreEl = document.getElementById('scan-score-num');
+    await sleep(500);
+
+    var late = document.getElementById('log-late');
+    late.classList.remove('pending');
+    late.classList.add('searching');
+    document.getElementById('st-late').className = 'log-status purple';
+    document.getElementById('st-late').textContent = 'ANALYZING...';
+    document.getElementById('meta-late').textContent = 'Clustering 02:00–05:00 windows...';
+    await Promise.all([
+      animatePct(fill, pct, 0, 28, 1300),
+      animateScore(scoreEl, 0, 34, 1300)
+    ]);
+    late.classList.remove('searching');
+    late.classList.add('found');
+    document.getElementById('st-late').className = 'log-status red';
+    document.getElementById('st-late').textContent = 'FLAGGED';
+    document.getElementById('meta-late').textContent = 'Elevated nocturnal density';
+    await sleep(260);
+
+    var deleted = document.getElementById('log-deleted');
+    deleted.classList.remove('pending');
+    deleted.classList.add('searching');
+    document.getElementById('st-deleted').className = 'log-status purple';
+    document.getElementById('st-deleted').textContent = 'ANALYZING...';
+    document.getElementById('meta-deleted').textContent = 'Measuring deletion velocity...';
+    await Promise.all([
+      animatePct(fill, pct, 28, 52, 1200),
+      animateScore(scoreEl, 34, 58, 1200)
+    ]);
+    deleted.classList.remove('searching');
+    deleted.classList.add('anomaly');
+    document.getElementById('st-deleted').className = 'log-status orange';
+    document.getElementById('st-deleted').textContent = 'ANOMALY';
+    document.getElementById('meta-deleted').textContent = 'Spike above baseline +2.8σ';
+    await sleep(260);
+
+    var cross = document.getElementById('log-cross');
+    cross.classList.remove('pending');
+    cross.classList.add('searching');
+    document.getElementById('st-cross').className = 'log-status purple';
+    document.getElementById('st-cross').textContent = 'ANALYZING...';
+    document.getElementById('meta-cross').textContent = 'Mapping contact graph edges...';
+    await Promise.all([
+      animatePct(fill, pct, 52, 76, 1200),
+      animateScore(scoreEl, 58, 79, 1200)
+    ]);
+    cross.classList.remove('searching');
+    cross.classList.add('found');
+    document.getElementById('st-cross').className = 'log-status red';
+    document.getElementById('st-cross').textContent = 'HIGH RISK';
+    document.getElementById('meta-cross').textContent = 'Cross-app contact overlap';
+    await sleep(260);
+
+    var loc = document.getElementById('log-loc');
+    loc.classList.remove('pending');
+    loc.classList.add('searching');
+    document.getElementById('st-loc').className = 'log-status purple';
+    document.getElementById('st-loc').textContent = 'ANALYZING...';
+    document.getElementById('spin-loc').style.display = 'block';
+    document.getElementById('meta-loc').textContent = 'Comparing geo baselines...';
+    await Promise.all([
+      animatePct(fill, pct, 76, 94, 1100),
+      animateScore(scoreEl, 79, 87, 1100)
+    ]);
+    loc.classList.remove('searching');
+    loc.classList.add('found');
+    document.getElementById('st-loc').className = 'log-status red';
+    document.getElementById('st-loc').textContent = 'FLAGGED';
+    document.getElementById('meta-loc').textContent = 'Deviations outside radius';
+    document.getElementById('spin-loc').style.display = 'none';
+    await sleep(700);
+
+    var scanEl = document.getElementById('screen-scan');
+    scanEl.style.transition = 'opacity 0.45s, transform 0.45s';
+    scanEl.style.opacity = '0';
+    scanEl.style.transform = 'translateY(-14px)';
+    await sleep(460);
+    scanEl.style.display = 'none';
+
+    var upsell = document.getElementById('screen-upsell');
+    upsell.style.display = 'flex';
+    setRing(0);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { setRing(87); });
+    });
+
+    if (window.UpsellPriceToggle) UpsellPriceToggle.apply();
+    if (window.CheckoutNav) CheckoutNav.bindUpsell('up8');
+  }
+
+  if (window.FunnelUtm) FunnelUtm.persist();
+  runScan();
+
+  (function () {
+    var link = document.getElementById('decline-link');
+    if (!link) return;
+    var base = link.getAttribute('href');
+    if (window.FunnelUtm) {
+      link.href = FunnelUtm.appendToPath(base, { src: 'Decline' });
+    }
+  })();
+</script>
+</body>
+</html>
