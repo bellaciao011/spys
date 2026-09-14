@@ -1,0 +1,145 @@
+window.DDD_MAP = {
+    '11': { state: 'São Paulo', city: 'Capital' },
+    '12': { state: 'São Paulo', city: 'Vale do Paraíba' },
+    '13': { state: 'São Paulo', city: 'Baixada Santista' },
+    '14': { state: 'São Paulo', city: 'Bauru' },
+    '15': { state: 'São Paulo', city: 'Sorocaba' },
+    '16': { state: 'São Paulo', city: 'Ribeirão Preto' },
+    '17': { state: 'São Paulo', city: 'São José do Rio Preto' },
+    '18': { state: 'São Paulo', city: 'Presidente Prudente' },
+    '19': { state: 'São Paulo', city: 'Campinas' },
+    '21': { state: 'Rio de Janeiro', city: 'Capital' },
+    '22': { state: 'Rio de Janeiro', city: 'Interior' },
+    '24': { state: 'Rio de Janeiro', city: 'Serra' },
+    '27': { state: 'Espírito Santo', city: 'Capital' },
+    '28': { state: 'Espírito Santo', city: 'Interior' },
+    '31': { state: 'Minas Gerais', city: 'Capital' },
+    '32': { state: 'Minas Gerais', city: 'Zona da Mata' },
+    '33': { state: 'Minas Gerais', city: 'Vale do Rio Doce' },
+    '34': { state: 'Minas Gerais', city: 'Triângulo Mineiro' },
+    '35': { state: 'Minas Gerais', city: 'Sul de Minas' },
+    '37': { state: 'Minas Gerais', city: 'Centro-Oeste' },
+    '38': { state: 'Minas Gerais', city: 'Norte de Minas' },
+    '41': { state: 'Paraná', city: 'Capital' },
+    '42': { state: 'Paraná', city: 'Ponta Grossa' },
+    '43': { state: 'Paraná', city: 'Londrina' },
+    '44': { state: 'Paraná', city: 'Maringá' },
+    '45': { state: 'Paraná', city: 'Oeste' },
+    '46': { state: 'Paraná', city: 'Sudoeste' },
+    '47': { state: 'Santa Catarina', city: 'Vale do Itajaí' },
+    '48': { state: 'Santa Catarina', city: 'Capital' },
+    '49': { state: 'Santa Catarina', city: 'Oeste' },
+    '51': { state: 'Rio Grande do Sul', city: 'Capital' },
+    '53': { state: 'Rio Grande do Sul', city: 'Pelotas' },
+    '54': { state: 'Rio Grande do Sul', city: 'Caxias do Sul' },
+    '55': { state: 'Rio Grande do Sul', city: 'Santa Maria' },
+    '61': { state: 'Distrito Federal', city: 'Brasília' },
+    '62': { state: 'Goiás', city: 'Capital' },
+    '63': { state: 'Tocantins', city: 'Palmas' },
+    '64': { state: 'Goiás', city: 'Rio Verde' },
+    '65': { state: 'Mato Grosso', city: 'Capital' },
+    '66': { state: 'Mato Grosso', city: 'Rondonópolis' },
+    '67': { state: 'Mato Grosso do Sul', city: 'Capital' },
+    '68': { state: 'Acre', city: 'Rio Branco' },
+    '69': { state: 'Rondônia', city: 'Porto Velho' },
+    '71': { state: 'Bahia', city: 'Capital' },
+    '73': { state: 'Bahia', city: 'Ilhéus' },
+    '74': { state: 'Bahia', city: 'Juazeiro' },
+    '75': { state: 'Bahia', city: 'Feira de Santana' },
+    '77': { state: 'Bahia', city: 'Vitória da Conquista' },
+    '79': { state: 'Sergipe', city: 'Capital' },
+    '81': { state: 'Pernambuco', city: 'Capital' },
+    '82': { state: 'Alagoas', city: 'Capital' },
+    '83': { state: 'Paraíba', city: 'Capital' },
+    '84': { state: 'Rio Grande do Norte', city: 'Capital' },
+    '85': { state: 'Ceará', city: 'Capital' },
+    '86': { state: 'Piauí', city: 'Capital' },
+    '87': { state: 'Pernambuco', city: 'Petrolina' },
+    '88': { state: 'Ceará', city: 'Juazeiro do Norte' },
+    '89': { state: 'Piauí', city: 'Picos' },
+    '91': { state: 'Pará', city: 'Capital' },
+    '92': { state: 'Amazonas', city: 'Capital' },
+    '93': { state: 'Pará', city: 'Santarém' },
+    '94': { state: 'Pará', city: 'Marabá' },
+    '95': { state: 'Roraima', city: 'Boa Vista' },
+    '96': { state: 'Amapá', city: 'Macapá' },
+    '97': { state: 'Amazonas', city: 'Interior' },
+    '98': { state: 'Maranhão', city: 'Capital' },
+    '99': { state: 'Maranhão', city: 'Imperatriz' }
+};
+
+window.getDddInfo = function (phone) {
+    var match = phone && phone.match(/\((\d{2})\)/);
+    if (!match) return null;
+    return window.DDD_MAP[match[1]] || { state: 'Brazil', city: 'Region identified' };
+};
+
+var DDD_STATE_EN = {
+    'São Paulo': 'Sao Paulo',
+    'Rio de Janeiro': 'Rio de Janeiro',
+    'Minas Gerais': 'Minas Gerais',
+    'Paraná': 'Parana',
+    'Santa Catarina': 'Santa Catarina',
+    'Rio Grande do Sul': 'Rio Grande do Sul',
+    'Mato Grosso': 'Mato Grosso',
+    'Mato Grosso do Sul': 'Mato Grosso do Sul',
+    'Distrito Federal': 'Federal District',
+    'Espírito Santo': 'Espirito Santo',
+    'Goiás': 'Goias',
+    'Pará': 'Para State',
+    'Ceará': 'Ceara',
+    'Maranhão': 'Maranhao',
+    'Paraíba': 'Paraiba',
+    'Piauí': 'Piaui',
+    'Rondônia': 'Rondonia',
+    'Amapá': 'Amapa',
+    'Tocantins': 'Tocantins',
+    'Acre': 'Acre',
+    'Amazonas': 'Amazonas',
+    'Roraima': 'Roraima',
+    'Bahia': 'Bahia',
+    'Sergipe': 'Sergipe',
+    'Pernambuco': 'Pernambuco',
+    'Alagoas': 'Alagoas',
+    'Rio Grande do Norte': 'Rio Grande do Norte',
+    'Brasília': 'Brasilia',
+    'Brasil': 'Brazil'
+};
+
+var DDD_CITY_EN = {
+    'Capital': 'Metro area',
+    'Interior': 'Inland',
+    'Oeste': 'West',
+    'Sudoeste': 'Southwest',
+    'Sul de Minas': 'Southern Minas',
+    'Norte de Minas': 'Northern Minas',
+    'Zona da Mata': 'Forest Zone',
+    'Centro-Oeste': 'Midwest',
+    'Vale do Paraíba': 'Paraiba Valley',
+    'Baixada Santista': 'Santos Coast',
+    'Triângulo Mineiro': 'Triangulo Region',
+    'Vale do Rio Doce': 'Rio Doce Valley',
+    'Vale do Itajaí': 'Itajai Valley',
+    'Ribeirão Preto': 'Ribeirao Preto',
+    'São José do Rio Preto': 'Sao Jose do Rio Preto',
+    'Maringá': 'Maringa',
+    'Rondonópolis': 'Rondonopolis',
+    'Ilhéus': 'Ilheus',
+    'Vitória da Conquista': 'Vitoria da Conquista',
+    'Santarém': 'Santarem',
+    'Marabá': 'Maraba',
+    'Macapá': 'Macapa',
+    'Região identificada': 'Region identified'
+};
+
+window.formatDddInfo = function (info) {
+    if (!info) return null;
+    return {
+        state: DDD_STATE_EN[info.state] || info.state,
+        city: DDD_CITY_EN[info.city] || info.city
+    };
+};
+
+window.getDddInfoLocalized = function (phone) {
+    return window.formatDddInfo(window.getDddInfo(phone));
+};

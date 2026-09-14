@@ -1,0 +1,201 @@
+/**
+ * Contraste global — corrige texto escuro em fundos escuros
+ * (legado HTTrack + tema Stalkea)
+ */
+
+/* ─── Dashboard escuro ─── */
+body.panel-dashboard {
+    color: var(--panel-text, #eef2f6);
+}
+
+body.panel-dashboard .container.part-1.InitialMapDiv {
+    background: transparent !important;
+    color: var(--panel-text, #eef2f6) !important;
+}
+
+body.panel-dashboard .title-large,
+body.panel-dashboard .title-medium,
+body.panel-dashboard h2,
+body.panel-dashboard h3 {
+    color: var(--panel-text, #eef2f6);
+}
+
+body.panel-dashboard .text-muted {
+    color: var(--panel-muted, #8fa3b8) !important;
+}
+
+body.panel-dashboard .stat-card .lbl {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .deliverable-steps,
+body.panel-dashboard .deliverable-step {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .deliverable-step.done {
+    color: var(--panel-accent, #25d366);
+}
+
+/* Grid de apps — fundo claro, labels escuros */
+body.panel-dashboard .progress.text-center.part-1 {
+    background: rgba(255, 255, 255, 0.94) !important;
+    border-radius: 12px;
+    padding: 12px 8px !important;
+}
+
+body.panel-dashboard .progress.part-1 .p-12 {
+    color: #374151 !important;
+}
+
+/* Report center no dashboard escuro */
+body.panel-dashboard .report-center-mount {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+body.panel-dashboard .report-center-toggle {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .report-center-toggle:hover {
+    color: var(--panel-text, #eef2f6);
+}
+
+body.panel-dashboard .report-center {
+    background: rgba(0, 0, 0, 0.28);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--panel-text, #eef2f6);
+}
+
+body.panel-dashboard .report-center-header {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .report-center-desc {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .report-type-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.panel-dashboard .report-type-label {
+    color: var(--panel-text, #eef2f6);
+}
+
+body.panel-dashboard .report-history-title,
+body.panel-dashboard .report-history ul {
+    color: var(--panel-muted, #8fa3b8);
+}
+
+body.panel-dashboard .report-generating {
+    color: var(--panel-accent, #25d366);
+}
+
+/* ─── Tracking (card claro sobre mapa escuro) ─── */
+body.panel-shell .container.part-1.InitialMapDiv {
+    background: #f4f6f8 !important;
+    color: #1a2332 !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+body.panel-shell .container.part-1.InitialMapDiv .title-large {
+    color: #1a2332;
+}
+
+body.panel-shell .container.part-1.InitialMapDiv .panel-tagline,
+body.panel-shell .container.part-1.InitialMapDiv .text-muted {
+    color: #5c6b7a !important;
+}
+
+body.panel-shell .container.part-1.InitialMapDiv .region_label {
+    color: #128c7e !important;
+}
+
+body.panel-shell .progress.text-center.part-1 {
+    background: #fff !important;
+    border-radius: 8px;
+}
+
+body.panel-shell .progress-text {
+    color: #1e293b !important;
+}
+
+/* ─── Phone collection page ─── */
+.collect-phone-page .container.part-1.InitialMapDiv {
+    color: inherit !important;
+}
+
+.collect-phone-page .panel-card-light .text-muted {
+    color: #6b7280 !important;
+}
+
+.collect-phone-page .panel-card-light h2 {
+    color: #1a2332;
+}
+
+/* ─── Modais dinâmicos (fundo gradiente escuro) ─── */
+#dynamicModal .modal-header {
+    color: #fff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#dynamicModal .modal-header .btn-close {
+    filter: invert(1) grayscale(1);
+    opacity: 0.85;
+}
+
+#dynamicModal .modal-body .corpo-modal {
+    background: #f8fafb;
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 4px;
+}
+
+#dynamicModal .modal-body .corpo-modal .text-dark,
+#dynamicModal .modal-body .corpo-modal p,
+#dynamicModal .modal-body .corpo-modal label {
+    color: #1e293b !important;
+}
+
+#dynamicModal .modal-body .corpo-modal .text-muted {
+    color: #5c6b7a !important;
+}
+
+#dynamicModal .modal-body .unlock-sync-box,
+#dynamicModal .modal-body .unlock-preview-list {
+    background: #fff;
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+#dynamicModal .modal-body .unlock-sync-box .sync-label {
+    color: #334155;
+}
+
+#dynamicModal .modal-body .form-control,
+#dynamicModal .modal-body .input-group-text {
+    background: #fff;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
+/* ─── Bootstrap on dark pages ─── */
+body.panel-dashboard .text-dark {
+    color: var(--panel-text, #eef2f6) !important;
+}
+
+body.panel-dashboard .text-body {
+    color: var(--panel-text, #eef2f6);
+}
+
+/* Footer dashboard */
+body.panel-dashboard .footer {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.panel-dashboard .footer b {
+    color: #fff;
+}

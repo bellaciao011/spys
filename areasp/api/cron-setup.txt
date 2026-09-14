@@ -1,0 +1,41 @@
+================================================================================
+cPanel CRON — AREASP (sem recuperação de carrinho)
+Server path: /home/ganhecom/stalkea.app/
+Schedule: Minute=0 | Hour=* | Day=* | Month=* | Weekday=*
+================================================================================
+
+IMPORTANT: run ONLY ONE cron at a time for this panel.
+
+--------------------------------------------------------------------------------
+AREASP (production)
+--------------------------------------------------------------------------------
+
+URL (recommended in cPanel):
+curl -s "https://stalkea.app/areasp/api/cron-hourly.php?key=zapp-stalkea-cron-2026"
+
+PHP:
+/usr/local/bin/php /home/ganhecom/stalkea.app/areasp/api/cron-hourly.php
+
+Browser test:
+https://stalkea.app/areasp/api/cron-hourly.php?key=zapp-stalkea-cron-2026
+
+config.php → panel_url: https://stalkea.app/areasp
+
+PerfectPay webhook (somente venda aprovada):
+https://stalkea.app/areasp/api/perfectpay-webhook.php
+
+Daily emails (1–2 per user per day, days 1–30):
+  • daily_progress   — every day (morning, catch-up if missed)
+  • event_detected   — every day (mid-day photo/message/call alert)
+  • event_detected_2 — ~75% of days (evening second alert)
+  • weekly_summary   — days 7, 14 and 21
+
+Catch-up: if the preferred hour is missed, the next hourly cron still sends that day.
+
+Preview templates:
+https://stalkea.app/areasp/api/preview-emails.php
+
+Open tracking vs refunds:
+https://stalkea.app/areasp/api/email-stats.php?key=zapp-stalkea-cron-2026
+
+================================================================================
