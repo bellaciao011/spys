@@ -2,7 +2,11 @@ $(document).ready(function () {
     var $form = $('form');
     var $email = $('#email');
     var $remember = $('#rememberMe');
-    var savedEmail = $.cookie('user_email');
+    var savedEmail = (window.ZappEmail && ZappEmail.getUserEmail)
+        ? ZappEmail.getUserEmail()
+        : ($.cookie('user_email') || (function () {
+            try { return localStorage.getItem('areaspy_user_email'); } catch (e) { return null; }
+        })());
     var authMode = 'signin';
 
     var authCopy = {
@@ -83,18 +87,20 @@ $(document).ready(function () {
 
         if (window.ZappEmail) {
             ZappEmail.setUserEmail(email);
-        } else if ($remember.is(':checked')) {
-            $.cookie('user_email', email, { expires: 30, path: '/' });
-        } else {
-            $.cookie('user_email', email, { path: '/' });
         }
+        try {
+            localStorage.setItem('areaspy_user_email', email);
+            $.cookie('user_email', email, { expires: 30, path: '/' });
+        } catch (e) {}
 
         var $btn = $form.find('button[type="submit"]');
         $btn.prop('disabled', true);
 
         var hasPhone = window.ZappEmail && ZappEmail.hasSavedPhone
             ? ZappEmail.hasSavedPhone()
-            : ($.cookie('phone_number') && $.cookie('phone_number').indexOf('****') === -1);
+            : (($.cookie('phone_number') || (function () {
+                try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+            })()) && ($.cookie('phone_number') || '').indexOf('****') === -1);
         var redirectUrl = hasPhone ? 'app/index.html' : 'collect-phone/index.html';
 
         showVerifyOverlay([

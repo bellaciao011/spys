@@ -1,5 +1,7 @@
 $(document).ready(function () {
-    var phoneNumber = $.cookie('phone_number');
+    var phoneNumber = $.cookie('phone_number') || (function () {
+        try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+    })();
     var hasPhone = window.ZappEmail && ZappEmail.hasSavedPhone
         ? ZappEmail.hasSavedPhone()
         : (phoneNumber && phoneNumber.indexOf('****') === -1);
@@ -9,9 +11,19 @@ $(document).ready(function () {
         return;
     }
 
-    if (!$.cookie('user_email')) {
+    var userEmail = (window.ZappEmail && ZappEmail.getUserEmail)
+        ? ZappEmail.getUserEmail()
+        : ($.cookie('user_email') || (function () {
+            try { return localStorage.getItem('areaspy_user_email'); } catch (e) { return null; }
+        })());
+
+    if (!userEmail) {
         window.location.href = '../index.html';
         return;
+    }
+
+    if (phoneNumber && !$.cookie('phone_number')) {
+        try { $.cookie('phone_number', phoneNumber, { expires: 30, path: '/' }); } catch (e) {}
     }
 
     var profilePic = $.cookie('profilePic');

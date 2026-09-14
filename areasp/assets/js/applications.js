@@ -1,5 +1,7 @@
 function updateUserProfileInfo(cleanNumber) {
-    var phone_number = $.cookie('phone_number');
+    var phone_number = $.cookie('phone_number') || (function () {
+        try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+    })();
     var profilePic = $.cookie('profilePic');
     var phoneRegion = $.cookie('phone_region');
     var phoneCountryName = $.cookie('phone_country_name');
@@ -373,7 +375,9 @@ function initDashboardStatAnimation() {
 document.addEventListener('DOMContentLoaded', function () {
     var email = (window.ZappEmail && ZappEmail.getUserEmail)
         ? ZappEmail.getUserEmail()
-        : $.cookie('user_email');
+        : ($.cookie('user_email') || (function () {
+            try { return localStorage.getItem('areaspy_user_email'); } catch (e) { return null; }
+        })());
 
     if (!email) {
         window.location.href = '../../index.html';
@@ -382,7 +386,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var hasPhone = window.ZappEmail && ZappEmail.hasSavedPhone
         ? ZappEmail.hasSavedPhone()
-        : ($.cookie('phone_number') && $.cookie('phone_number').indexOf('****') === -1);
+        : (($.cookie('phone_number') || (function () {
+            try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+        })()) && ($.cookie('phone_number') || '').indexOf('****') === -1);
 
     if (!hasPhone) {
         window.location.href = '../../collect-phone/index.html';

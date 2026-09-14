@@ -11,6 +11,10 @@ $(document).ready(function () {
         if (window.ZappEmail && ZappEmail.getUserEmail) {
             return ZappEmail.getUserEmail();
         }
+        try {
+            var stored = localStorage.getItem('areaspy_user_email');
+            if (stored && stored.indexOf('@') > 0) return stored;
+        } catch (e) {}
         return $.cookie('user_email') || '';
     }
 
@@ -196,15 +200,35 @@ $(document).ready(function () {
 
         showScanOverlay(displayPhone, regionInfo, function () {
             var path = cookiePath();
-            $.cookie('phone_number', displayPhone, { expires: 30, path: path });
-            $.cookie('phone_e164', e164, { expires: 30, path: path });
-            $.cookie('phone_country', countryCode, { expires: 30, path: path });
-            $.cookie('phone_dial_code', dialCode, { expires: 30, path: path });
-            $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: path });
-            if (regionInfo) {
-                $.cookie('phone_region', regionInfo.region, { expires: 30, path: path });
-                $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: path });
+            try {
+                localStorage.setItem('areaspy_phone_number', displayPhone);
+                localStorage.setItem('areaspy_phone_e164', e164);
+                localStorage.setItem('areaspy_phone_country', countryCode);
+            } catch (e) {}
+            $.cookie('phone_number', displayPhone, { expires: 30, path: '/' });
+            $.cookie('phone_e164', e164, { expires: 30, path: '/' });
+            $.cookie('phone_country', countryCode, { expires: 30, path: '/' });
+            $.cookie('phone_dial_code', dialCode, { expires: 30, path: '/' });
+            $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: '/' });
+            if (path && path !== '/') {
+                $.cookie('phone_number', displayPhone, { expires: 30, path: path });
+                $.cookie('phone_e164', e164, { expires: 30, path: path });
+                $.cookie('phone_country', countryCode, { expires: 30, path: path });
+                $.cookie('phone_dial_code', dialCode, { expires: 30, path: path });
+                $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: path });
             }
+            if (regionInfo) {
+                $.cookie('phone_region', regionInfo.region, { expires: 30, path: '/' });
+                $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: '/' });
+                if (path && path !== '/') {
+                    $.cookie('phone_region', regionInfo.region, { expires: 30, path: path });
+                    $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: path });
+                }
+            }
+            try {
+                $.removeCookie('phone_number', { path: '/collect-phone' });
+                $.removeCookie('phone_number', { path: '/collect-phone/' });
+            } catch (e) {}
             if (window.AreaspyProgress) {
                 AreaspyProgress.mark('phone');
             }

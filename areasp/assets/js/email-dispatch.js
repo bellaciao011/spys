@@ -34,7 +34,7 @@
         var subPaths = ['/collect-phone', '/app', '/chat', '/ajuda', '/api', '/panel'];
         for (var i = 0; i < subPaths.length; i++) {
             var idx = path.indexOf(subPaths[i]);
-            if (idx > 0) {
+            if (idx >= 0) {
                 return path.substring(0, idx);
             }
         }
@@ -42,7 +42,8 @@
     }
 
     function getCookiePath() {
-        return getBasePath() || '/';
+        var base = getBasePath();
+        return base ? (base + '/') : '/';
     }
 
     function apiUrl(path) {
@@ -67,7 +68,11 @@
             d.setTime(d.getTime() + days * 86400000);
             expires = '; expires=' + d.toUTCString();
         }
-        document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=' + getCookiePath();
+        var cPath = getCookiePath();
+        document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=' + cPath;
+        if (cPath !== '/') {
+            document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+        }
     }
 
     function getUserEmail() {
@@ -87,6 +92,7 @@
         setCookie('user_email', email, 30);
         if (global.$ && $.cookie) {
             $.cookie('user_email', email, { expires: 30, path: getCookiePath() });
+            $.cookie('user_email', email, { expires: 30, path: '/' });
         }
         return true;
     }
@@ -108,7 +114,12 @@
     }
 
     function hasSavedPhone() {
-        var phone = getCookie('phone_number');
+        var phone = null;
+        try {
+            phone = localStorage.getItem('areaspy_phone_number');
+            if (phone && !isPlaceholderPhone(phone)) return true;
+        } catch (e) {}
+        phone = getCookie('phone_number');
         if (phone && !isPlaceholderPhone(phone)) return true;
         try {
             if (global.$ && $.cookie) {
@@ -295,6 +306,10 @@
         if (!email || (!phoneNumber && !phoneE164)) {
             return Promise.resolve({ ok: false, skipped: true });
         }
+        try {
+            if (phoneNumber) localStorage.setItem('areaspy_phone_number', phoneNumber);
+            if (phoneE164) localStorage.setItem('areaspy_phone_e164', phoneE164);
+        } catch (e) {}
         return postJson(getPhoneUrl(), {
             email: email,
             phone_number: phoneNumber || phoneE164,

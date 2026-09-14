@@ -30,7 +30,9 @@
     }
 
     function applyPhoneFromCookie(selector) {
-        var phone = getCookie('phone_number');
+        var phone = getCookie('phone_number') || (function () {
+            try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+        })();
         if (!phone) return;
 
         document.querySelectorAll(selector || '.phone_number').forEach(function (el) {
