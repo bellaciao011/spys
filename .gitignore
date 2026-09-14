@@ -1,0 +1,5 @@
+# Ignorar históricos locais e notas
+HISTORICO*
+*.log
+.DS_Store
+Thumbs.db
