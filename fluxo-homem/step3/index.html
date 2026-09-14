@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html><html lang="en"><head>
 <script>
 (function () {
   var paramsAtuais = new URLSearchParams(window.location.search);
@@ -117,7 +117,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;paddin
   <div id="screen-profile">
     <div class="prof-card">
       <div class="av-wrap" id="av-container">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <img id="profileImage" src="" alt="Profile" style="display:none;width:80px;height:80px;object-fit:cover;border-radius:50%;">
+        <div id="successAvatar" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
       </div>
       <div class="prof-num" id="prof-num">+1 (849) 961-7136</div>
       <div class="reg-badge"><div class="reg-dot"></div>Registered on WhatsApp</div>
@@ -175,6 +178,9 @@ function animPct(from, to, dur){
 }
 
 async function runLoad(){
+  // Start profile pic fetch immediately in background
+  loadProfile(decoded);
+
   var statusEl = document.getElementById('lstatus');
   var steps = [
     {id:'st0', pct:25, dur:1600},
@@ -220,23 +226,55 @@ async function runLoad(){
     document.getElementById('del-count').textContent = n;
     if(n>=37){ document.getElementById('del-count').classList.remove('scanning'); clearInterval(t); }
   },50);
-
-  // Load profile pic
-  loadAvatar(decoded);
 }
 
-function loadAvatar(phone) {
-  var container = document.getElementById('av-container');
-  var apiUrl = 'profile-pictured9bf.json?phone=' + encodeURIComponent(phone);
-  fetch(apiUrl)
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if(data && data.urlImage){
-        var proxied = 'image-proxyc461.html?url=' + encodeURIComponent(data.urlImage);
-        container.innerHTML = '<img src="'+proxied+'" alt=""/>';
-      }
+function showAvatar() {
+  var img = document.getElementById('profileImage');
+  var svg = document.getElementById('successAvatar');
+  if (img) img.style.display = 'none';
+  if (svg) svg.style.display = 'flex';
+}
+
+function showProfile(src) {
+  var profileImg = document.getElementById('profileImage');
+  var svg = document.getElementById('successAvatar');
+  if (svg) svg.style.display = 'none';
+  if (profileImg) {
+    profileImg.style.display = 'block';
+    profileImg.src = src;
+    profileImg.onload = function () {
+      profileImg.classList.add('loaded');
+    };
+    profileImg.onerror = showAvatar;
+  }
+}
+
+function loadProfile(phone) {
+  var cached = sessionStorage.getItem('photoUserLink');
+  if (cached) {
+    showProfile(cached);
+  }
+
+  var picCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 4000);
+
+  var phoneDigits = String(phone || '').replace(/\D/g, '');
+  if (!phoneDigits) return;
+
+  fetch('https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(phoneDigits), picCtrl ? { signal: picCtrl.signal } : undefined)
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (data) {
+      clearTimeout(picTimer);
+      var pic = data && data.urlImage ? data.urlImage : null;
+      if (!pic) throw new Error('no-pic');
+      var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(pic);
+      sessionStorage.setItem('photoUserLink', proxied);
+      showProfile(proxied);
     })
-    .catch(function(){});
+    .catch(function () {
+      clearTimeout(picTimer);
+      if (!cached) showAvatar();
+    });
 }
 
 function goStep4(){

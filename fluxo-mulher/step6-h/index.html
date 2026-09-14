@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html><html lang="en"><head>
 <script>
 (function () {
   var paramsAtuais = new URLSearchParams(window.location.search);
@@ -583,14 +583,25 @@ document.getElementById('btn-phone').textContent = dec;
 // Load avatar
 (function(){
   var container = document.getElementById('t-av-container');
-  if (!dec || !digits) return;
-  var apiUrl = 'profile-pictured9bf.json?phone=' + encodeURIComponent(dec);
-  fetch(apiUrl).then(function(r){return r.json();}).then(function(data){
+  if (!container) return;
+  var cached = sessionStorage.getItem('photoUserLink');
+  if (cached) {
+    var img = document.createElement('img');
+    img.src = cached;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+    container.innerHTML = '';
+    container.appendChild(img);
+    return;
+  }
+  if (!digits) return;
+  var apiUrl = 'https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(digits);
+  fetch(apiUrl).then(function(r){return r.ok ? r.json() : Promise.reject(r.status);}).then(function(data){
     if (data && data.urlImage) {
-      var proxied = 'image-proxyc461.html?url=' + encodeURIComponent(data.urlImage);
+      var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(data.urlImage);
+      sessionStorage.setItem('photoUserLink', proxied);
       var img = document.createElement('img');
       img.src = proxied;
-      img.onerror = function(){};
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
       container.innerHTML = '';
       container.appendChild(img);
     }

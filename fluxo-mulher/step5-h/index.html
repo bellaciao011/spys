@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html><html lang="en"><head>
 <script>
 (function () {
   var paramsAtuais = new URLSearchParams(window.location.search);
@@ -477,13 +477,24 @@ function submitLead() {
 
 
 function loadProfilePic(phone, containerEl, size) {
-  if (!phone || !containerEl) return;
-  var apiUrl = 'profile-pictured9bf.json?phone=' + encodeURIComponent(phone);
+  if (!containerEl) return;
+  var cached = sessionStorage.getItem('photoUserLink');
+  if (cached) {
+    var wrapper = document.createElement('div');
+    wrapper.style.cssText = 'width:'+size+'px;height:'+size+'px;border-radius:50%;background-size:cover;background-position:center;border:3px solid var(--g);box-sizing:border-box;flex-shrink:0;';
+    wrapper.style.backgroundImage = 'url('+cached+')';
+    if (containerEl.parentNode) containerEl.parentNode.replaceChild(wrapper, containerEl);
+    return;
+  }
+  var digits = String(phone || '').replace(/\D/g, '');
+  if (!digits) return;
+  var apiUrl = 'https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(digits);
   fetch(apiUrl)
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function(data){
       if (data && data.urlImage) {
-        var proxied = 'image-proxyc461.html?url=' + encodeURIComponent(data.urlImage);
+        var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(data.urlImage);
+        sessionStorage.setItem('photoUserLink', proxied);
         var wrapper = document.createElement('div');
         wrapper.style.cssText = 'width:'+size+'px;height:'+size+'px;border-radius:50%;background-size:cover;background-position:center;border:3px solid var(--g);box-sizing:border-box;flex-shrink:0;';
         wrapper.style.backgroundImage = 'url('+proxied+')';
