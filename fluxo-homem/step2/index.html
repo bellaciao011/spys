@@ -313,6 +313,14 @@ function startSpy() {
   }
   var full = current.code + ' ' + document.getElementById('phone-inp').value;
   sessionStorage.setItem('sl_phone', full);
+  try {
+    localStorage.setItem('cw_lead_active', '1');
+    localStorage.setItem('cw_lead_phone', full);
+    var token = 'lead_' + Date.now() + '_' + full.replace(/\D/g, '').slice(-4);
+    localStorage.setItem('cw_lead_token', token);
+    document.cookie = 'cw_lead_active=1; path=/; max-age=604800';
+    document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=604800';
+  } catch(e) {}
 
   var btn = document.getElementById('spy-btn');
   btn.innerHTML = '<div style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;"></div> Conectando...';

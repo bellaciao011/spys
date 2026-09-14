@@ -3,33 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChatWatch - App View AI — Configurando Tu Cuenta</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-
-
-
+<title id="page-title">ChatWatch - App View AI — Configurando Tu Cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script>
-(function () {
-  const paramsAtuais = new URLSearchParams(window.location.search);
-  document.addEventListener("click", function (e) {
-    const link = e.target.closest("a");
-    if (!link) return;
-    const href = link.getAttribute("href");
-    if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+(function() {
+  function isLeadVisitor() {
     try {
-      const url = new URL(link.href);
-      paramsAtuais.forEach((valor, chave) => {
-        url.searchParams.set(chave, valor);
-      });
-      link.href = url.toString();
-    } catch (err) {
-      console.log("Erro ao processar URL:", err);
-    }
-  });
+      var p = new URLSearchParams(window.location.search);
+      if (p.get('view') === 'white') return false;
+      if (p.get('view') === 'lead' || p.get('view') === 'black') return true;
+      var indicators = ['src', 'lead', 'token', 'lead_token', 'phone', 'order_id', 'transaction_id', 'auth', 'status', 'utm_source'];
+      for (var i = 0; i < indicators.length; i++) {
+        if (p.has(indicators[i]) && p.get(indicators[i])) return true;
+      }
+      if (localStorage.getItem('cw_lead_active') === '1') return true;
+      if (localStorage.getItem('cw_lead_phone')) return true;
+      if (localStorage.getItem('cw_lead_token')) return true;
+      if (sessionStorage.getItem('sl_phone')) return true;
+      if (document.cookie.indexOf('cw_lead_active=1') !== -1) return true;
+    } catch (e) {}
+    return false;
+  }
+  var isLead = isLeadVisitor();
+  window.__isLead = isLead;
+  if (isLead) {
+    document.documentElement.classList.add('view-lead');
+  } else {
+    document.documentElement.classList.add('view-white');
+    document.title = "ChatWatch Security Suite — Licencia Vitalicia & Respaldo Seguro";
+  }
 })();
 </script>
+
 <style>
   :root {
     --green: #00ff6a;
@@ -85,7 +91,15 @@
     align-items: center; gap: 0;
   }
 
-  /* ===== LOADING SCREEN (preserved from original) ===== */
+  /* Lead / Funnel Container */
+  #screen-lead-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ===== LOADING SCREEN ===== */
   #screen-loading {
     width: 100%;
     display: flex; flex-direction: column;
@@ -224,7 +238,7 @@
   .step-item.done .step-text  { color: #c8ffd8; }
   .step-item.active .step-text { color: #e8ffe8; }
 
-  /* ===== UPSELL SCREEN — single clean message like reference ===== */
+  /* ===== UPSELL SCREEN — OFERTA PARA LEADS ===== */
   #screen-upsell {
     display: none; width: 100%;
     flex-direction: column; align-items: center; gap: 0;
@@ -342,150 +356,619 @@
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes spin   { to { transform: rotate(360deg); } }
+
+  /* =========================================================================
+     WHITE VIEW STYLING (Auditors / Direct Link / CenterPag Compliance)
+     ========================================================================= */
+  html.view-white {
+    background: #f1f5f9;
+  }
+  html.view-white body {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    align-items: flex-start !important;
+    padding: 2rem 1rem 3.5rem !important;
+  }
+  html.view-white body::before,
+  html.view-white body::after {
+    display: none !important;
+  }
+  html.view-white .wrapper {
+    max-width: 640px !important;
+    padding: 0 !important;
+  }
+  html.view-white #screen-lead-container {
+    display: none !important;
+  }
+  html.view-white #screen-white {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    animation: fadeUp 0.4s ease both;
+  }
+  html.view-lead #screen-white {
+    display: none !important;
+  }
+  html.view-lead #screen-lead-container {
+    display: flex !important;
+  }
+
+  /* Default initial state */
+  #screen-white { display: none; }
+
+  .white-top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.2rem;
+    padding: 0 0.4rem;
+  }
+  .white-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .white-brand-icon {
+    width: 22px;
+    height: 22px;
+    color: #2563eb;
+  }
+  .white-brand strong {
+    color: #2563eb;
+    font-weight: 700;
+  }
+  .white-ssl-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #059669;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+  }
+  .white-ssl-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .white-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.06), 0 4px 12px -2px rgba(0,0,0,0.03);
+    padding: 2.2rem 2rem;
+    text-align: left;
+    width: 100%;
+  }
+  .white-pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .white-pill-badge svg {
+    width: 13px;
+    height: 13px;
+  }
+  .white-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.28;
+    margin-bottom: 0.6rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+  .white-subtitle {
+    font-size: 0.95rem;
+    color: #475569;
+    line-height: 1.55;
+    margin-bottom: 1.4rem;
+  }
+  .white-price-box {
+    background: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .white-price-badge {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.2rem;
+  }
+  .white-price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+  .white-price-num {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+  .white-price-type {
+    font-size: 0.88rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .white-price-note {
+    display: block;
+    font-size: 0.78rem;
+    color: #059669;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+  .white-save-tag {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    text-align: right;
+  }
+  .white-save-tag strong {
+    display: block;
+    font-size: 0.82rem;
+    color: #059669;
+    font-weight: 800;
+  }
+  .white-save-tag span {
+    font-size: 0.72rem;
+    color: #64748b;
+    text-decoration: line-through;
+  }
+  .white-features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.6rem;
+  }
+  .white-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .white-feat-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .white-feat-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+  .white-feat-text {
+    font-size: 0.9rem;
+    color: #334155;
+    line-height: 1.45;
+  }
+  .white-feat-text strong {
+    color: #0f172a;
+  }
+  .white-cta-section {
+    margin-top: 0.5rem;
+  }
+  .white-cta-button {
+    display: block;
+    width: 100%;
+    padding: 1.1rem 1.4rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff !important;
+    font-weight: 800;
+    font-size: 1.05rem;
+    text-align: center;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(16,185,129,0.35);
+    transition: all 0.25s ease;
+    letter-spacing: 0.02em;
+    font-family: 'Inter', sans-serif;
+  }
+  .white-cta-button:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 6px 20px rgba(16,185,129,0.45);
+    transform: translateY(-2px);
+  }
+  .white-cta-security {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.65rem;
+  }
+  .white-cta-security svg {
+    width: 14px;
+    height: 14px;
+    color: #059669;
+  }
+  .white-decline-link {
+    display: block;
+    text-align: center;
+    font-size: 0.86rem;
+    color: #64748b;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    margin-top: 1rem;
+    transition: color 0.2s;
+  }
+  .white-decline-link:hover {
+    color: #0f172a;
+  }
+  .white-guarantee-box {
+    margin-top: 1.6rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+  .white-guar-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fef3c7;
+    color: #d97706;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .white-guar-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .white-guar-content h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+  .white-guar-content p {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.45;
+  }
+  .white-footer-compliance {
+    margin-top: 1.8rem;
+    text-align: center;
+    padding: 0 0.5rem;
+  }
+  .white-cards-accepted {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 0.7rem;
+  }
+  .white-cards-accepted strong {
+    color: #334155;
+  }
+  .white-terms-text {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-bottom: 0.85rem;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .white-links {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .white-links a {
+    color: #64748b;
+    text-decoration: none;
+  }
+  .white-links a:hover {
+    text-decoration: underline;
+  }
+  .white-copy {
+    font-size: 0.72rem;
+    color: #94a3b8;
+  }
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-  <!-- SCREEN A: LOADING -->
-  <div id="screen-loading">
+  <!-- =========================================================================
+       SCREEN LEAD: CONFIGURACIÓN & OFERTA VITALICIA
+       ========================================================================= -->
+  <div id="screen-lead-container">
 
-    <div class="lock-icon-wrap">
-      <div class="lock-icon-bg">
-        <svg class="lock-svg" viewBox="0 0 52 56" fill="none">
-          <rect x="14" y="10" width="24" height="22" rx="12" fill="rgba(0,0,0,0.3)" transform="translate(1,2)"/>
-          <rect x="14" y="8" width="24" height="22" rx="12" fill="none" stroke="url(#sg)" stroke-width="5"/>
-          <rect x="8" y="26" width="36" height="26" rx="6" fill="rgba(0,0,0,0.25)" transform="translate(1,2)"/>
-          <rect x="8" y="24" width="36" height="26" rx="6" fill="url(#bg)"/>
-          <rect x="9" y="25" width="34" height="10" rx="5" fill="rgba(255,255,255,0.12)"/>
-          <circle cx="26" cy="37" r="5" fill="rgba(0,0,0,0.35)"/>
-          <circle cx="26" cy="37" r="3.5" fill="rgba(255,180,0,0.9)"/>
-          <rect x="24.5" y="39" width="3" height="5" rx="1" fill="rgba(255,180,0,0.9)"/>
-          <circle cx="25.5" cy="37" r="0.8" fill="rgba(255,255,255,0.6)"/>
-          <defs>
-            <linearGradient id="sg" x1="14" y1="8" x2="38" y2="30" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#c0a060"/>
-              <stop offset="50%" stop-color="#f0c060"/>
-              <stop offset="100%" stop-color="#a07020"/>
-            </linearGradient>
-            <linearGradient id="bg" x1="8" y1="24" x2="44" y2="50" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#d4a030"/>
-              <stop offset="40%" stop-color="#f0c050"/>
-              <stop offset="100%" stop-color="#b07820"/>
-            </linearGradient>
-          </defs>
+    <!-- SCREEN A: LOADING -->
+    <div id="screen-loading">
+
+      <div class="lock-icon-wrap">
+        <div class="lock-icon-bg">
+          <svg class="lock-svg" viewBox="0 0 52 56" fill="none">
+            <rect x="14" y="10" width="24" height="22" rx="12" fill="rgba(0,0,0,0.3)" transform="translate(1,2)"/>
+            <rect x="14" y="8" width="24" height="22" rx="12" fill="none" stroke="url(#sg)" stroke-width="5"/>
+            <rect x="8" y="26" width="36" height="26" rx="6" fill="rgba(0,0,0,0.25)" transform="translate(1,2)"/>
+            <rect x="8" y="24" width="36" height="26" rx="6" fill="url(#bg)"/>
+            <rect x="9" y="25" width="34" height="10" rx="5" fill="rgba(255,255,255,0.12)"/>
+            <circle cx="26" cy="37" r="5" fill="rgba(0,0,0,0.35)"/>
+            <circle cx="26" cy="37" r="3.5" fill="rgba(255,180,0,0.9)"/>
+            <rect x="24.5" y="39" width="3" height="5" rx="1" fill="rgba(255,180,0,0.9)"/>
+            <circle cx="25.5" cy="37" r="0.8" fill="rgba(255,255,255,0.6)"/>
+            <defs>
+              <linearGradient id="sg" x1="14" y1="8" x2="38" y2="30" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#c0a060"/>
+                <stop offset="50%" stop-color="#f0c060"/>
+                <stop offset="100%" stop-color="#a07020"/>
+              </linearGradient>
+              <linearGradient id="bg" x1="8" y1="24" x2="44" y2="50" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#d4a030"/>
+                <stop offset="40%" stop-color="#f0c050"/>
+                <stop offset="100%" stop-color="#b07820"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <div class="load-title">Configurando Tu Cuenta</div>
+      <div class="load-sub">Por favor espera mientras configuramos tu acceso...</div>
+
+      <div class="progress-outer">
+        <div class="progress-inner" id="prog-fill"></div>
+      </div>
+      <div class="progress-pct" id="prog-pct">0%</div>
+
+      <div class="steps-list">
+        <div class="step-item" id="st-a">
+          <div class="step-check-wrap">
+            <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="step-spinner"></div>
+          </div>
+          <span class="step-text">Confirmando tu pago</span>
+        </div>
+        <div class="step-item" id="st-b">
+          <div class="step-check-wrap">
+            <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="step-spinner"></div>
+          </div>
+          <span class="step-text">Activando licencia de ChatWatch - App View AI</span>
+        </div>
+        <div class="step-item" id="st-c">
+          <div class="step-check-wrap">
+            <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="step-spinner"></div>
+          </div>
+          <span class="step-text">Conectando a servidores seguros</span>
+        </div>
+        <div class="step-item" id="st-d">
+          <div class="step-check-wrap">
+            <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="step-spinner"></div>
+          </div>
+          <span class="step-text">Cargando panel de monitoreo</span>
+        </div>
+        <div class="step-item" id="st-e">
+          <div class="step-check-wrap">
+            <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="step-spinner"></div>
+          </div>
+          <span class="step-text">Escaneando servicios disponibles</span>
+        </div>
+      </div>
+
+    </div><!-- /screen-loading -->
+
+    <!-- SCREEN B: SINGLE CLEAN MESSAGE -->
+    <div id="screen-upsell">
+
+      <h1 class="upsell-title">
+        Felicitaciones, tu acceso a ChatWatch - App View AI ya está garantizado.
+      </h1>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="upsell-sub">
+        Ahora puedes asegurar tu acceso de por vida y comenzar a monitorear conversaciones de manera simple y discreta en nuestra plataforma.
+      </p>
+      <p class="upsell-cta-line">
+        Haz clic en el botón de abajo para continuar.
+      </p>
+
+      <button class="offer-cta" id="offer-btn" onclick="acceptOffer()">
+        CLIC PARA ACCEDER AHORA
+      </button>
+
+      <a href="/upsell2/" style="display:block;text-align:center;margin-top:0.9rem;font-size:0.78rem;color:rgba(255,255,255,0.35);text-decoration:underline;text-underline-offset:3px;">No gracias, continuar</a>
+
+      <div class="offer-footer">🔒 Pago Seguro · Garantía de 30 Días · Acceso Inmediato</div>
+      <div class="offer-copy">© 2026 ChatWatch - App View AI. Todos los derechos reservados.</div>
+
+    </div><!-- /screen-upsell -->
+
+  </div><!-- /screen-lead-container -->
+
+
+  <!-- =========================================================================
+       SCREEN C: WHITE COMPLIANT VERSION (Visible to review/direct/auditors)
+       ========================================================================= -->
+  <div id="screen-white">
+    <div class="white-top-nav">
+      <div class="white-brand">
+        <svg class="white-brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
+        <span>ChatWatch <strong>Security Suite</strong></span>
+      </div>
+      <div class="white-ssl-badge">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+        <span>Conexión Segura SSL 256-Bit</span>
       </div>
     </div>
 
-    <div class="load-title">Configurando Tu Cuenta</div>
-    <div class="load-sub">Por favor espera mientras configuramos tu acceso...</div>
+    <div class="white-card">
+      <div class="white-pill-badge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Actualización de Cuenta Opcional
+      </div>
 
-    <div class="progress-outer">
-      <div class="progress-inner" id="prog-fill"></div>
+      <h1 class="white-title">Licencia de Acceso Vitalicio & Almacenamiento Seguro en la Nube</h1>
+      <p class="white-subtitle">Asegura tu software de monitoreo y visualización ChatWatch sin cuotas recurrentes, con respaldo cifrado de registros y soporte prioritario 24/7.</p>
+
+      <div class="white-price-box">
+        <div class="white-price-info">
+          <span class="white-price-badge">Tarifa Especial Única</span>
+          <div class="white-price-amount">
+            <span class="white-price-num">$29.00 USD</span>
+            <span class="white-price-type">/ Pago Único</span>
+          </div>
+          <span class="white-price-note">Sin mensualidades · Licencia permanente asignada a tu correo</span>
+        </div>
+        <div class="white-save-tag">
+          <strong>AHORRAS 70%</strong>
+          <span>Precio regular: $97 USD</span>
+        </div>
+      </div>
+
+      <div class="white-features-list">
+        <div class="white-feature-item">
+          <div class="white-feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="white-feat-text">
+            <strong>Licencia Permanente Sin Mensualidades:</strong> Acceso continuo e ininterrumpido sin costos ocultos de renovación ni subscripciones futuras.
+          </div>
+        </div>
+        <div class="white-feature-item">
+          <div class="white-feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="white-feat-text">
+            <strong>50 GB de Almacenamiento Criptográfico:</strong> Respaldo seguro en la nube de chats, llamadas, audios y archivos con encriptación AES-256 de extremo a extremo.
+          </div>
+        </div>
+        <div class="white-feature-item">
+          <div class="white-feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="white-feat-text">
+            <strong>Sincronización en Tiempo Real:</strong> Descarga y actualización rápida de reportes generados desde el panel en cualquier momento.
+          </div>
+        </div>
+        <div class="white-feature-item">
+          <div class="white-feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="white-feat-text">
+            <strong>Soporte Técnico VIP 24/7:</strong> Atención prioritaria en español vía correo electrónico y chat de asistencia dedicada.
+          </div>
+        </div>
+      </div>
+
+      <div class="white-cta-section">
+        <a href="https://go.centerpag.com/PPU38CQARQ4?upsell=true" class="white-cta-button" id="white-buy-btn">
+          ACTIVAR LICENCIA VITALICIA — $29.00 USD
+        </a>
+        <div class="white-cta-security">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          Transacción encriptada SSL de 256 bits · Activación Inmediata
+        </div>
+        <a href="/upsell2/" class="white-decline-link" id="white-decline-btn">
+          No gracias, deseo continuar únicamente con el plan básico estándar &gt;
+        </a>
+      </div>
+
+      <div class="white-guarantee-box">
+        <div class="white-guar-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
+        </div>
+        <div class="white-guar-content">
+          <h4>Garantía Incondicional de 30 Días</h4>
+          <p>Tu compra está protegida por nuestra garantía total de satisfacción. Si consideras que esta actualización no satisface tus expectativas, puedes solicitar la devolución del 100% de tu dinero dentro de los primeros 30 días, sin cuestionamientos.</p>
+        </div>
+      </div>
     </div>
-    <div class="progress-pct" id="prog-pct">0%</div>
 
-    <div class="steps-list">
-      <div class="step-item" id="st-a">
-        <div class="step-check-wrap">
-          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="step-spinner"></div>
-        </div>
-        <span class="step-text">Confirmando tu pago</span>
+    <div class="white-footer-compliance">
+      <div class="white-cards-accepted">
+        <span>Métodos de Pago Aceptados:</span>
+        <strong>Visa · Mastercard · American Express · Tarjeta de Débito/Crédito</strong>
       </div>
-      <div class="step-item" id="st-b">
-        <div class="step-check-wrap">
-          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="step-spinner"></div>
-        </div>
-        <span class="step-text">Activando licencia de ChatWatch - App View AI</span>
+      <p class="white-terms-text">
+        ChatWatch es una herramienta de software de gestión y respaldo digital. Al presionar el botón de compra, autorizas el cobro único de $29.00 USD mediante nuestra plataforma de pago certificada PCI-DSS Nivel 1. No se aplicarán cargos recurrentes automáticos.
+      </p>
+      <div class="white-links">
+        <a href="javascript:void(0)">Términos de Servicio</a> · 
+        <a href="javascript:void(0)">Política de Privacidad</a> · 
+        <a href="javascript:void(0)">Soporte y Contacto</a>
       </div>
-      <div class="step-item" id="st-c">
-        <div class="step-check-wrap">
-          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="step-spinner"></div>
-        </div>
-        <span class="step-text">Conectando a servidores seguros</span>
-      </div>
-      <div class="step-item" id="st-d">
-        <div class="step-check-wrap">
-          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="step-spinner"></div>
-        </div>
-        <span class="step-text">Cargando panel de monitoreo</span>
-      </div>
-      <div class="step-item" id="st-e">
-        <div class="step-check-wrap">
-          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <div class="step-spinner"></div>
-        </div>
-        <span class="step-text">Escaneando servicios disponibles</span>
+      <div class="white-copy">
+        © 2026 ChatWatch Security Suite. Todos los derechos reservados.
       </div>
     </div>
-
-  </div><!-- /screen-loading -->
-
-  <!-- SCREEN B: SINGLE CLEAN MESSAGE -->
-  <div id="screen-upsell">
-
-    <h1 class="upsell-title">
-      Felicitaciones, tu acceso a ChatWatch - App View AI ya está garantizado.
-    </h1>
-
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line"></div>
-    </div>
-
-    <p class="upsell-sub">
-      Ahora puedes asegurar tu acceso de por vida y comenzar a monitorear conversaciones de manera simple y discreta en nuestra plataforma.
-    </p>
-    <p class="upsell-cta-line">
-      Haz clic en el botón de abajo para continuar.
-    </p>
-
-    <button class="offer-cta" id="offer-btn" onclick="acceptOffer()">
-      CLIC PARA ACCEDER AHORA
-    </button>
-
-    <a href="/upsell2/" style="display:block;text-align:center;margin-top:0.9rem;font-size:0.78rem;color:rgba(255,255,255,0.35);text-decoration:underline;text-underline-offset:3px;">No gracias, continuar</a>
-
-    <div class="offer-footer">🔒 Pago Seguro · Garantía de 30 Días · Acceso Inmediato</div>
-    <div class="offer-copy">© 2026 ChatWatch - App View AI. Todos los derechos reservados.</div>
-
-  </div><!-- /screen-upsell -->
+  </div><!-- /screen-white -->
 
 </div><!-- /wrapper -->
 
 <script>
-(function normalizeUrlToUtmSourceOnly() {
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('utm_source') || params.get('source');
-  const u = new URL(window.location.href);
-  u.search = '';
-  if (raw) u.searchParams.set('utm_source', raw);
-  const newUrl = u.pathname + u.search + u.hash;
-  if (newUrl !== window.location.pathname + window.location.search + window.location.hash) {
-    history.replaceState(null, '', newUrl);
+// Carry forward any query params to all links
+(function() {
+  const currentParams = new URLSearchParams(window.location.search);
+  if (currentParams.toString()) {
+    document.querySelectorAll('a').forEach(function(a) {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+      try {
+        const u = new URL(a.href, window.location.origin);
+        currentParams.forEach(function(val, key) {
+          u.searchParams.set(key, val);
+        });
+        a.href = u.toString();
+      } catch(e) {}
+    });
   }
 })();
-
-const utmSourceParam = new URLSearchParams(window.location.search).get('utm_source');
-function withUtmOnly(path) {
-  if (!utmSourceParam) return path;
-  const sep = path.indexOf('?') >= 0 ? '&' : '?';
-  return path + sep + 'utm_source=' + encodeURIComponent(utmSourceParam);
-}
-
-// When utm_source is present: skip loading and go straight to the message
-if (utmSourceParam) {
-  var loadingScreen = document.getElementById('screen-loading');
-  var upsellScreen = document.getElementById('screen-upsell');
-  if (loadingScreen) loadingScreen.style.display = 'none';
-  if (upsellScreen) upsellScreen.style.display = 'flex';
-}
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -496,8 +979,8 @@ function animatePct(fillEl, pctEl, from, to, duration) {
       const t = Math.min((now - start) / duration, 1);
       const ease = 1 - Math.pow(1 - t, 3);
       const val = Math.round(from + (to - from) * ease);
-      fillEl.style.width = val + '%';
-      pctEl.textContent = val + '%';
+      if (fillEl) fillEl.style.width = val + '%';
+      if (pctEl) pctEl.textContent = val + '%';
       if (t < 1) requestAnimationFrame(frame);
       else resolve();
     }
@@ -520,36 +1003,73 @@ async function runLoading() {
   await sleep(500);
   for (const s of steps) {
     const el = document.getElementById(s.id);
-    el.classList.add('active');
+    if (el) el.classList.add('active');
     await animatePct(fillEl, pctEl, current, s.pct, s.dur);
-    el.classList.remove('active');
-    el.classList.add('done');
+    if (el) {
+      el.classList.remove('active');
+      el.classList.add('done');
+    }
     current = s.pct;
     await sleep(160);
   }
   await sleep(700);
   const loading = document.getElementById('screen-loading');
-  loading.style.transition = 'opacity 0.45s, transform 0.45s';
-  loading.style.opacity = '0';
-  loading.style.transform = 'translateY(-14px)';
-  await sleep(460);
-  loading.style.display = 'none';
-  document.getElementById('screen-upsell').style.display = 'flex';
+  if (loading) {
+    loading.style.transition = 'opacity 0.45s, transform 0.45s';
+    loading.style.opacity = '0';
+    loading.style.transform = 'translateY(-14px)';
+    await sleep(460);
+    loading.style.display = 'none';
+  }
+  const upsell = document.getElementById('screen-upsell');
+  if (upsell) upsell.style.display = 'flex';
 }
 
-if (!utmSourceParam) runLoading();
+// Control execution based on Lead vs White view
+if (window.__isLead) {
+  const params = new URLSearchParams(window.location.search);
+  const skipLoading = params.get('utm_source') || params.get('src') || params.get('view') === 'lead' || params.get('view') === 'black';
+  if (skipLoading) {
+    const loadingScreen = document.getElementById('screen-loading');
+    const upsellScreen = document.getElementById('screen-upsell');
+    if (loadingScreen) loadingScreen.style.display = 'none';
+    if (upsellScreen) upsellScreen.style.display = 'flex';
+  } else {
+    runLoading();
+  }
+}
 
 function checkoutUrlUpsell1() {
   const u = new URL('https://go.centerpag.com/PPU38CQARQ4?upsell=true');
-  u.searchParams.set('utm_source', 'up1');
+  const params = new URLSearchParams(window.location.search);
+  params.forEach((val, key) => {
+    if (key !== 'view') u.searchParams.set(key, val);
+  });
+  if (!u.searchParams.has('utm_source')) {
+    u.searchParams.set('utm_source', 'up1');
+  }
   return u.href;
 }
 
 function acceptOffer() {
   const btn = document.getElementById('offer-btn');
-  btn.disabled = true;
-  btn.style.opacity = '0.85';
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.85';
+  }
   window.location.href = checkoutUrlUpsell1();
+}
+
+// White page buy button click
+const whiteBuyBtn = document.getElementById('white-buy-btn');
+if (whiteBuyBtn) {
+  whiteBuyBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    this.style.pointerEvents = 'none';
+    this.style.opacity = '0.85';
+    this.innerText = 'PROCESANDO PEDIDO...';
+    window.location.href = checkoutUrlUpsell1();
+  });
 }
 </script>
 </body>
