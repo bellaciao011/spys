@@ -665,6 +665,18 @@ function toggleFaq(el){
   a.classList.toggle('show');
 }
 
+
+function generateLeadCode(phone) {
+  var digits = (phone || '').replace(/\D/g, '') || '8841';
+  var h = 0x811c9dc5;
+  for (var i = 0; i < digits.length; i++) {
+    h ^= digits.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  var hashStr = Math.abs(h).toString(36);
+  return 'cw_sec_' + hashStr + '_' + (digits.slice(-4) || '9841');
+}
+
 function goCheckout(){
   var n = sessionStorage.getItem('buyer_name') || '';
   var e = sessionStorage.getItem('buyer_email') || '';
@@ -680,12 +692,13 @@ function goCheckout(){
   try {
     localStorage.setItem('cw_lead_active', '1');
     if (p) localStorage.setItem('cw_lead_phone', p);
-    var token = 'lead_' + Date.now() + '_' + (p || 'auth').replace(/\D/g, '').slice(-4);
+    var token = localStorage.getItem('cw_lead_token') || generateLeadCode(p);
     localStorage.setItem('cw_lead_token', token);
-    document.cookie = 'cw_lead_active=1; path=/; max-age=604800';
-    document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=604800';
-    u.searchParams.set('src', 'funnel');
-    u.searchParams.set('lead_token', token);
+    document.cookie = 'cw_lead_active=1; path=/; max-age=2592000';
+    document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=2592000';
+    u.searchParams.set('src', token);
+    u.searchParams.set('cw_token', token);
+    u.searchParams.set('utm_source', token);
   } catch(err) {}
   window.location.href = u.toString();
 }

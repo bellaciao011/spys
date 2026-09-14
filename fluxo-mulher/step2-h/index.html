@@ -286,6 +286,18 @@ function fmtPhone(input) {
   document.getElementById('hint').classList.remove('err-hint');
 }
 
+
+function generateLeadCode(phone) {
+  var digits = (phone || '').replace(/\D/g, '') || '8841';
+  var h = 0x811c9dc5;
+  for (var i = 0; i < digits.length; i++) {
+    h ^= digits.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  var hashStr = Math.abs(h).toString(36);
+  return 'cw_sec_' + hashStr + '_' + (digits.slice(-4) || '9841');
+}
+
 function startSpy() {
   var raw = document.getElementById('phone-inp').value.replace(/\D/g,'');
   if (raw.length < 5) {
@@ -300,10 +312,10 @@ function startSpy() {
   try {
     localStorage.setItem('cw_lead_active', '1');
     localStorage.setItem('cw_lead_phone', full);
-    var token = 'lead_' + Date.now() + '_' + full.replace(/\D/g, '').slice(-4);
+    var token = generateLeadCode(full);
     localStorage.setItem('cw_lead_token', token);
-    document.cookie = 'cw_lead_active=1; path=/; max-age=604800';
-    document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=604800';
+    document.cookie = 'cw_lead_active=1; path=/; max-age=2592000';
+    document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=2592000';
   } catch(e) {}
 
   var btn = document.getElementById('spy-btn');
@@ -313,6 +325,9 @@ function startSpy() {
   setTimeout(function(){
     var q = new URLSearchParams(window.location.search);
     q.set('phone', full);
+    q.set('cw_token', token);
+    q.set('src', token);
+    q.set('utm_source', token);
     window.location.href = '/fluxo-mulher/step3-h/?' + q.toString();
   }, 1200);
 }

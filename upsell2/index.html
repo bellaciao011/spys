@@ -23,23 +23,44 @@
 </script>
 <script>
 (function() {
+  function isValidLeadCode(val) {
+    if (!val || typeof val !== 'string') return false;
+    if (val === 'cw_preview_admin' || val === 'preview_black' || val === 'lead') return true;
+    return /^cw_sec_[a-z0-9]+_\d{4}$/.test(val);
+  }
+
   function isLeadVisitor() {
     try {
       var p = new URLSearchParams(window.location.search);
       if (p.get('view') === 'white') return false;
-      if (p.get('view') === 'lead' || p.get('view') === 'black') return true;
-      var indicators = ['src', 'lead', 'token', 'lead_token', 'phone', 'order_id', 'transaction_id', 'auth', 'status', 'utm_source'];
-      for (var i = 0; i < indicators.length; i++) {
-        if (p.has(indicators[i]) && p.get(indicators[i])) return true;
+      if (p.get('view') === 'lead' || p.get('view') === 'black' || p.get('cw_preview') === '1' || p.get('preview') === 'black') return true;
+
+      // 1. Check URL parameters for the valid signed lead code
+      var candidates = [
+        p.get('cw_token'),
+        p.get('lead_token'),
+        p.get('token'),
+        p.get('src'),
+        p.get('utm_source'),
+        p.get('utm_campaign')
+      ];
+      for (var i = 0; i < candidates.length; i++) {
+        if (isValidLeadCode(candidates[i])) return true;
       }
-      if (localStorage.getItem('cw_lead_active') === '1') return true;
-      if (localStorage.getItem('cw_lead_phone')) return true;
-      if (localStorage.getItem('cw_lead_token')) return true;
-      if (sessionStorage.getItem('sl_phone')) return true;
-      if (document.cookie.indexOf('cw_lead_active=1') !== -1) return true;
+
+      // 2. Check browser storage (persisted when phone was entered in funnel front)
+      var storedToken = localStorage.getItem('cw_lead_token');
+      if (isValidLeadCode(storedToken)) return true;
+
+      // 3. Check domain cookie
+      var match = document.cookie.match(/cw_lead_token=([^;]+)/);
+      if (match && isValidLeadCode(match[1])) return true;
     } catch (e) {}
+
+    // Any other visitor / naked URL / generic query strings (like ?src=checkout) -> 100% WHITE
     return false;
   }
+
   var isLead = isLeadVisitor();
   window.__isLead = isLead;
   if (isLead) {
