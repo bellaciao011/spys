@@ -252,27 +252,60 @@ function showProfile(src) {
 function loadProfile(phone) {
   var cached = sessionStorage.getItem('photoUserLink');
   if (cached) {
+    console.log('%c[API Profile] Usando foto em cache do sessionStorage:', 'color:#10b981;font-weight:bold;', cached);
     showProfile(cached);
   }
 
-  var picCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 4000);
-
   var phoneDigits = String(phone || '').replace(/\D/g, '');
-  if (!phoneDigits) return;
+  if (!phoneDigits) {
+    console.warn('[API Profile] Nenhum telefone informado.');
+    return;
+  }
 
-  fetch('https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(phoneDigits), picCtrl ? { signal: picCtrl.signal } : undefined)
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
+  // Se o numero tiver 10 ou 11 digitos (DDD + numero sem DDI), adiciona 55 (Brasil)
+  if (phoneDigits.length === 10 || phoneDigits.length === 11) {
+    phoneDigits = '55' + phoneDigits;
+  }
+
+  console.log('%c[API Profile] Consultando foto para o número:', 'color:#3b82f6;font-weight:bold;', phoneDigits, '| Original:', phone);
+
+  var picCtrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var picTimer = setTimeout(function () { if (picCtrl) picCtrl.abort(); }, 5000);
+
+  function tryFetch(digits, isFallback) {
+    var apiUrl = 'https://stalkea.app/spp/api/profile-picture.php?phone=' + encodeURIComponent(digits);
+    console.log('[API Profile] Request GET:', apiUrl);
+    return fetch(apiUrl, picCtrl ? { signal: picCtrl.signal } : undefined)
+      .then(function(r) {
+        console.log('[API Profile] Resposta HTTP Status:', r.status);
+        return r.ok ? r.json() : Promise.reject('HTTP ' + r.status);
+      })
+      .then(function(data) {
+        console.log('[API Profile] Dados retornados pela API:', data);
+        if (data && data.urlImage) {
+          clearTimeout(picTimer);
+          var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(data.urlImage);
+          console.log('%c[API Profile] Foto encontrada:', 'color:#10b981;font-weight:bold;', proxied);
+          sessionStorage.setItem('photoUserLink', proxied);
+          showProfile(proxied);
+          return true;
+        }
+        // Se falhou com 13 dígitos no Brasil (55 + 2 DDD + 9 + 8 dígitos), tenta sem o 9º dígito
+        if (!isFallback && digits.length === 13 && digits.startsWith('55') && digits.charAt(4) === '9') {
+          var altDigits = digits.slice(0, 4) + digits.slice(5);
+          console.log('[API Profile] urlImage foi null. Tentando fallback sem o 9º dígito:', altDigits);
+          return tryFetch(altDigits, true);
+        }
+        console.warn('%c[API Profile] urlImage veio NULL. O número no WhatsApp não possui foto pública (privacidade "Apenas Contatos" ou sem foto). Exibindo silhueta padrão.', 'color:#f59e0b;font-weight:bold;');
+        if (!cached) showAvatar();
+        return false;
+      });
+  }
+
+  tryFetch(phoneDigits, false)
+    .catch(function(err) {
       clearTimeout(picTimer);
-      var pic = data && data.urlImage ? data.urlImage : null;
-      if (!pic) throw new Error('no-pic');
-      var proxied = 'https://stalkea.app/spp/api/image-proxy.php?url=' + encodeURIComponent(pic);
-      sessionStorage.setItem('photoUserLink', proxied);
-      showProfile(proxied);
-    })
-    .catch(function () {
-      clearTimeout(picTimer);
+      console.error('[API Profile] Erro na requisição:', err);
       if (!cached) showAvatar();
     });
 }
