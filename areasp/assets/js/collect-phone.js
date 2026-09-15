@@ -42,12 +42,12 @@ $(document).ready(function () {
         initialCountry: 'auto',
         separateDialCode: true,
         nationalMode: true,
-        preferredCountries: ['us', 'gb', 'ca', 'au', 'br', 'mx', 'de', 'fr', 'es', 'it', 'pt'],
+        preferredCountries: ['es', 'mx', 'ar', 'co', 'cl', 'pe', 'us', 'br'],
         geoIpLookup: function (callback) {
             fetch('https://ipapi.co/country_code/', { cache: 'no-store' })
                 .then(function (r) { return r.text(); })
-                .then(function (code) { callback((code || 'us').trim().toLowerCase()); })
-                .catch(function () { callback('us'); });
+                .then(function (code) { callback((code || 'es').trim().toLowerCase()); })
+                .catch(function () { callback('es'); });
         },
         utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js'
     });

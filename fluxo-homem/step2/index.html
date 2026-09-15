@@ -235,7 +235,15 @@ var countries = [
 var isoMap = {};
 countries.forEach(function(c,i){ isoMap[c.iso] = i; });
 
-var current = countries[0];
+var initialIso = (function() {
+  var lang = (navigator.language || '').toUpperCase();
+  if (lang.indexOf('ES') !== -1) return 'ES';
+  if (lang.indexOf('BR') !== -1) return 'BR';
+  if (lang.indexOf('MX') !== -1) return 'MX';
+  return 'ES';
+})();
+
+var current = countries[isoMap[initialIso] !== undefined ? isoMap[initialIso] : (isoMap['ES'] || 0)];
 
 function getFlag(iso){return iso.toUpperCase().replace(/./g,function(c){return String.fromCodePoint(0x1F1E6+c.charCodeAt(0)-65);});}
 function buildSelect() {
@@ -246,11 +254,14 @@ function buildSelect() {
     o.value = i; o.textContent = getFlag(c.iso)+' '+c.name+' ('+c.code+')';
     sel.appendChild(o);
   });
+  if (isoMap[current.iso] !== undefined) {
+    sel.value = isoMap[current.iso];
+  }
 }
 
 function setCountry(iso) {
   var idx = isoMap[iso];
-  if (idx === undefined) idx = 0;
+  if (idx === undefined) idx = isoMap['ES'] || 0;
   current = countries[idx];
   document.getElementById('sel-flag').textContent = getFlag(current.iso);
   document.getElementById('sel-code').textContent = current.code;
@@ -268,8 +279,15 @@ function onCountryChange() {
 }
 
 function updateHint() {
-  var hints = {US:'E.g.: (555) 123-4567',BR:'E.g.: (11) 99999-9999',MX:'E.g.: (55) 1234-5678'};
-  document.getElementById('hint').textContent = hints[current.iso] || 'E.g.: +X XXX XXX XXXX';
+  var hints = {
+    ES: 'Ej.: 612 34 56 78',
+    MX: 'Ej.: (55) 1234-5678',
+    AR: 'Ej.: (11) 1234-5678',
+    CO: 'Ej.: (300) 123-4567',
+    US: 'Ej.: (555) 123-4567',
+    BR: 'Ej.: (11) 99999-9999'
+  };
+  document.getElementById('hint').textContent = hints[current.iso] || 'Ej.: +X XXX XXX XXXX';
 }
 
 // Auto-detect country by IP
@@ -281,7 +299,7 @@ function detectCountry() {
       document.getElementById('detecting-row').style.display = 'none';
     })
     .catch(function(){
-      setCountry('US');
+      setCountry(initialIso);
       document.getElementById('detecting-row').style.display = 'none';
     });
 }
@@ -296,6 +314,10 @@ function fmtPhone(input) {
     if (v.length>11) v=v.slice(0,11);
     if (v.length>6) v='('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
     else if (v.length>2) v='('+v.slice(0,2)+') '+v.slice(2);
+  } else if (current.iso === 'ES') {
+    if (v.length>9) v=v.slice(0,9);
+    if (v.length>5) v=v.slice(0,3)+' '+v.slice(3,5)+' '+v.slice(5,7)+' '+v.slice(7);
+    else if (v.length>3) v=v.slice(0,3)+' '+v.slice(3);
   }
   input.value = v;
   input.classList.remove('err');
