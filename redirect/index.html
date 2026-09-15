@@ -447,8 +447,12 @@ setInterval(() => {
 }, 1000);
 
 function claimOffer() {
-  // Replace with your discounted checkout link
-  window.location.href = 'https://go.centerpag.com/PPU38CQEACK';
+  var u = new URL('https://go.centerpag.com/PPU38CQG62U');
+  var params = new URLSearchParams(window.location.search);
+  params.forEach(function(val, key) {
+    u.searchParams.set(key, val);
+  });
+  window.location.href = u.toString();
 }
 
 function skipOffer() {
