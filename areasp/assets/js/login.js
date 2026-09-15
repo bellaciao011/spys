@@ -11,14 +11,14 @@ $(document).ready(function () {
 
     var authCopy = {
         signin: {
-            title: 'Welcome back',
-            sub: 'Enter your email to access your panel — no password needed.',
-            btn: 'Access Panel'
+            title: 'Bienvenido de nuevo',
+            sub: 'Ingresa tu correo para acceder a tu panel — sin necesidad de contraseña.',
+            btn: 'Acceder al Panel'
         },
         register: {
-            title: 'Create your panel',
-            sub: 'Register with the email from your purchase — instant access, no password.',
-            btn: 'Create Access'
+            title: 'Crea tu panel',
+            sub: 'Regístrate con el correo de tu compra — acceso instantáneo, sin contraseña.',
+            btn: 'Crear Acceso'
         }
     };
 
@@ -44,7 +44,7 @@ $(document).ready(function () {
             '<div class="verify-overlay">' +
             '<div class="verify-box">' +
             '<div class="spinner-border text-success" role="status"></div>' +
-            '<p class="verify-status mb-0">Verifying license...</p>' +
+            '<p class="verify-status mb-0">Verificando licencia...</p>' +
             '</div></div>'
         );
         $('body').append($overlay);
@@ -104,10 +104,10 @@ $(document).ready(function () {
         var redirectUrl = hasPhone ? 'app/index.html' : 'collect-phone/index.html';
 
         showVerifyOverlay([
-            authMode === 'register' ? 'Creating secure panel account...' : 'Connecting to secure server...',
-            'Validating premium license...',
-            authMode === 'register' ? 'Linking email to active subscription ✓' : 'Email found in customer database ✓',
-            'Granting platform access...'
+            authMode === 'register' ? 'Creando cuenta segura del panel...' : 'Conectando al servidor seguro...',
+            'Validando licencia premium...',
+            authMode === 'register' ? 'Vinculando correo a suscripción activa ✓' : 'Correo encontrado en la base de clientes ✓',
+            'Otorgando acceso a la plataforma...'
         ], function () {
             if (window.AreaspyProgress) {
                 AreaspyProgress.mark('login');

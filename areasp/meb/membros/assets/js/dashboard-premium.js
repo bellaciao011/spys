@@ -23,11 +23,11 @@
     }
 
     function formatLastSeen(mins) {
-        if (mins < 1) return 'Just now';
-        if (mins === 1) return '1 min ago';
-        if (mins < 60) return mins + ' min ago';
+        if (mins < 1) return 'Justo ahora';
+        if (mins === 1) return 'Hace 1 min';
+        if (mins < 60) return 'Hace ' + mins + ' min';
         var h = Math.floor(mins / 60);
-        return h + 'h ago';
+        return 'Hace ' + h + 'h';
     }
 
     function batteryIcon(level) {
@@ -49,10 +49,8 @@
 
         metaEl.innerHTML =
             '<span class="dev-meta-item"><i class="fa ' + batteryIcon(data.battery) + '"></i> ' + data.battery + '%</span>' +
-            '<span class="dev-meta-item" id="dev-last-seen"><i class="fa fa-clock-o"></i> Last seen ' + formatLastSeen(data.lastSeenMins) + '</span>' +
-            '<span class="dev-meta-item"><i class="fa fa-signal"></i> ' + data.network + '</span>' +
-            '<span class="dev-meta-item"><i class="fa fa-mobile"></i> ' + data.deviceModel + '</span>' +
-            '<span class="dev-meta-item dev-meta-carrier"><i class="fa fa-building-o"></i> ' + data.meta.carrier + '</span>';
+            '<span class="dev-meta-item" id="dev-last-seen"><i class="fa fa-clock-o"></i> Última actividad ' + formatLastSeen(data.lastSeenMins) + '</span>' +
+            '<span class="dev-meta-item"><i class="fa fa-signal"></i> ' + data.network + '</span>';
     }
 
     function renderRiskCard(data) {
@@ -66,13 +64,13 @@
 
         el.innerHTML =
             '<div class="risk-card-head">' +
-            '<span>Behavior Risk Score</span>' +
+            '<span>Puntuación de Riesgo de Conducta</span>' +
             '<span class="risk-badge" style="background:' + color + '22;color:' + color + ';border-color:' + color + '55">' + data.riskLevel + '</span></div>' +
             '<div class="risk-score-row">' +
             '<div class="risk-score-num" style="color:' + color + '">' + data.riskScore + '</div>' +
             '<div class="risk-score-bar-wrap"><div class="risk-score-bar" style="width:' + data.riskScore + '%;background:' + color + '"></div></div></div>' +
             '<ul class="risk-flags">' + flagsHtml + '</ul>' +
-            '<p class="risk-note">AI model v3.2 · Updated live from intercept buffers</p>';
+            '<p class="risk-note">Modelo de IA v3.2 · Actualizado en vivo desde búferes de intercepción</p>';
     }
 
     function renderTimeline(data) {
@@ -160,7 +158,7 @@
         toast.className = 'panel-alert-toast';
         toast.innerHTML =
             '<span class="toast-dot"></span>' +
-            '<div><strong>Live alert</strong><p>' + text + '</p></div>';
+            '<div><strong>Alerta en vivo</strong><p>' + text + '</p></div>';
         container.appendChild(toast);
 
         setTimeout(function () { toast.classList.add('show'); }, 50);
@@ -172,12 +170,12 @@
 
     function initAlertToasts(data) {
         var alerts = [
-            'New WhatsApp message intercepted on target device',
-            'GPS location shift detected — review timeline',
-            'Suspicious Wi-Fi network connection logged',
-            'Instagram DM activity outside usual hours',
-            'Voice call recorded — 4m 12s duration',
-            'Sensitive SMS keyword flagged by AI scanner'
+            'Nuevo mensaje de WhatsApp interceptado en el dispositivo objetivo',
+            'Cambio de ubicación GPS detectado — revisar línea de tiempo',
+            'Conexión a red Wi-Fi sospechosa registrada',
+            'Actividad en MD de Instagram fuera del horario habitual',
+            'Llamada de voz grabada — 4m 12s de duración',
+            'Palabra clave confidencial en SMS marcada por el escáner de IA'
         ];
 
         setTimeout(function () {
@@ -195,14 +193,14 @@
             mins += 1;
             var el = document.getElementById('dev-last-seen');
             if (el) {
-                el.innerHTML = '<i class="fa fa-clock-o"></i> Last seen ' + formatLastSeen(mins);
+                el.innerHTML = '<i class="fa fa-clock-o"></i> Última actividad ' + formatLastSeen(mins);
             }
         }, 60000);
     }
 
     function initPlanBadge(data) {
         var el = document.getElementById('panel-plan-badge');
-        if (el) el.textContent = data.plan + ' · Active';
+        if (el) el.textContent = 'Licencia Premium · Activa';
     }
 
     window.initPremiumDashboard = function () {

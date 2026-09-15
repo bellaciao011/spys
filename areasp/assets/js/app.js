@@ -29,9 +29,9 @@ $(document).ready(function () {
     var profilePic = $.cookie('profilePic');
     var phoneRegion = $.cookie('phone_region');
     var phoneCountry = ($.cookie('phone_country') || 'US').toUpperCase();
-    var phoneCountryName = $.cookie('phone_country_name') || phoneRegion || 'Region identified';
+    var phoneCountryName = $.cookie('phone_country_name') || phoneRegion || 'Región identificada';
 
-    var WORLD_MAP = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d39762029!2d0!3d20!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1731426273897!5m2!1sen!2sus';
+    var WORLD_MAP = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d39762029!2d0!3d20!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sus!4v1731426273897!5m2!1ses!2sus';
 
     $('.phone_number').text(phoneNumber);
 
@@ -89,23 +89,23 @@ $(document).ready(function () {
     }
 
     var steps = [
-        { message: 'Connecting to target device...', delay: 2800 },
-        { message: 'Locating device 📍', delay: 3200 },
-        { message: 'Triangulating GPS signal 📡', delay: 3000 },
-        { message: 'Identifying region 📍🗺️', delay: 2800 },
-        { message: 'Device located 🎯', delay: 2500 },
-        { message: 'Accessing chat module 🔐', delay: 3200 },
-        { message: 'Intercepting WhatsApp...', delay: 3000 },
-        { message: 'Accessing photo gallery 📸', delay: 2800 },
-        { message: 'Accessing video gallery 🎬', delay: 2600 },
-        { message: 'Downloading messages 📩', delay: 3000 },
-        { message: 'Downloading SMS 📩', delay: 2500 },
-        { message: 'Downloading call logs 📞', delay: 2800 },
-        { message: 'Decrypting device 🔓', delay: 3500 },
-        { message: 'Organizing data 📁', delay: 2200 },
-        { message: 'Adult content detected 🔞', delay: 2000 },
-        { message: 'Suspicious activity flagged ⚠️', delay: 2200 },
-        { message: 'Sensitive conversations found 🔥', delay: 2400 }
+        { message: 'Conectando al dispositivo objetivo...', delay: 2800 },
+        { message: 'Localizando dispositivo 📍', delay: 3200 },
+        { message: 'Triangulando señal GPS 📡', delay: 3000 },
+        { message: 'Identificando región 📍🗺️', delay: 2800 },
+        { message: 'Dispositivo localizado 🎯', delay: 2500 },
+        { message: 'Accediendo al módulo de chat 🔐', delay: 3200 },
+        { message: 'Interceptando WhatsApp...', delay: 3000 },
+        { message: 'Accediendo a la galería de fotos 📸', delay: 2800 },
+        { message: 'Accediendo a la galería de videos 🎬', delay: 2600 },
+        { message: 'Descargando mensajes 📩', delay: 3000 },
+        { message: 'Descargando SMS 📩', delay: 2500 },
+        { message: 'Descargando registro de llamadas 📞', delay: 2800 },
+        { message: 'Descifrando dispositivo 🔓', delay: 3500 },
+        { message: 'Organizando datos 📁', delay: 2200 },
+        { message: 'Contenido para adultos detectado 🔞', delay: 2000 },
+        { message: 'Actividad sospechosa marcada ⚠️', delay: 2200 },
+        { message: 'Conversaciones comprometedoras encontradas 🔥', delay: 2400 }
     ];
 
     var currentStepIndex = 0;

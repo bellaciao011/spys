@@ -3,8 +3,38 @@ $(document).ready(function () {
     var $form = $('form');
     var $btn = $form.find('button[type="submit"]');
 
+    function cookiePath() {
+        return (window.ZappEmail && ZappEmail.getCookiePath) ? ZappEmail.getCookiePath() : '/';
+    }
+
+    function getUserEmail() {
+        if (window.ZappEmail && ZappEmail.getUserEmail) {
+            return ZappEmail.getUserEmail();
+        }
+        try {
+            var stored = localStorage.getItem('areaspy_user_email');
+            if (stored && stored.indexOf('@') > 0) return stored;
+        } catch (e) {}
+        return $.cookie('user_email') || '';
+    }
+
+    if (!getUserEmail()) {
+        window.location.href = '../index.html';
+        return;
+    }
+
+    if (window.ZappEmail && ZappEmail.hasSavedPhone && ZappEmail.hasSavedPhone()) {
+        if (window.ZappEmail.isPanelSession && ZappEmail.isPanelSession()) {
+            window.location.href = '../app/applications/index.html';
+        } else {
+            window.location.href = '../app/index.html';
+        }
+        return;
+    }
+
     if (!$input || !window.intlTelInput) {
-        console.error('intl-tel-input not loaded');
+        $form.prepend('<div class="alert alert-warning small mb-2">No se pudo cargar el campo de teléfono. Por favor, actualiza la página.</div>');
+        $btn.prop('disabled', true);
         return;
     }
 
@@ -38,17 +68,17 @@ $(document).ready(function () {
     function showScanOverlay(displayPhone, regionInfo, onComplete) {
         var region = regionInfo
             ? regionInfo.country + ' — ' + regionInfo.region
-            : 'Region identified';
+            : 'Región identificada';
         var steps = [
-            { text: 'Connecting to carrier network...', icon: '📡' },
-            { text: 'Validating number ' + displayPhone, icon: '📱' },
-            { text: 'Region identified: ' + region, icon: '🗺️' },
-            { text: 'Searching linked profile...', icon: '👤' },
-            { text: 'Syncing device data...', icon: '🔄' },
-            { text: 'Connection established!', icon: '✅' }
+            { text: 'Conectando a la red del operador...', icon: '📡' },
+            { text: 'Validando número ' + displayPhone, icon: '📱' },
+            { text: 'Región identificada: ' + region, icon: '🗺️' },
+            { text: 'Buscando perfil vinculado...', icon: '👤' },
+            { text: 'Sincronizando datos del dispositivo...', icon: '🔄' },
+            { text: '¡Conexión establecida!', icon: '✅' }
         ];
 
-        var $overlay = $('<div class="scan-overlay"><div class="scan-box"><h3>Tracking number</h3><div class="scan-steps"></div></div></div>');
+        var $overlay = $('<div class="scan-overlay"><div class="scan-box"><h3>Rastreando número</h3><div class="scan-steps"></div></div></div>');
         var $steps = $overlay.find('.scan-steps');
         steps.forEach(function (s) {
             $steps.append('<div class="scan-step"><span class="icon">' + s.icon + '</span><span>' + s.text + '</span></div>');
@@ -166,25 +196,57 @@ $(document).ready(function () {
             ? window.formatDisplayNumber(dialCode, national, countryCode)
             : e164;
 
-        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Iniciando...');
 
         showScanOverlay(displayPhone, regionInfo, function () {
+            var path = cookiePath();
+            try {
+                localStorage.setItem('areaspy_phone_number', displayPhone);
+                localStorage.setItem('areaspy_phone_e164', e164);
+                localStorage.setItem('areaspy_phone_country', countryCode);
+            } catch (e) {}
             $.cookie('phone_number', displayPhone, { expires: 30, path: '/' });
             $.cookie('phone_e164', e164, { expires: 30, path: '/' });
             $.cookie('phone_country', countryCode, { expires: 30, path: '/' });
             $.cookie('phone_dial_code', dialCode, { expires: 30, path: '/' });
             $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: '/' });
+            if (path && path !== '/') {
+                $.cookie('phone_number', displayPhone, { expires: 30, path: path });
+                $.cookie('phone_e164', e164, { expires: 30, path: path });
+                $.cookie('phone_country', countryCode, { expires: 30, path: path });
+                $.cookie('phone_dial_code', dialCode, { expires: 30, path: path });
+                $.cookie('profilePic', generateProfilePic(e164), { expires: 30, path: path });
+            }
             if (regionInfo) {
                 $.cookie('phone_region', regionInfo.region, { expires: 30, path: '/' });
                 $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: '/' });
+                if (path && path !== '/') {
+                    $.cookie('phone_region', regionInfo.region, { expires: 30, path: path });
+                    $.cookie('phone_country_name', regionInfo.country, { expires: 30, path: path });
+                }
             }
+            try {
+                $.removeCookie('phone_number', { path: '/collect-phone' });
+                $.removeCookie('phone_number', { path: '/collect-phone/' });
+            } catch (e) {}
             if (window.AreaspyProgress) {
                 AreaspyProgress.mark('phone');
             }
+            var goTrack = function () {
+                window.location.href = '../app/index.html';
+            };
             if (window.ZappEmail) {
-                ZappEmail.phoneRegistered();
+                var userEmail = ZappEmail.getUserEmail();
+                var syncPhone = ZappEmail.registerPhone
+                    ? ZappEmail.registerPhone(userEmail, displayPhone, e164)
+                    : Promise.resolve({ ok: true });
+                syncPhone
+                    .then(function () { return ZappEmail.phoneRegistered(userEmail); })
+                    .then(goTrack)
+                    .catch(goTrack);
+            } else {
+                goTrack();
             }
-            window.location.href = '../app/index.html';
         });
     });
 });

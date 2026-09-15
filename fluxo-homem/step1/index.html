@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 
-<script>(function(){function b(){history.pushState(null,null,location.href);}window.onpopstate=function(){window.location.href="/redirect/";};window.addEventListener('load',function(){setTimeout(b,0);setTimeout(b,100);setTimeout(b,200);});}());</script>
+<script>(function(){function b(){history.pushState(null,null,location.href);}window.onpopstate=function(){window.location.href="/redirect/" + window.location.search;};window.addEventListener('load',function(){setTimeout(b,0);setTimeout(b,100);setTimeout(b,200);});}());</script>
 <style>
 html{overflow-x:hidden}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}

@@ -1,10 +1,10 @@
 (function () {
-    var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
     function formatToday() {
         var now = new Date();
-        return dayNames[now.getDay()] + ', ' + monthNames[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+        return dayNames[now.getDay()] + ', ' + now.getDate() + ' de ' + monthNames[now.getMonth()] + ' de ' + now.getFullYear();
     }
 
     function updateFooterDate() {
@@ -30,7 +30,9 @@
     }
 
     function applyPhoneFromCookie(selector) {
-        var phone = getCookie('phone_number');
+        var phone = getCookie('phone_number') || (function () {
+            try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+        })();
         if (!phone) return;
 
         document.querySelectorAll(selector || '.phone_number').forEach(function (el) {

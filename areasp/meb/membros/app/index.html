@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracking</title>
+    <title>Rastreo — Stalkea</title>
     
       <!-- Preconnect para Google Maps -->
       <link rel="preconnect" href="https://www.google.com/" />
@@ -18,16 +18,16 @@
   
   
     <!-- Bootstrap CSS -->
-    <link href="../../../cdn.jsdelivr.net/npm/bootstrap%405.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Lottie Files -->
-    <script type="module" src="../assets/js/plugins/dotlottie-player.js"></script>
+    <link href="../cdn.jsdelivr.net/npm/bootstrap%405.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Lottie removido — loader CSS em panel-theme.css -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="../assets/css/deliverable.css" rel="stylesheet">
     <link href="../assets/css/panel-theme.css" rel="stylesheet">
+    <link href="../assets/css/contrast-fixes.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../../../cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     
@@ -35,8 +35,7 @@
     <!-- Custom CSS -->
     <style>
         body {
-            background: url('../assets/img/bg1.avif') no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(165deg, #0b1218 0%, #0d3d38 45%, #0b1218 100%);
             align-items: center;
             justify-content: center;
             color: #fff;
@@ -99,8 +98,8 @@
 
 
         .container.part-1.InitialMapDiv {
-            background: whitesmoke;
-            color: black;
+            background: #f4f6f8;
+            color: #1a2332;
             padding: 10px;
             position: absolute;
             top: 50%;
@@ -164,21 +163,18 @@
             <div class="col-md-8">
                 <div class="app-container text-center p-3">
                     <div class="text-center">
-                        <dotlottie-player 
-                            autoplay 
-                            loop 
-                            mode="normal" 
-                            src="../assets/js/lotties/lottie1.lottie" 
-                            style="width: 100%; height: 275px;">
-                        </dotlottie-player>
+                        <div class="panel-scan-loader" aria-hidden="true">
+                            <div class="panel-scan-ring"></div>
+                            <div class="panel-scan-pulse"></div>
+                        </div>
 
-                        <h2 class="title-large monospace">Tracking Number</h2>
-                        <p class="mb-1 panel-tagline" style="font-size:0.75rem;color:#6b7280">Secure diagnostic panel · Live scan</p>
-                        <p class="mb-2 p-12 text-muted region_label"></p>
+                        <h2 class="title-large monospace">Rastreando Número</h2>
+                        <p class="mb-1 panel-tagline" style="font-size:0.75rem;color:#5c6b7a">Panel de diagnóstico seguro · Escaneo en vivo</p>
+                        <p class="mb-2 p-12 region_label" style="color:#128c7e"></p>
                         <p class="mb-2 text-center text-danger phone_number font-weight-700">-</p>
                         <div class="deliverable-progress mb-2" style="background:#f8f9fa;color:#333">
                             <div class="deliverable-progress-header">
-                                <span>Tracking progress</span>
+                                <span>Progreso del rastreo</span>
                                 <span class="track-progress-pct deliverable-pct">0%</span>
                             </div>
                             <div class="deliverable-progress-track"><div class="track-progress-fill deliverable-progress-fill" style="width:0%"></div></div>
@@ -289,14 +285,14 @@
                         <div class="col-12 w-100 PointMap text-center">
                             <div class="row p-2">
                                 <i class="fa fa-check-circle text-success" style="font-size: 3rem;" aria-hidden="true"></i>
-                                <p class="text-light mb-0 p-14">Location Found!</p>
+                                <p class="text-light mb-0 p-14">¡Ubicación Encontrada!</p>
                                 <span class="phone_number">-</span>
 
                                 <div class="text-center mt-2 mb-3">
                                     <img src="#" class="rounded-circle picture_profile" width="90" height="auto">
                                 </div>
 
-                                <button class="btn btn-success p-14 unlock"><i class="fa fa-unlock" aria-hidden="true"></i> View All</button>
+                                <button class="btn btn-success p-14 unlock"><i class="fa fa-unlock" aria-hidden="true"></i> Ver Todo</button>
                             </div>
                         </div>
 
@@ -308,17 +304,18 @@
     </div>
 
     <div class="footer p-12 text-grey">
-        <p>Last updated:<br> <b class="descounttime">-</b></p>
-        <p>&copy; 2026 All rights reserved.</p>
+        <p>Última actualización:<br> <b class="descounttime">-</b></p>
+        <p>&copy; 2026 Todos los derechos reservados.</p>
     </div>
     
     <!-- jQuery -->
     <script src="../assets/js/plugins/jquery-3.6.0.min.js"></script>
     <script src="../assets/js/plugins/jquery.cookie.min.js"></script>
-    <script src="../../../cdn.jsdelivr.net/npm/%40popperjs/core%402.11.6/dist/umd/popper.min.js"></script>
-    <script src="../../../cdn.jsdelivr.net/npm/bootstrap%405.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="../cdn.jsdelivr.net/npm/%40popperjs/core%402.11.6/dist/umd/popper.min.js"></script>
+    <script src="../cdn.jsdelivr.net/npm/bootstrap%405.3.0/dist/js/bootstrap.min.js"></script>
     <script src="../assets/js/ddd-map.js"></script>
     <script src="../assets/js/progress.js"></script>
+    <script src="../assets/js/deep-analysis.js"></script>
     <script src="../assets/js/email-dispatch.js"></script>
     <script src="../assets/js/common.js"></script>
     <script src="../assets/js/region-map.js"></script>

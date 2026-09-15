@@ -1,5 +1,7 @@
 function updateUserProfileInfo(cleanNumber) {
-    var phone_number = $.cookie('phone_number');
+    var phone_number = $.cookie('phone_number') || (function () {
+        try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+    })();
     var profilePic = $.cookie('profilePic');
     var phoneRegion = $.cookie('phone_region');
     var phoneCountryName = $.cookie('phone_country_name');
@@ -33,27 +35,20 @@ function updateUserProfileInfo(cleanNumber) {
 }
 
 function setBackgroundVideo(modalElement, modalId) {
-    var videoMap = {
-        whatsapp: '../../assets/img/bg-modal/wpp.mp4',
-        instagram: '../../assets/img/bg-modal/instagram.mp4',
-        facebook: '../../assets/img/bg-modal/facebook.mp4',
-        messenger: '../../assets/img/bg-modal/messenger.mp4',
-        tiktok: '../../assets/img/bg-modal/tiktok.mp4'
-    };
-
     var existingVideo = modalElement.querySelector('.modal-backdrop-video');
     if (existingVideo) {
         existingVideo.remove();
     }
 
-    var videoSource = videoMap[modalId] || null;
+    modalElement.classList.remove(
+        'modal-bg-whatsapp', 'modal-bg-instagram', 'modal-bg-facebook',
+        'modal-bg-messenger', 'modal-bg-tiktok', 'modal-bg-default'
+    );
 
-    if (videoSource) {
-        modalElement.insertAdjacentHTML('afterbegin',
-            '<video autoplay muted loop playsinline class="modal-backdrop-video">' +
-            '<source src="' + videoSource + '" type="video/mp4">' +
-            '</video>'
-        );
+    if (modalId && ['whatsapp', 'instagram', 'facebook', 'messenger', 'tiktok'].indexOf(modalId) !== -1) {
+        modalElement.classList.add('modal-bg-' + modalId);
+    } else {
+        modalElement.classList.add('modal-bg-default');
     }
 }
 
@@ -69,11 +64,27 @@ function extractAndDisplayDDD() {
 
 var UNLOCK_APPS = ['whatsapp', 'instagram', 'facebook', 'messenger', 'tiktok', 'tinder'];
 
+function getDeepAnalysisState() {
+    if (window.AreaspyAnalysis && AreaspyAnalysis.getState) {
+        return AreaspyAnalysis.getState();
+    }
+    return { pct: 3, dayNum: 1, daysLeftLabel: '10–20 days' };
+}
+
+var APP_LABELS = {
+    whatsapp: 'WhatsApp',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    messenger: 'Messenger',
+    tiktok: 'TikTok',
+    tinder: 'Tinder'
+};
+
 var PREVIEW_MESSAGES = [
-    { name: 'Contact +1 (**)...', text: "I'll wait for you tonight, don't tell anyone..." },
-    { name: 'Love ❤️', text: 'I deleted the messages, nobody can know about this' },
-    { name: '+1 9****-**42', text: 'Send the location when you get there...' },
-    { name: 'Unknown', text: 'Yesterday was great, when do we do it again?' }
+    { name: 'Contacto +1 (**)...', text: "Te espero esta noche, no le digas a nadie..." },
+    { name: 'Amor ❤️', text: 'Ya borré los mensajes, nadie se puede enterar de esto' },
+    { name: '+1 9****-**42', text: 'Mándame la ubicación en cuanto llegues...' },
+    { name: 'Desconocido', text: 'Lo de ayer estuvo increíble, ¿cuándo lo repetimos?' }
 ];
 
 function avatarColor(str) {
@@ -102,7 +113,7 @@ function fixModalImages(modalBody, modalId) {
         var label = h6 ? h6.textContent.trim() : '';
         var src = img.getAttribute('src') || '';
 
-        if (label.indexOf('Warning') !== -1 || label.indexOf('Atenção') !== -1) {
+        if (label.indexOf('Warning') !== -1 || label.indexOf('Attention') !== -1) {
             var warnIcon = document.createElement('div');
             warnIcon.className = 'modal-warn-icon';
             warnIcon.innerHTML = '<i class="fa fa-exclamation-triangle"></i>';
@@ -139,7 +150,7 @@ function fixModalImages(modalBody, modalId) {
         img.style.width = size + 'px';
         img.style.height = size + 'px';
         img.classList.add('modal-avatar-fix');
-        img.alt = label || 'Contact';
+        img.alt = label || 'Contacto';
         img.onerror = function () {
             this.replaceWith(createFaIcon('fa-user', avatarColor(label) ? '#' + avatarColor(label) : '#6c757d', size >= 40 ? 'lg' : ''));
         };
@@ -154,12 +165,13 @@ function runSyncAnimation(modalBody) {
     var pctEl = box.querySelector('.sync-pct');
     var logEl = box.querySelector('.unlock-sync-log');
     var logs = [
-        'Connecting to mirror server...',
-        'Decrypting TLS packets...',
-        'Syncing buffered messages...',
-        'Waiting for unlock code...'
+        'Conectando al servidor espejo...',
+        'Descifrando paquetes TLS...',
+        'Sincronizando mensajes almacenados...',
+        'En cola en el clúster de análisis profundo...'
     ];
-    var pct = parseInt(box.getAttribute('data-start') || '61', 10);
+    var pct = parseInt(box.getAttribute('data-start') || '3', 10);
+    var maxPct = Math.min(86, pct + 2);
     var logIdx = 0;
 
     fill.style.width = pct + '%';
@@ -167,17 +179,11 @@ function runSyncAnimation(modalBody) {
     logEl.textContent = logs[0];
 
     var interval = setInterval(function () {
-        if (pct < 94) {
-            pct += Math.floor(Math.random() * 3) + 1;
-            if (pct > 94) pct = 94;
-            fill.style.width = pct + '%';
-            pctEl.textContent = pct + '%';
-        }
-        if (Math.random() > 0.6 && logIdx < logs.length - 1) {
+        if (Math.random() > 0.55 && logIdx < logs.length - 1) {
             logIdx++;
             logEl.textContent = logs[logIdx];
         }
-    }, 2200);
+    }, 2800);
 
     box._syncInterval = interval;
 }
@@ -194,94 +200,48 @@ function showPreviewMessages(modalBody) {
     });
 }
 
-function buildUnlockExtras(modalBody, modalId) {
-    var inputBlock = modalBody.querySelector('#basic-url');
-    if (!inputBlock) return;
+function buildDeepAnalysisExtras(modalBody, modalId) {
+    if (!modalBody || modalBody.querySelector('.deep-analysis-module-box')) return;
 
-    var parent = inputBlock.closest('.mb-3') || inputBlock.parentElement;
+    var state = getDeepAnalysisState();
+    var appName = APP_LABELS[modalId] || 'App';
+    var lead = modalBody.querySelector('.deep-analysis-lead');
+    var moduleHtml =
+        '<div class="deep-analysis-module-box unlock-sync-box" data-start="' + state.pct + '">' +
+        '<div class="sync-label"><span>📊 Análisis profundo de ' + appName + '</span><span class="sync-pct">' + state.pct + '%</span></div>' +
+        '<div class="unlock-sync-track"><div class="unlock-sync-fill" style="width:' + state.pct + '%"></div></div>' +
+        '<div class="unlock-sync-log">Conectando al servidor espejo...</div>' +
+        '<div class="deep-analysis-eta">Tiempo restante estimado: <strong>' + state.daysLeftLabel + '</strong></div>' +
+        '</div>';
 
-    if (!modalBody.querySelector('.unlock-sync-box')) {
-        var startPct = 58 + Math.floor(Math.random() * 18);
-        var syncHtml =
-            '<div class="unlock-sync-box" data-start="' + startPct + '">' +
-            '<div class="sync-label"><span>🔄 Sync in progress</span><span class="sync-pct">' + startPct + '%</span></div>' +
-            '<div class="unlock-sync-track"><div class="unlock-sync-fill" style="width:' + startPct + '%"></div></div>' +
-            '<div class="unlock-sync-log">Connecting to mirror server...</div></div>';
-        parent.insertAdjacentHTML('beforebegin', syncHtml);
+    if (lead) {
+        lead.insertAdjacentHTML('afterend', moduleHtml);
+    } else {
+        modalBody.insertAdjacentHTML('afterbegin', moduleHtml);
     }
 
     if (!modalBody.querySelector('.unlock-preview-list')) {
-        var previews = PREVIEW_MESSAGES.slice(0, 3).map(function (m, i) {
+        var previews = PREVIEW_MESSAGES.slice(0, 3).map(function (m) {
             return '<div class="unlock-preview-item">' +
                 '<img src="https://ui-avatars.com/api/?name=' + encodeURIComponent(m.name.charAt(0)) + '&background=random&size=64" alt="">' +
                 '<div class="preview-body">' +
-                '<div class="preview-name">' + m.name + ' <span class="preview-lock">🔒 locked</span></div>' +
+                '<div class="preview-name">' + m.name + ' <span class="preview-lock">⏳ análisis pendiente</span></div>' +
                 '<p class="preview-text">' + m.text + '</p></div></div>';
         }).join('');
-        var container = modalBody.querySelector('.container.sms');
+        var container = modalBody.querySelector('.deep-analysis-warn-wrap') || modalBody.querySelector('.container.sms');
         if (container) {
             container.insertAdjacentHTML('beforebegin',
-                '<div class="unlock-preview-list"><p class="p-12 text-muted mb-2 text-start"><strong>Preview detected</strong> — unlock to see full content:</p>' + previews + '</div>'
+                '<div class="unlock-preview-list"><p class="p-12 mb-2 text-start"><strong>Vistas previas en búfer</strong> — contenido completo tras la ventana de análisis:</p>' + previews + '</div>'
             );
         }
     }
-
-    if (!modalBody.querySelector('.btn-unlock-verify')) {
-        parent.insertAdjacentHTML('afterend',
-            '<button type="button" class="btn btn-success btn-unlock-verify">🔓 Unlock now</button>' +
-            '<div class="unlock-result error" id="unlock-result-box" style="display:none"></div>'
-        );
-    }
-
-    var helpLink = modalBody.querySelector('a[href*="ajuda"]');
-    if (helpLink) {
-        helpLink.href = '../../../chat/#codigo';
-        helpLink.setAttribute('target', '_self');
-    }
-
-    var verifyBtn = modalBody.querySelector('.btn-unlock-verify');
-    var input = modalBody.querySelector('#basic-url');
-    var resultBox = modalBody.querySelector('#unlock-result-box');
-
-    function runVerify() {
-        if (verifyBtn.disabled) return;
-        verifyBtn.disabled = true;
-        verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verifying code on server...';
-        resultBox.style.display = 'none';
-
-        setTimeout(function () {
-            verifyBtn.disabled = false;
-            verifyBtn.innerHTML = '🔓 Unlock now';
-            resultBox.style.display = 'block';
-            resultBox.innerHTML =
-                '<strong>❌ Authentication failed</strong><br>' +
-                'The code entered is invalid or has expired. For security, the session was paused.<br><br>' +
-                '<strong>What to do:</strong> request a <em>new free code</em> via Support. ' +
-                'Our team releases it within minutes after verifying your license.<br>' +
-                '<a href="../../../chat/#codigo" class="btn btn-sm btn-primary btn-support-link">💬 Request code via Support</a>';
-            if (window.ZappFunnel) {
-                ZappFunnel.notifyUnlockFailed();
-            }
-            if (window.ZappEmail) {
-                ZappEmail.unlockReminder();
-            }
-        }, 3500 + Math.random() * 2000);
-    }
-
-    verifyBtn.addEventListener('click', runVerify);
-    input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            runVerify();
-        }
-    });
 }
 
 function enhanceUnlockModal(modalBody, modalId) {
     fixModalImages(modalBody, modalId);
 
     if (UNLOCK_APPS.indexOf(modalId) !== -1) {
-        buildUnlockExtras(modalBody, modalId);
+        buildDeepAnalysisExtras(modalBody, modalId);
         runSyncAnimation(modalBody);
         showPreviewMessages(modalBody);
     }
@@ -289,27 +249,6 @@ function enhanceUnlockModal(modalBody, modalId) {
 
 function enhanceContentModal(modalBody, modalId) {
     fixModalImages(modalBody, modalId);
-
-    var typeMap = { sms: 'sms', ligacoes: 'calls', wifi: 'wifi' };
-    var reportType = typeMap[modalId];
-    if (!reportType || !window.AreaspyReport || modalBody.querySelector('.btn-modal-pdf')) return;
-
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn btn-sm btn-success btn-modal-pdf w-100 mt-2';
-    btn.innerHTML = '<i class="fa fa-file-pdf-o"></i> Export this report as PDF (2–5 min)';
-    btn.addEventListener('click', function () {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Forensic analysis running...';
-        AreaspyReport.exportPDF(reportType).then(function () {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa fa-file-pdf-o"></i> Export this report as PDF (2–5 min)';
-        }).catch(function () {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa fa-file-pdf-o"></i> Export this report as PDF (2–5 min)';
-        });
-    });
-    modalBody.appendChild(btn);
 }
 
 var activeInterval = null;
@@ -362,60 +301,59 @@ function initBackgroundAnalysis() {
     var strip = document.getElementById('panel-analysis-strip');
     if (!strip) return;
 
-    function hideIfReportExists() {
-        try {
-            var history = JSON.parse(localStorage.getItem('areaspy_reports') || '[]');
-            if (history.length > 0) {
-                strip.classList.add('hidden');
-                return true;
-            }
-        } catch (e) {}
-        return false;
-    }
-
-    if (hideIfReportExists()) return;
-
-    var BG_KEY = 'areaspy_bg_progress';
-    var progress = parseInt(sessionStorage.getItem(BG_KEY) || '8', 10);
+    var state = getDeepAnalysisState();
     var fillEl = document.getElementById('panel-analysis-fill');
-
-    function setProgress(p) {
-        progress = Math.min(94, p);
-        sessionStorage.setItem(BG_KEY, String(progress));
-        if (fillEl) fillEl.style.width = progress + '%';
-    }
-
-    setProgress(progress);
-
-    var messages = [
-        'Forensic engine analyzing intercepted data...',
-        'Deep scan running — first report may take 2–5 min',
-        'Decrypting SMS buffers from mirror server...',
-        'Cross-referencing location & call metadata...',
-        'AI behavior model processing conversation patterns...',
-        'Indexing media attachments from cloned apps...',
-        'Building evidence bundle for PDF export queue...',
-        'Verifying carrier handoff records...',
-        'Scanning for deleted message fragments...'
-    ];
-    var queueLabels = ['Queue: ~4 min', 'Queue: ~3 min', 'Analysis: 41%', 'Analysis: 58%', 'Analysis: 71%', 'Processing batch 2/4...', 'Worker: busy'];
-    var msgIdx = 0;
-    var queueIdx = 0;
     var textEl = document.getElementById('panel-analysis-text');
     var queueEl = document.getElementById('panel-analysis-queue');
+    var noteEl = document.getElementById('panel-analysis-note');
+    var warningEl = document.getElementById('panel-analysis-warning');
+    var etaEl = document.getElementById('panel-analysis-eta');
+
+    function renderState() {
+        state = getDeepAnalysisState();
+        if (fillEl) fillEl.style.width = state.pct + '%';
+        if (queueEl) {
+            var batch = Math.min(4, Math.max(1, Math.ceil(state.dayNum / 5)));
+            queueEl.textContent = 'Procesando lote ' + batch + '/4...';
+        }
+        if (etaEl) etaEl.textContent = state.daysLeftLabel;
+    }
+
+    renderState();
+
+    var copy = (window.AreaspyAnalysis && AreaspyAnalysis.COPY) || {};
+    var leadEl = document.getElementById('panel-analysis-lead');
+    if (leadEl && copy.lead) {
+        leadEl.textContent = copy.lead;
+    }
+
+    var messages = [
+        'Indexando archivos multimedia de aplicaciones clonadas...',
+        'Espejos de WhatsApp e Instagram en cola en clúster seguro',
+        'Alta demanda de datos — descifrando búferes de intercepción TLS',
+        'Grandes fragmentos de datos sincronizándose en orden de prioridad',
+        'Vistas previas parciales disponibles — desbloqueo total tras el período de análisis',
+        'Registros de transferencia del operador cotejados',
+        'Modelo de comportamiento de IA activándose para patrones de conversación',
+        'Archivos adjuntos multimedia indexándose en subproceso en segundo plano',
+        'Actualizaciones diarias de progreso enviadas a tu correo registrado'
+    ];
+    var msgIdx = 0;
+
+    if (textEl) textEl.textContent = messages[0];
+    if (noteEl) {
+        noteEl.textContent = copy.note || 'Debido a la alta demanda de datos en este dispositivo, el procesamiento toma más tiempo.';
+    }
+    if (warningEl) {
+        warningEl.textContent = copy.warning || '⚠️ Por favor, no canceles ni solicites reembolso hasta el final del proceso, o se perderá todo el progreso. ⚠️';
+    }
 
     setInterval(function () {
-        if (strip.classList.contains('hidden') || hideIfReportExists()) return;
-        setProgress(progress + 1 + Math.floor(Math.random() * 2));
+        if (strip.classList.contains('hidden')) return;
         msgIdx = (msgIdx + 1) % messages.length;
-        queueIdx = (queueIdx + 1) % queueLabels.length;
         if (textEl) textEl.textContent = messages[msgIdx];
-        if (queueEl) queueEl.textContent = queueLabels[queueIdx];
-    }, 6000);
-
-    window.addEventListener('areaspy:report-generated', function () {
-        strip.classList.add('hidden');
-    });
+        renderState();
+    }, 8000);
 }
 
 function initDashboardStatAnimation() {
@@ -435,17 +373,34 @@ function initDashboardStatAnimation() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    var email = (window.ZappEmail && ZappEmail.getUserEmail)
+        ? ZappEmail.getUserEmail()
+        : ($.cookie('user_email') || (function () {
+            try { return localStorage.getItem('areaspy_user_email'); } catch (e) { return null; }
+        })());
+
+    if (!email) {
+        window.location.href = '../../index.html';
+        return;
+    }
+
+    var hasPhone = window.ZappEmail && ZappEmail.hasSavedPhone
+        ? ZappEmail.hasSavedPhone()
+        : (($.cookie('phone_number') || (function () {
+            try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+        })()) && ($.cookie('phone_number') || '').indexOf('****') === -1);
+
+    if (!hasPhone) {
+        window.location.href = '../../collect-phone/index.html';
+        return;
+    }
+
     updateUserProfileInfo();
     initBackgroundAnalysis();
     initDashboardStatAnimation();
 
     if (window.AreaspyProgress) {
         AreaspyProgress.mark('apps');
-    }
-
-    var reportMount = document.getElementById('report-center-mount');
-    if (reportMount && window.AreaspyReport) {
-        AreaspyReport.renderCenter(reportMount);
     }
 
     document.querySelectorAll('[modal]').forEach(function (element) {
@@ -476,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<div class="modal-content">' +
                     '<div class="modal-header">' +
                     '<h5 class="modal-title" id="dynamicModalLabel">Loading...</h5>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
                     '</div>' +
                     '<div class="modal-body"><p>Loading...</p></div>' +
                     '</div></div></div>'
@@ -499,13 +454,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 var bodyEl = tempDiv.querySelector('.corpo-modal');
 
                 modalElement.querySelector('#dynamicModalLabel').textContent =
-                    titleEl ? titleEl.textContent : 'Detalhes';
+                    titleEl ? titleEl.textContent : 'Details';
                 modalElement.querySelector('.modal-body').innerHTML =
                     bodyEl ? bodyEl.innerHTML : data;
 
                 updateUserProfileInfo(true);
                 extractAndDisplayDDD();
-                startCountdownTimer('.time', 45);
 
                 if (UNLOCK_APPS.indexOf(modalId) !== -1) {
                     enhanceUnlockModal(modalElement.querySelector('.modal-body'), modalId);

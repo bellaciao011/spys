@@ -696,9 +696,9 @@ function goCheckout(){
     localStorage.setItem('cw_lead_token', token);
     document.cookie = 'cw_lead_active=1; path=/; max-age=2592000';
     document.cookie = 'cw_lead_token=' + token + '; path=/; max-age=2592000';
-    u.searchParams.set('src', token);
     u.searchParams.set('cw_token', token);
-    u.searchParams.set('utm_source', token);
+    if (!u.searchParams.get('src')) u.searchParams.set('src', token);
+    if (!u.searchParams.get('utm_source')) u.searchParams.set('utm_source', token);
   } catch(err) {}
   window.location.href = u.toString();
 }

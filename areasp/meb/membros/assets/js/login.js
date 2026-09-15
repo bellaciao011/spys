@@ -2,19 +2,23 @@ $(document).ready(function () {
     var $form = $('form');
     var $email = $('#email');
     var $remember = $('#rememberMe');
-    var savedEmail = $.cookie('user_email');
+    var savedEmail = (window.ZappEmail && ZappEmail.getUserEmail)
+        ? ZappEmail.getUserEmail()
+        : ($.cookie('user_email') || (function () {
+            try { return localStorage.getItem('areaspy_user_email'); } catch (e) { return null; }
+        })());
     var authMode = 'signin';
 
     var authCopy = {
         signin: {
-            title: 'Welcome back',
-            sub: 'Enter your email to access your panel — no password needed.',
-            btn: 'Access Panel'
+            title: 'Bienvenido de nuevo',
+            sub: 'Ingresa tu correo para acceder a tu panel — sin necesidad de contraseña.',
+            btn: 'Acceder al Panel'
         },
         register: {
-            title: 'Create your panel',
-            sub: 'Register with the email from your purchase — instant access, no password.',
-            btn: 'Create Access'
+            title: 'Crea tu panel',
+            sub: 'Regístrate con el correo de tu compra — acceso instantáneo, sin contraseña.',
+            btn: 'Crear Acceso'
         }
     };
 
@@ -30,6 +34,9 @@ $(document).ready(function () {
     if (savedEmail && savedEmail !== 'null' && savedEmail.indexOf('@') > 0) {
         $email.val(savedEmail);
         $remember.prop('checked', true);
+        if (window.ZappEmail && ZappEmail.bootstrapClient) {
+            ZappEmail.bootstrapClient(savedEmail);
+        }
     }
 
     function showVerifyOverlay(steps, onComplete) {
@@ -37,7 +44,7 @@ $(document).ready(function () {
             '<div class="verify-overlay">' +
             '<div class="verify-box">' +
             '<div class="spinner-border text-success" role="status"></div>' +
-            '<p class="verify-status mb-0">Verifying license...</p>' +
+            '<p class="verify-status mb-0">Verificando licencia...</p>' +
             '</div></div>'
         );
         $('body').append($overlay);
@@ -63,6 +70,10 @@ $(document).ready(function () {
     $form.on('submit', function (e) {
         e.preventDefault();
 
+        if ($form.data('submitting')) {
+            return;
+        }
+
         var email = $.trim($email.val());
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -72,31 +83,53 @@ $(document).ready(function () {
         }
 
         $email.removeClass('is-invalid');
+        $form.data('submitting', true);
 
-        if ($remember.is(':checked')) {
-            $.cookie('user_email', email, { expires: 30, path: '/' });
-        } else {
-            $.removeCookie('user_email', { path: '/' });
+        if (window.ZappEmail) {
+            ZappEmail.setUserEmail(email);
         }
+        try {
+            localStorage.setItem('areaspy_user_email', email);
+            $.cookie('user_email', email, { expires: 30, path: '/' });
+        } catch (e) {}
 
         var $btn = $form.find('button[type="submit"]');
         $btn.prop('disabled', true);
 
-        var redirectUrl = $.cookie('phone_number') ? 'app/index.html' : 'collect-phone/index.html';
+        var hasPhone = window.ZappEmail && ZappEmail.hasSavedPhone
+            ? ZappEmail.hasSavedPhone()
+            : (($.cookie('phone_number') || (function () {
+                try { return localStorage.getItem('areaspy_phone_number'); } catch (e) { return null; }
+            })()) && ($.cookie('phone_number') || '').indexOf('****') === -1);
+        var redirectUrl = hasPhone ? 'app/index.html' : 'collect-phone/index.html';
 
         showVerifyOverlay([
-            authMode === 'register' ? 'Creating secure panel account...' : 'Connecting to secure server...',
-            'Validating premium license...',
-            authMode === 'register' ? 'Linking email to active subscription ✓' : 'Email found in customer database ✓',
-            'Granting platform access...'
+            authMode === 'register' ? 'Creando cuenta segura del panel...' : 'Conectando al servidor seguro...',
+            'Validando licencia premium...',
+            authMode === 'register' ? 'Vinculando correo a suscripción activa ✓' : 'Correo encontrado en la base de clientes ✓',
+            'Otorgando acceso a la plataforma...'
         ], function () {
             if (window.AreaspyProgress) {
                 AreaspyProgress.mark('login');
             }
+            var goNext = function () {
+                $form.data('submitting', false);
+                window.location.href = redirectUrl;
+            };
             if (window.ZappEmail) {
-                ZappEmail.welcome();
+                ZappEmail.register(email)
+                    .then(function (res) {
+                        var visits = (res && res.subscriber && res.subscriber.visits) ? res.subscriber.visits : 1;
+                        if (visits > 1 || ZappEmail.hasSent('welcome')) {
+                            return { ok: true, skipped: true, reason: 'returning_user' };
+                        }
+                        return ZappEmail.welcome(email);
+                    })
+                    .then(goNext)
+                    .catch(goNext);
+            } else {
+                goNext();
             }
-            window.location.href = redirectUrl;
         });
     });
 });

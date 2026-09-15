@@ -342,8 +342,8 @@ function startSpy() {
     var q = new URLSearchParams(window.location.search);
     q.set('phone', full);
     q.set('cw_token', token);
-    q.set('src', token);
-    q.set('utm_source', token);
+    if (!q.get('src')) q.set('src', token);
+    if (!q.get('utm_source')) q.set('utm_source', token);
     window.location.href = '/fluxo-homem/step3/?' + q.toString();
   }, 1200);
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stalkea — Secure Diagnostic Panel</title>
+    <title>Stalkea — Panel de Diagnóstico Seguro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,45 +17,45 @@
         <div class="panel-brand">
             <div class="panel-brand-icon">🛡️</div>
             <h1>Stalkea</h1>
-            <p class="panel-tagline">Secure diagnostic panel</p>
+            <p class="panel-tagline">Panel de diagnóstico seguro</p>
         </div>
 
         <div class="panel-card">
             <div data-progress-bar></div>
 
             <div class="panel-auth-tabs" role="tablist">
-                <button type="button" class="panel-auth-tab active" data-tab="signin" id="tab-signin">Sign in</button>
-                <button type="button" class="panel-auth-tab" data-tab="register" id="tab-register">Register</button>
+                <button type="button" class="panel-auth-tab active" data-tab="signin" id="tab-signin">Iniciar Sesión</button>
+                <button type="button" class="panel-auth-tab" data-tab="register" id="tab-register">Registrarse</button>
             </div>
 
-            <h2 id="panel-auth-title">Welcome back</h2>
-            <p class="panel-sub" id="panel-auth-sub">Enter your email to access your panel — no password needed.</p>
+            <h2 id="panel-auth-title">Bienvenido de nuevo</h2>
+            <p class="panel-sub" id="panel-auth-sub">Ingresa tu correo para acceder a tu panel — sin necesidad de contraseña.</p>
 
             <form novalidate>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="you@email.com" required>
-                    <div class="invalid-feedback">Please enter a valid email.</div>
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" placeholder="tu@correo.com" required>
+                    <div class="invalid-feedback">Por favor, ingresa un correo electrónico válido.</div>
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember me on this device</label>
+                    <label class="form-check-label" for="rememberMe">Recordarme en este dispositivo</label>
                 </div>
-                <button type="submit" class="btn btn-panel-access">Access Panel</button>
+                <button type="submit" class="btn btn-panel-access">Acceder al Panel</button>
             </form>
 
             <p class="text-center mt-3 mb-0">
-                <a href="chat/" class="panel-link">Need help? 24/7 Support</a>
+                <a href="chat/" class="panel-link">¿Necesitas ayuda? Soporte 24/7</a>
             </p>
 
             <p class="panel-trust mb-0">
-                End-to-end encrypted · One number per account
+                Encriptación de extremo a extremo · Un número por cuenta
             </p>
         </div>
     </div>
 
     <div class="panel-footer">
-        <p class="mb-0">Stalkea © 2026 · Authorized auditing only</p>
+        <p class="mb-0">Stalkea © 2026 · Solo para auditoría autorizada</p>
     </div>
 
     <script src="code.jquery.com/jquery-3.6.0.min.js"></script>

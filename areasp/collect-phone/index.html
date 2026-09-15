@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Number</title>
+    <title>Rastrear Número — Stalkea</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,7 +44,6 @@
             width: 100%;
             height: calc(1.5em + 0.75rem + 2px);
             padding-right: 0.75rem;
-            /* padding-left is set dynamically by intl-tel-input */
         }
         .iti--separate-dial-code .iti__selected-dial-code {
             margin-left: 6px;
@@ -61,7 +60,7 @@
 </head>
 <body class="collect-phone-page">
     <div class="w-100 part-1" style="height: 100vh;">
-        <iframe id="world-map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d39762029!2d0!3d20!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1731426273897!5m2!1sen!2sus" width="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe id="world-map" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d39762029!2d0!3d20!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sus!4v1731426273897!5m2!1ses!2sus" width="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 
     <div class="container part-1 InitialMapDiv">
@@ -70,28 +69,28 @@
                 <div class="panel-card-light text-center">
                     <div class="panel-brand-inline mb-2">
                         <h3>Stalkea</h3>
-                        <p>Secure diagnostic panel · Link target number</p>
+                        <p>Panel de diagnóstico seguro · Vincular número objetivo</p>
                     </div>
                     <div class="panel-scan-loader panel-scan-loader--sm" aria-hidden="true">
                         <div class="panel-scan-ring"></div>
                     </div>
-                    <h2 class="title-medium" style="font-size:1rem;font-weight:600;">Enter the number to monitor</h2>
-                    <p class="p-12 text-muted mb-2">Country detected automatically from dial code</p>
+                    <h2 class="title-medium" style="font-size:1rem;font-weight:600;">Ingresa el número a monitorear</h2>
+                    <p class="p-12 text-muted mb-2">País detectado automáticamente por el código de área</p>
                     <form class="form mt-2" novalidate>
                         <div class="phone-field-wrap">
-                            <input class="form-control text-start" type="tel" id="phone-intl" placeholder="Phone number" aria-label="Phone number" autocomplete="tel" inputmode="tel">
-                            <div class="invalid-feedback">Please enter a valid phone number for the selected country.</div>
+                            <input class="form-control text-start" type="tel" id="phone-intl" placeholder="Número de teléfono" aria-label="Número de teléfono" autocomplete="tel" inputmode="tel">
+                            <div class="invalid-feedback">Por favor, ingresa un número de teléfono válido para el país seleccionado.</div>
                         </div>
-                        <button type="submit" class="btn btn-panel-access mt-3">Start Tracking</button>
+                        <button type="submit" class="btn btn-panel-access mt-3">Iniciar Rastreo</button>
                     </form>
-                    <p class="panel-trust mb-0 mt-2" style="color:#6b7280;font-size:0.68rem;">End-to-end encrypted · One number per account</p>
+                    <p class="panel-trust mb-0 mt-2" style="color:#6b7280;font-size:0.68rem;">Encriptación de extremo a extremo · Un número por cuenta</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="panel-footer">
-        <p class="mb-0">Stalkea © 2026 · Authorized auditing only</p>
+        <p class="mb-0">Stalkea © 2026 · Solo para auditoría autorizada</p>
     </div>
 
     <script src="../code.jquery.com/jquery-3.6.0.min.js"></script>

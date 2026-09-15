@@ -1,0 +1,9 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    {
+      "source": "/((?!fluxo-homem|fluxo-mulher|upsell1|upsell2|upsell3|thankyou|redirect|areasp|api).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

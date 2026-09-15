@@ -33,7 +33,7 @@ $(document).ready(function () {
     }
 
     if (!$input || !window.intlTelInput) {
-        $form.prepend('<div class="alert alert-warning small mb-2">Could not load phone field. Please refresh the page.</div>');
+        $form.prepend('<div class="alert alert-warning small mb-2">No se pudo cargar el campo de teléfono. Por favor, actualiza la página.</div>');
         $btn.prop('disabled', true);
         return;
     }
@@ -68,17 +68,17 @@ $(document).ready(function () {
     function showScanOverlay(displayPhone, regionInfo, onComplete) {
         var region = regionInfo
             ? regionInfo.country + ' — ' + regionInfo.region
-            : 'Region identified';
+            : 'Región identificada';
         var steps = [
-            { text: 'Connecting to carrier network...', icon: '📡' },
-            { text: 'Validating number ' + displayPhone, icon: '📱' },
-            { text: 'Region identified: ' + region, icon: '🗺️' },
-            { text: 'Searching linked profile...', icon: '👤' },
-            { text: 'Syncing device data...', icon: '🔄' },
-            { text: 'Connection established!', icon: '✅' }
+            { text: 'Conectando a la red del operador...', icon: '📡' },
+            { text: 'Validando número ' + displayPhone, icon: '📱' },
+            { text: 'Región identificada: ' + region, icon: '🗺️' },
+            { text: 'Buscando perfil vinculado...', icon: '👤' },
+            { text: 'Sincronizando datos del dispositivo...', icon: '🔄' },
+            { text: '¡Conexión establecida!', icon: '✅' }
         ];
 
-        var $overlay = $('<div class="scan-overlay"><div class="scan-box"><h3>Tracking number</h3><div class="scan-steps"></div></div></div>');
+        var $overlay = $('<div class="scan-overlay"><div class="scan-box"><h3>Rastreando número</h3><div class="scan-steps"></div></div></div>');
         var $steps = $overlay.find('.scan-steps');
         steps.forEach(function (s) {
             $steps.append('<div class="scan-step"><span class="icon">' + s.icon + '</span><span>' + s.text + '</span></div>');
@@ -196,7 +196,7 @@ $(document).ready(function () {
             ? window.formatDisplayNumber(dialCode, national, countryCode)
             : e164;
 
-        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Starting...');
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Iniciando...');
 
         showScanOverlay(displayPhone, regionInfo, function () {
             var path = cookiePath();

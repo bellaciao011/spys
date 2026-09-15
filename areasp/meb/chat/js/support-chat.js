@@ -8,6 +8,51 @@
     var refundAttempts = parseInt(localStorage.getItem('areaspy_refund_attempts') || '0', 10);
     var refundRequested = localStorage.getItem('areaspy_refund_done') === '1';
 
+    var ACKS = ['Entendido.', 'Claro.', 'Un momento…', 'Déjame revisar…', 'Buena pregunta.'];
+
+    function apiBase() {
+        var path = window.location.pathname || '/';
+        return path.replace(/\/chat.*$/, '').replace(/\/$/, '');
+    }
+
+    function getUserEmail() {
+        if (window.ZappEmail && ZappEmail.getUserEmail) {
+            var fromZapp = ZappEmail.getUserEmail();
+            if (fromZapp) return fromZapp;
+        }
+        try {
+            var stored = localStorage.getItem('areaspy_user_email');
+            if (stored && stored.indexOf('@') > 0) return stored;
+        } catch (e) {}
+        return '';
+    }
+
+    function getAnalysisState() {
+        if (window.AreaspyAnalysis && AreaspyAnalysis.getState) {
+            return AreaspyAnalysis.getState();
+        }
+        return { pct: 3, dayNum: 1, daysLeftLabel: '10–20 días' };
+    }
+
+    function notifyRefundToServer(email, reason, protocol) {
+        if (!email) return;
+        fetch(apiBase() + '/api/mark-refund.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, reason: reason, protocol: protocol, action: 'refund' })
+        }).catch(function () {});
+    }
+
+    function notifyRefundAttempt(step) {
+        var email = getUserEmail();
+        if (!email) return;
+        fetch(apiBase() + '/api/mark-refund.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, step: step, action: 'attempt', source: 'chat' })
+        }).catch(function () {});
+    }
+
     function now() {
         var d = new Date();
         return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
@@ -15,6 +60,14 @@
 
     function scrollBottom() {
         messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pickAck() {
+        return ACKS[rand(0, ACKS.length - 1)];
     }
 
     function showTyping(ms) {
@@ -25,8 +78,12 @@
             setTimeout(function () {
                 typingEl.style.display = 'none';
                 resolve();
-            }, ms || 1400);
+            }, ms || rand(900, 1800));
         });
+    }
+
+    function containsHtml(text) {
+        return typeof text === 'string' && /<[a-z][^>]*>/i.test(text);
     }
 
     function addMessage(text, type, html) {
@@ -58,51 +115,35 @@
         buttons.forEach(function (btn) {
             var el = document.createElement('button');
             el.type = 'button';
-            el.className = 'chat-option-btn' + (btn.danger ? ' danger' : '') + (btn.primary ? ' primary' : '');
+            el.className = 'chat-option-btn' +
+                (btn.danger ? ' danger' : '') +
+                (btn.primary ? ' primary' : '');
             el.textContent = btn.label;
             el.addEventListener('click', function () {
                 clearOptions();
                 if (btn.userText) addUserMessage(btn.userText);
-                setTimeout(btn.action, 400);
+                setTimeout(btn.action, rand(350, 550));
             });
             optionsEl.appendChild(el);
         });
     }
 
     function delay(ms) {
-        return new Promise(function (r) { setTimeout(r, ms); });
-    }
-
-    function containsHtml(text) {
-        return typeof text === 'string' && /<[a-z][^>]*>/i.test(text);
+        return Promise.resolve().then(function () {
+            return new Promise(function (r) { setTimeout(r, ms || rand(400, 900)); });
+        });
     }
 
     async function botSay(text, wait, html) {
-        await showTyping(wait || 1400);
+        await showTyping(wait);
         addMessage(text, 'bot', html || containsHtml(text));
     }
 
-    function showRefundDone() {
-        var protocol = localStorage.getItem('areaspy_refund_protocol') || generateProtocol();
-        var last4 = localStorage.getItem('areaspy_refund_last4') || '****';
-        addMessage(buildRefundSuccessHtml(protocol, last4), 'bot', true);
-    }
-
-    function buildRefundSuccessHtml(protocol, last4) {
-        return '<div class="refund-success">' +
-            '<i class="fa fa-check-circle"></i>' +
-            '<h3>✅ Refund processed successfully!</h3>' +
-            '<p>Your refund was processed and sent to the card issuer for the card ending in <strong>' + last4 + '</strong>.</p>' +
-            '<p style="margin-top:0.75rem"><strong>⏳ Billing statement timeframe:</strong> The amount will take <strong>30 to 60 days</strong> to appear on your credit card statement, per the issuer timeline.</p>' +
-            '<p style="margin-top:0.5rem;font-size:0.8rem">Keep your protocol number: <strong>#' + protocol + '</strong></p>' +
-            '<p style="margin-top:0.5rem;font-size:0.75rem;opacity:0.8">Your access has been closed per our refund policy.</p>' +
-            '</div>';
-    }
-
-    function formatRefundDate() {
-        var d = localStorage.getItem('areaspy_refund_date');
-        if (!d) return 'recent date';
-        return new Date(d).toLocaleDateString('en-US');
+    async function botSayLines(lines) {
+        for (var i = 0; i < lines.length; i++) {
+            if (i > 0) await delay(rand(500, 1100));
+            await botSay(lines[i]);
+        }
     }
 
     function generateProtocol() {
@@ -111,346 +152,292 @@
             String(d.getDate()).padStart(2, '0') + '-' + Math.floor(100000 + Math.random() * 900000);
     }
 
-    /* ─── PDF Reports ─── */
-
-    async function flowReportMenu() {
-        await botSay('📄 Our Report Center generates professional PDF documents with all collected data!');
-        await delay(400);
-        addMessage(
-            '<div class="alert-panel" style="background:#d4edda;border-color:#28a745;color:#155724">' +
-            '<strong>Available now:</strong> Full Report, Location, SMS, Calls, Social Media and Wi-Fi. ' +
-            'Each PDF includes a unique protocol and monitored device data.</div>',
-            'bot', true
-        );
-        showOptions([
-            { label: '📋 Full Report (PDF)', userText: 'I want the full report', action: function () { exportReportChat('full'); }, primary: true },
-            { label: '📍 Location Only', userText: 'Location report', action: function () { exportReportChat('location'); } },
-            { label: '📩 SMS Only', userText: 'SMS report', action: function () { exportReportChat('sms'); } },
-            { label: '📞 Calls Only', userText: 'Calls report', action: function () { exportReportChat('calls'); } },
-            { label: '💬 Social Media', userText: 'Social report', action: function () { exportReportChat('social'); } },
-            { label: '🌐 Suspicious Wi-Fi', userText: 'Wi-Fi report', action: function () { exportReportChat('wifi'); } },
-            { label: '← Back to menu', userText: 'Back', action: mainMenu }
-        ]);
+    function buildRefundSuccessHtml(protocol, last4) {
+        return '<div class="refund-success">' +
+            '<i class="fa fa-check-circle"></i>' +
+            '<h3>✅ Reembolso procesado con éxito</h3>' +
+            '<p>Tu reembolso fue enviado al emisor de la tarjeta terminada en <strong>' + last4 + '</strong>.</p>' +
+            '<p style="margin-top:0.75rem"><strong>⏳ Extracto bancario:</strong> puede tardar de <strong>30 a 60 días</strong> en reflejarse en tu estado de cuenta, según los plazos del emisor.</p>' +
+            '<p style="margin-top:0.5rem;font-size:0.8rem">Guarda tu número de protocolo: <strong>#' + protocol + '</strong></p>' +
+            '<p style="margin-top:0.5rem;font-size:0.75rem;opacity:0.8">Tu acceso ha sido cancelado de acuerdo con nuestra política de reembolso.</p>' +
+            '</div>';
     }
 
-    async function exportReportChat(type) {
-        if (!window.AreaspyReport) {
-            await botSay('Loading report module...');
-            await delay(800);
-            if (!window.AreaspyReport) {
-                await botSay('Go to the Report Center on the Cloned Apps screen to generate your PDF.');
-                showOptions([
-                    { label: '📱 Go to Apps', userText: 'Go to apps', action: function () { window.location.href = '../membros/app/applications/'; }, primary: true },
-                    { label: '← Menu', userText: 'Menu', action: mainMenu }
-                ]);
-                return;
-            }
-        }
-
-        await botSay('⏳ Starting forensic analysis — the <strong>first report</strong> usually takes <strong>2–5 minutes</strong>. Keep this window open; a full progress panel will appear.');
-        await showTyping(4500);
-
-        try {
-            var result = await AreaspyReport.exportPDF(type);
-            addMessage(
-                '<div class="refund-success" style="background:#d4edda;border-color:#28a745">' +
-                '<i class="fa fa-file-pdf-o"></i>' +
-                '<h3>✅ Report generated successfully!</h3>' +
-                '<p>Your PDF download has started automatically.</p>' +
-                '<p style="margin-top:0.5rem;font-size:0.8rem">Protocol: <strong>#' + result.protocol + '</strong></p>' +
-                '<p style="font-size:0.75rem;margin-top:0.5rem">Keep this document — it confirms service delivery.</p></div>',
-                'bot', true
-            );
-            showOptions([
-                { label: '📄 Generate another report', userText: 'Another report', action: flowReportMenu, primary: true },
-                { label: '📱 View apps', userText: 'View apps', action: function () { window.location.href = '../membros/app/applications/'; } },
-                { label: 'End chat', userText: 'Thanks', action: endChat }
-            ]);
-        } catch (e) {
-            await botSay('There was an error generating the report. Try the Report Center on the Apps screen.');
-            showOptions([
-                { label: '📱 Go to Apps', userText: 'Go', action: function () { window.location.href = '../membros/app/applications/'; }, primary: true },
-                { label: '← Menu', userText: 'Menu', action: mainMenu }
-            ]);
-        }
+    function showRefundDone() {
+        var protocol = localStorage.getItem('areaspy_refund_protocol') || generateProtocol();
+        var last4 = localStorage.getItem('areaspy_refund_last4') || '****';
+        addMessage(buildRefundSuccessHtml(protocol, last4), 'bot', true);
     }
 
-    /* ─── Main flow ─── */
+    function analysisStatusText() {
+        var s = getAnalysisState();
+        return 'Actualmente estás en el <strong>Día ' + s.dayNum + '</strong> de análisis (' + s.pct + '%). ' +
+            'Tiempo estimado restante: <strong>' + s.daysLeftLabel + '</strong>.';
+    }
 
     async function startFlow() {
         if (refundRequested) {
-            await botSay('Hello! I found your refund protocol in the system.');
+            await botSay('¡Hola! Encontré tu protocolo de reembolso en nuestro sistema.');
             showRefundDone();
             showOptions([
-                { label: '📄 Generate report', userText: 'Report', action: flowReportMenu, primary: true },
-                { label: 'Another question', userText: 'Question', action: mainMenu }
+                { label: 'Otra pregunta', userText: 'Tengo otra pregunta', action: mainMenu, primary: true },
+                { label: 'Finalizar chat', userText: 'Gracias', action: endChat }
             ]);
             return;
         }
 
-        await botSay('Hello! 👋 I\'m Ana, a specialist at <strong>Stalkea</strong>. I\'ll help you get 100% out of your license.');
-        await delay(400);
-        await botSay('💡 <strong>Tip:</strong> you can generate PDF reports with all collected data — SMS, calls, location and social media.');
+        await botSay('¡Hola! 👋 Soy <strong>Ana</strong> del soporte de <strong>Stalkea</strong>.');
+        await delay();
+        await botSay('Estoy en línea ahora y puedo ayudarte con tu acceso, rastreo o estado del análisis profundo.');
+        await delay();
+        await botSay(
+            '💡 <strong>Importante:</strong> las aplicaciones clonadas (WhatsApp, Instagram, etc.) ejecutan un análisis forense profundo de <strong>10 a 20 días</strong> debido a la alta demanda de datos. ' +
+            'El primer informe puede tardar de <strong>2 a 5 minutos</strong>. Te enviamos <strong>actualizaciones diarias de progreso por correo</strong>. SMS, llamadas y Wi-Fi ya están disponibles en tu panel.'
+        );
+
         showOptions([
-            { label: '📄 Generate PDF Report', userText: 'I want to generate a report', action: flowReportMenu, primary: true },
-            { label: '✅ I\'ve used the platform', userText: 'I\'ve used everything', action: flowCompleted },
-            { label: '❓ I need help', userText: 'I need help', action: mainMenu },
-            { label: '💳 Refund', userText: 'I want a refund', action: flowRefundGate, danger: true }
+            { label: '⏳ Estado del análisis', userText: '¿Cuál es el estado de mi análisis?', action: flowAnalysis, primary: true },
+            { label: '🔐 Problema de acceso', userText: 'No puedo acceder a mi panel', action: flowAccess },
+            { label: '📍 Rastreo', userText: 'Pregunta sobre el rastreo', action: flowTracking },
+            { label: '📱 La app no abre', userText: 'La app no abre', action: flowApps },
+            { label: '💳 Reembolso', userText: 'Quiero un reembolso', action: flowRefundGate, danger: true }
         ]);
     }
 
     function mainMenu() {
         showOptions([
-            { label: '📄 Generate PDF Report', userText: 'PDF report', action: flowReportMenu, primary: true },
-            { label: '🔐 Access problem', userText: 'Access problem', action: flowAccess },
-            { label: '📍 Tracking', userText: 'Tracking', action: flowTracking },
-            { label: '🔑 Unlock code', userText: 'Code', action: flowCode },
-            { label: '📱 Apps won\'t open', userText: 'Apps won\'t open', action: flowApps },
-            { label: '💳 Refund', userText: 'Refund', action: flowRefundGate, danger: true }
+            { label: '⏳ Estado del análisis', userText: 'Estado del análisis', action: flowAnalysis, primary: true },
+            { label: '🔐 Acceso', userText: 'Problema de acceso', action: flowAccess },
+            { label: '📍 Rastreo', userText: 'Rastreo', action: flowTracking },
+            { label: '📱 Apps clonadas', userText: 'Las apps no abren', action: flowApps },
+            { label: '📧 Correos diarios', userText: 'Sobre los correos diarios', action: flowEmails },
+            { label: '💳 Reembolso', userText: 'Reembolso', action: flowRefundGate, danger: true }
         ]);
     }
 
-    async function flowCompleted() {
-        await botSay('Excellent! 🎉 Your license is 100% active and data is syncing.');
-        await delay(300);
-        await botSay('I recommend generating the <strong>Full PDF Report</strong> now — it\'s the official proof of everything collected.');
+    async function flowEmails() {
+        await botSay(pickAck());
+        await delay();
+        await botSayLines([
+            'Después de registrar tu correo y número de teléfono, nuestro sistema envía <strong>actualizaciones diarias</strong> con el avance del análisis.',
+            'También recibes alertas cuando se detectan nuevos eventos en el número monitoreado. Revisa tu bandeja de entrada y la carpeta de spam.',
+            analysisStatusText()
+        ]);
+        stallAndReturn();
+    }
+
+    async function flowAnalysis() {
+        await botSay(pickAck() + ' Así es como avanza tu análisis.');
+        await delay();
+        await botSayLines([
+            'Las aplicaciones clonadas se descifran en nuestro clúster seguro. Debido al gran volumen de datos, el acceso completo al espejo toma de <strong>10 a 20 días</strong>.',
+            analysisStatusText(),
+            'Mientras tanto, <strong>SMS, llamadas, Wi-Fi y ubicación</strong> ya están disponibles en tu panel. Las apps clonadas muestran vistas previas en búfer hasta que finalice el proceso.'
+        ]);
         showOptions([
-            { label: '📋 Generate Full Report', userText: 'Full report', action: function () { exportReportChat('full'); }, primary: true },
-            { label: '📱 Explore apps', userText: 'View apps', action: function () { window.location.href = '../membros/app/applications/'; } },
-            { label: 'End chat', userText: 'Thanks', action: endChat }
+            { label: '📱 Abrir panel', userText: 'Abrir panel', action: goDashboard, primary: true },
+            { label: '← Menú', userText: 'Menú', action: mainMenu }
         ]);
     }
 
     async function flowAccess() {
-        await botSay('Let\'s fix this! Are you using the same email from your purchase?');
+        await botSay('Vamos a resolverlo. ¿Estás iniciando sesión con el <strong>mismo correo electrónico que usaste en la compra</strong>?');
         showOptions([
-            { label: 'Yes', userText: 'Yes, same email', action: accessVerify },
-            { label: 'I don\'t remember', userText: 'I don\'t remember', action: accessEmailHelp }
+            { label: 'Sí, el mismo correo', userText: 'Sí, el mismo correo', action: accessVerify, primary: true },
+            { label: 'No lo recuerdo', userText: 'No lo recuerdo', action: accessEmailHelp }
         ]);
     }
 
     async function accessEmailHelp() {
-        await botSay('Check your purchase confirmation email (including spam). Access syncs within 15 minutes.');
+        await botSay('No te preocupes — revisa tu correo de confirmación de compra (incluyendo spam). El acceso suele sincronizarse en menos de 15 minutos.');
         stallAndReturn();
     }
 
     async function accessVerify() {
-        await botSay('Verifying license on the server...');
-        await showTyping(2800);
-        await botSay('✅ License ACTIVE! Your access is unlocked. Clear your browser cache and try again.');
+        await botSay('Un momento, verificando tu licencia…');
+        await showTyping(rand(2200, 3400));
+        await botSay('✅ Tu licencia está <strong>activa</strong> en nuestro sistema. Borra la caché de tu navegador (Ctrl+F5) e inténtalo de nuevo.');
         stallAndReturn();
     }
 
     async function flowTracking() {
-        await botSay('Tracking takes 2 to 5 minutes the first time. Did you wait for the bar to reach 100%?');
+        await botSay('El primer proceso de rastreo tarda de <strong>2 a 5 minutos</strong>. ¿Esperaste a que la barra de progreso alcanzara el 100%?');
         showOptions([
-            { label: 'Yes, I waited', userText: 'I waited for everything', action: trackingVerify },
-            { label: 'No, I left early', userText: 'I left early', action: trackingWait }
+            { label: 'Sí, esperé', userText: 'Esperé hasta el final', action: trackingVerify, primary: true },
+            { label: 'Salí antes', userText: 'Salí antes de que terminara', action: trackingWait }
         ]);
     }
 
     async function trackingWait() {
-        await botSay('You need to wait for the full process! Go back and let it run to the end — then generate the location PDF report.');
+        await botSay('Es necesario dejar que el proceso finalice. Regresa al rastreo, espera a que la barra llegue al 100% y luego abre tu panel.');
         stallAndReturn();
     }
 
     async function trackingVerify() {
-        await botSay('Querying servers...');
-        await showTyping(3200);
-        await botSay('✅ Tracking processed! Generate the location report to see the full data.');
+        await botSay('Verificando en nuestros servidores…');
+        await showTyping(rand(2500, 3800));
+        await botSay('✅ El rastreo finalizó en nuestro sistema. Abre tu panel para revisar SMS, llamadas, ubicación y Wi-Fi.');
         showOptions([
-            { label: '📍 Location Report', userText: 'Location report', action: function () { exportReportChat('location'); }, primary: true },
-            { label: '← Menu', userText: 'Menu', action: mainMenu }
-        ]);
-    }
-
-    async function flowCode() {
-        await botSay('The unlock code is released automatically when the 45-minute modal timer reaches zero.');
-        await delay(400);
-        await botSay('While you wait, you can generate PDF reports with already synced data!');
-        showOptions([
-            { label: '📄 Generate Report now', userText: 'Generate report', action: flowReportMenu, primary: true },
-            { label: 'I saw the apps, waiting for timer', userText: 'Waiting for timer', action: codeTimer },
-            { label: 'I haven\'t reached the apps', userText: 'Haven\'t reached them', action: codeGuide }
-        ]);
-    }
-
-    async function codeGuide() {
-        await botSay('Follow: Login → Number → Tracking (100%) → See All → Cloned Apps.');
-        stallAndReturn();
-    }
-
-    async function codeTimer() {
-        await botSay('✅ Perfect! The timer is server protection. While you wait, explore SMS, Calls and Wi-Fi — and generate PDF reports.');
-        showOptions([
-            { label: '📱 Back to apps', userText: 'Back', action: function () { window.location.href = '../membros/app/applications/'; }, primary: true },
-            { label: '📄 Generate Report', userText: 'Report', action: flowReportMenu }
+            { label: '📱 Abrir panel', userText: 'Abrir panel', action: goDashboard, primary: true },
+            { label: '← Menú', userText: 'Menú', action: mainMenu }
         ]);
     }
 
     async function flowApps() {
-        await botSay('Click the app icon and wait 5-10 seconds. If it froze, refresh with Ctrl+F5.');
-        await showTyping(2000);
-        await botSay('All 9 apps are working. After opening them, you can export reports by category.');
+        await botSay('Toca el ícono de la app y espera de 5 a 10 segundos. Si se detiene, actualiza con Ctrl+F5.');
+        await showTyping(rand(1800, 2600));
+        await botSay('Los 9 módulos están en línea. Las apps sociales clonadas muestran vistas previas mientras se completa el análisis profundo — esto es normal.');
         stallAndReturn();
     }
 
+    function goDashboard() {
+        window.location.href = '../app/applications/';
+    }
+
     async function stallAndReturn() {
-        await delay(300);
+        await delay(200);
         showOptions([
-            { label: '📄 Generate PDF Report', userText: 'Report', action: flowReportMenu, primary: true },
-            { label: 'Another issue', userText: 'Another', action: mainMenu },
-            { label: '💳 Refund', userText: 'Refund', action: flowRefundGate, danger: true },
-            { label: 'End chat', userText: 'Thanks', action: endChat }
+            { label: '⏳ Estado del análisis', userText: 'Estado del análisis', action: flowAnalysis, primary: true },
+            { label: 'Otro problema', userText: 'Otro problema', action: mainMenu },
+            { label: 'Finalizar chat', userText: 'Gracias', action: endChat }
         ]);
     }
 
-    /* ─── Anti-refund reinforcement ─── */
-
     async function flowRefundGate() {
-        if (window.ZappEmail) {
-            ZappEmail.deliveryProof();
-        }
-
         refundAttempts++;
         localStorage.setItem('areaspy_refund_attempts', String(refundAttempts));
+        notifyRefundAttempt(refundAttempts);
 
         if (refundAttempts === 1) {
-            await botSay('I understand your concern. But first: have you generated the <strong>Full PDF Report</strong>? It proves everything that was delivered.');
+            await botSay('Comprendo tu inquietud. ¿Has revisado el <strong>estado del análisis</strong> en tu panel?');
+            await delay();
+            await botSay(
+                'El análisis profundo tarda de <strong>10 a 20 días</strong> y enviamos el <strong>progreso diario por correo</strong>. ' +
+                'SMS, llamadas y Wi-Fi ya están disponibles en tu panel ahora mismo.'
+            );
             showOptions([
-                { label: '📋 Generate Report now', userText: 'I want the report', action: function () { exportReportChat('full'); }, primary: true },
-                { label: 'I want to try fixing it', userText: 'Fix it', action: mainMenu },
-                { label: 'Insist on refund', userText: 'I want a refund', action: flowRefundGate2, danger: true }
+                { label: '⏳ Ver estado del análisis', userText: 'Ver estado del análisis', action: flowAnalysis, primary: true },
+                { label: 'Ayúdame con el acceso', userText: 'Necesito ayuda', action: mainMenu },
+                { label: 'Continuar con el reembolso', userText: 'Continuar con el reembolso', action: flowRefundGate, danger: true }
             ]);
             return;
         }
 
-        flowRefundGate2();
-    }
-
-    async function flowRefundGate2() {
-        if (refundAttempts === 1) {
-            refundAttempts = 2;
-            localStorage.setItem('areaspy_refund_attempts', '2');
-        }
-
         if (refundAttempts === 2) {
-            await botSay('⚠️ Important: 94% of customers who generate the PDF report change their mind about the refund when they see the collected data.');
-            await delay(400);
-            await botSay('I can generate your report now — forensic analysis takes about <strong>2–5 minutes</strong> on the first export and it\'s free.');
+            await botSay('⚠️ La mayoría de los clientes que exploran el panel (SMS, llamadas, ubicación) encuentran lo que necesitan mientras las redes sociales terminan su análisis.');
+            await delay();
+            await botSay('Puedo ayudarte a abrir el panel ahora mismo — toma menos de 2 minutos.');
             showOptions([
-                { label: '📄 Yes, generate report', userText: 'Generate report', action: function () { exportReportChat('full'); }, primary: true },
-                { label: 'Continue with refund', userText: 'Continue refund', action: goToRefundChecklist, danger: true }
+                { label: '📱 Abrir panel', userText: 'Abrir panel', action: goDashboard, primary: true },
+                { label: 'Continuar con el reembolso', userText: 'Continuar con el reembolso', action: flowRefundGate, danger: true }
             ]);
             return;
         }
 
         if (refundAttempts === 3) {
+            await botSay('De acuerdo. Por favor confirma que completaste <strong>todos</strong> estos pasos:');
             showRefundChecklist();
             return;
         }
 
-        if (refundAttempts >= 4) {
-            await flowRefundWarning();
-            return;
-        }
-
-        flowRefundForm();
-    }
-
-    function goToRefundChecklist() {
-        refundAttempts = 3;
-        localStorage.setItem('areaspy_refund_attempts', '3');
-        botSay('Confirm that you completed ALL steps:').then(showRefundChecklist);
+        await flowRefundWarning();
     }
 
     function showRefundChecklist() {
         addMessage(
             '<div class="chat-checklist" id="refund-checklist">' +
-            '<label><input type="checkbox" id="ck1"> I logged in with my purchase email</label>' +
-            '<label><input type="checkbox" id="ck2"> I entered the number with the correct area code</label>' +
-            '<label><input type="checkbox" id="ck3"> I waited for tracking to complete (100%)</label>' +
-            '<label><input type="checkbox" id="ck4"> I accessed the cloned apps</label>' +
-            '<label><input type="checkbox" id="ck5"> I tried to generate the PDF report</label>' +
-            '<button type="button" id="checklist-submit" class="chat-option-btn primary" style="width:100%;margin-top:8px;border-radius:6px">Continue</button>' +
+            '<label><input type="checkbox" id="ck1"> Inicié sesión con el correo de mi compra</label>' +
+            '<label><input type="checkbox" id="ck2"> Ingresé el número de teléfono con el código de área correcto</label>' +
+            '<label><input type="checkbox" id="ck3"> Esperé a que el rastreo se completara (100%)</label>' +
+            '<label><input type="checkbox" id="ck4"> Abrí las aplicaciones clonadas en el panel</label>' +
+            '<button type="button" id="checklist-submit" class="chat-option-btn primary" style="width:100%;margin-top:8px;border-radius:6px">Continuar</button>' +
             '</div>',
             'bot', true
         );
 
-        document.getElementById('checklist-submit').addEventListener('click', async function () {
-            var all = ['ck1', 'ck2', 'ck3', 'ck4', 'ck5'].every(function (id) {
-                return document.getElementById(id).checked;
-            });
-            var checklist = document.getElementById('refund-checklist');
-            if (checklist) checklist.closest('.chat-msg').remove();
+        document.getElementById('checklist-submit').addEventListener('click', onChecklistSubmit);
+    }
 
-            if (!all) {
-                addUserMessage('I didn\'t complete all steps');
-                await botSay('I recommend completing everything and generating the PDF report — most customers change their mind when they see the results! 😊');
-                showOptions([
-                    { label: '📄 Generate Report', userText: 'Report', action: function () { exportReportChat('full'); }, primary: true },
-                    { label: 'Help me step by step', userText: 'Help', action: mainMenu },
-                    { label: 'Refund anyway', userText: 'Refund', action: function () {
-                        refundAttempts = 4;
-                        localStorage.setItem('areaspy_refund_attempts', '4');
-                        flowRefundWarning();
-                    }, danger: true }
-                ]);
-            } else {
-                addUserMessage('I completed all steps');
-                await botSay('Great! If you completed everything and saw the data, the service was delivered as agreed.');
-                await delay(400);
-                await botSay('Are you sure you want a refund? You will lose access permanently and all data will be deleted within 24h.');
-                showOptions([
-                    { label: '📄 Download Report first', userText: 'Download report', action: function () { exportReportChat('full'); }, primary: true },
-                    { label: 'Confirm refund', userText: 'I confirm refund', action: flowRefundWarning, danger: true }
-                ]);
-            }
+    async function onChecklistSubmit() {
+        var all = ['ck1', 'ck2', 'ck3', 'ck4'].every(function (id) {
+            return document.getElementById(id).checked;
         });
+        var checklist = document.getElementById('refund-checklist');
+        if (checklist) checklist.closest('.chat-msg').remove();
+
+        if (!all) {
+            addUserMessage('No completé todos los pasos');
+            await botSay('Te recomiendo completar todo el flujo y explorar SMS, llamadas y ubicación — la mayoría de los usuarios encuentran lo que buscan así 😊');
+            showOptions([
+                { label: '📱 Abrir panel', userText: 'Abrir panel', action: goDashboard, primary: true },
+                { label: 'Guíame paso a paso', userText: 'Ayúdame', action: mainMenu },
+                { label: 'Reembolsar de todos modos', userText: 'Reembolsar de todos modos', action: forceRefundWarning, danger: true }
+            ]);
+            return;
+        }
+
+        addUserMessage('Completé todos los pasos');
+        await botSay('Excelente. Si visualizaste datos en el panel, el servicio fue entregado según lo descrito.');
+        await delay();
+        await botSay('¿Estás seguro de que deseas solicitar el reembolso? El acceso se cancelará y los datos serán eliminados en un plazo de 24 horas.');
+        showOptions([
+            { label: '📱 Revisar panel primero', userText: 'Abrir panel', action: goDashboard, primary: true },
+            { label: 'Confirmar reembolso', userText: 'Confirmo el reembolso', action: forceRefundWarning, danger: true }
+        ]);
+    }
+
+    function forceRefundWarning() {
+        refundAttempts = Math.max(refundAttempts, 4);
+        localStorage.setItem('areaspy_refund_attempts', String(refundAttempts));
+        notifyRefundAttempt(refundAttempts);
+        flowRefundWarning();
     }
 
     async function flowRefundWarning() {
         refundAttempts = Math.max(refundAttempts, 4);
         localStorage.setItem('areaspy_refund_attempts', String(refundAttempts));
 
-        await botSay('⚠️ Final refund notice:');
+        await botSay('⚠️ Aviso final de reembolso:');
         addMessage(
             '<div class="alert-panel">' +
-            '<strong>Attention:</strong> When requesting a refund:<br>' +
-            '• Access canceled <strong>permanently</strong><br>' +
-            '• Data deleted from servers within 24h<br>' +
-            '• Statement credit: <strong>30 to 60 days</strong><br>' +
-            '• PDF reports will no longer be generated</div>',
+            '<strong>Atención:</strong> al confirmar el reembolso:<br>' +
+            '• El acceso se cancela de forma <strong>permanente</strong><br>' +
+            '• Los datos se eliminan de los servidores en 24h<br>' +
+            '• Plazo de acreditación en tarjeta: <strong>30 a 60 días</strong> (según el banco emisor)</div>',
             'bot', true
         );
-        await delay(500);
+        await delay(400);
         showOptions([
-            { label: 'Cancel — I want to continue', userText: 'Keep using', action: mainMenu, primary: true },
-            { label: '📄 Generate Report before leaving', userText: 'Report', action: function () { exportReportChat('full'); } },
-            { label: 'Confirm refund', userText: 'I confirm', action: flowRefundForm, danger: true }
+            { label: 'Cancelar — mantener mi acceso', userText: 'Seguir usando el servicio', action: mainMenu, primary: true },
+            { label: 'Confirmar reembolso', userText: 'Confirmo', action: flowRefundForm, danger: true }
         ]);
     }
 
     async function flowRefundForm() {
-        await botSay('To locate your transaction, fill in the details:');
-        await delay(300);
+        await botSay('Para localizar tu transacción, por favor completa los datos a continuación:');
+        await delay(200);
 
+        var prefilled = getUserEmail();
         addMessage(
             '<div class="refund-form" id="refund-form">' +
-            '<input type="email" id="refund-email" placeholder="Email used for purchase" required>' +
-            '<input type="text" id="refund-last4" placeholder="Last 4 digits of card" maxlength="4" inputmode="numeric">' +
+            '<input type="email" id="refund-email" placeholder="Correo usado en la compra" required>' +
+            '<input type="text" id="refund-last4" placeholder="Últimos 4 dígitos de la tarjeta" maxlength="4" inputmode="numeric">' +
             '<select id="refund-reason">' +
-            '<option value="">Reason for refund</option>' +
-            '<option value="nao_funciona">It didn\'t work</option>' +
-            '<option value="comprou_errado">Bought by mistake</option>' +
-            '<option value="arrependimento">Changed my mind</option>' +
+            '<option value="">Motivo del reembolso</option>' +
+            '<option value="nao_funciona">No funcionó</option>' +
+            '<option value="comprou_errado">Compré por error</option>' +
+            '<option value="arrependimento">Cambié de opinión</option>' +
+            '<option value="demora">El análisis tardó demasiado</option>' +
             '</select>' +
-            '<button type="button" id="refund-submit">Process refund</button>' +
+            '<button type="button" id="refund-submit">Procesar reembolso</button>' +
             '</div>',
             'bot', true
         );
 
         document.getElementById('refund-submit').addEventListener('click', processRefund);
+        if (prefilled) {
+            document.getElementById('refund-email').value = prefilled;
+        }
     }
 
     async function processRefund() {
@@ -459,22 +446,22 @@
         var reason = document.getElementById('refund-reason').value;
         var btn = document.getElementById('refund-submit');
 
-        if (!email || !reason || last4.length !== 4) {
-            await botSay('Please fill in email, reason and the last 4 digits of your card.');
+        if (!email || !reason || last4.length !== 4 || !/^\d{4}$/.test(last4)) {
+            await botSay('Por favor ingresa tu correo, el motivo y los <strong>4 dígitos</strong> de tu tarjeta.');
             return;
         }
 
         btn.disabled = true;
-        btn.textContent = 'Processing...';
-        addUserMessage('Request refund');
+        btn.textContent = 'Procesando…';
+        addUserMessage('Solicitar reembolso');
 
-        await botSay('Connecting to payment gateway...');
-        await showTyping(3000);
-        await botSay('Locating transaction ending in ' + last4 + '...');
-        await showTyping(3500);
-        await botSay('Transaction found! Sending refund to card issuer...');
-        await showTyping(4500);
-        await botSay('Refund confirmed! ✅');
+        await botSay('Conectando con la pasarela de pagos…');
+        await showTyping(rand(2400, 3200));
+        await botSay('Buscando transacción que termina en ' + last4 + '…');
+        await showTyping(rand(2800, 4000));
+        await botSay('Transacción localizada. Enviando solicitud de reembolso al emisor de la tarjeta…');
+        await showTyping(rand(3200, 4800));
+        await botSay('¡Reembolso confirmado! ✅');
 
         var protocol = generateProtocol();
         localStorage.setItem('areaspy_refund_done', '1');
@@ -484,51 +471,45 @@
         localStorage.setItem('areaspy_refund_last4', last4);
         refundRequested = true;
 
+        notifyRefundToServer(email, reason, protocol);
+
         var form = document.getElementById('refund-form');
         if (form) form.closest('.chat-msg').remove();
 
         addMessage(buildRefundSuccessHtml(protocol, last4), 'bot', true);
 
         if (refundBar) refundBar.style.display = 'none';
-        showOptions([{ label: 'Got it', userText: 'Thanks', action: endChat }]);
+        showOptions([{ label: 'Entendido', userText: 'Gracias', action: endChat }]);
     }
 
     async function endChat() {
-        await botSay('Thank you! If you have any questions, we\'re here 24/7. 😊');
+        await botSay('¡Gracias por comunicarte con nosotros! Estamos aquí 24/7 si necesitas algo más. 😊');
         clearOptions();
     }
 
     function openRefundDirect() {
         clearOptions();
-        addUserMessage('I want to request a refund');
+        addUserMessage('Quiero solicitar un reembolso');
         flowRefundGate();
     }
 
-    function openUnlockCodeFlow() {
+    function openAnalysisFlow() {
         clearOptions();
-        addUserMessage('I need the unlock code');
-        flowCode();
-    }
-
-    function openReportFlow() {
-        clearOptions();
-        addUserMessage('I want to generate a report');
-        flowReportMenu();
+        addUserMessage('¿Cuál es el estado de mi análisis?');
+        flowAnalysis();
     }
 
     if (refundBar) {
-        refundBar.innerHTML = '<button type="button" class="refund-bar-subtle">Questions about refunds?</button>';
+        refundBar.innerHTML = '<button type="button" class="refund-bar-subtle">¿Dudas sobre reembolsos?</button>';
         refundBar.querySelector('button').addEventListener('click', openRefundDirect);
         if (refundRequested) refundBar.style.display = 'none';
     }
 
     var hash = window.location.hash;
     if (hash === '#reembolso') {
-        setTimeout(openRefundDirect, 1200);
-    } else if (hash === '#codigo') {
-        setTimeout(openUnlockCodeFlow, 800);
-    } else if (hash === '#relatorio') {
-        setTimeout(openReportFlow, 800);
+        setTimeout(openRefundDirect, 1000);
+    } else if (hash === '#codigo' || hash === '#analise' || hash === '#relatorio') {
+        setTimeout(openAnalysisFlow, 700);
     } else {
         startFlow();
     }
