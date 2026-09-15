@@ -19,7 +19,7 @@ function updateUserProfileInfo(cleanNumber) {
 
     var regionText = phoneCountryName && phoneRegion
         ? phoneCountryName + ' — ' + phoneRegion
-        : (phoneRegion || 'Region identified');
+        : (phoneRegion || 'Región identificada');
     $('.panel-device-region').text(regionText);
 
     var $avatar = $('.picture_profile');
@@ -68,7 +68,7 @@ function getDeepAnalysisState() {
     if (window.AreaspyAnalysis && AreaspyAnalysis.getState) {
         return AreaspyAnalysis.getState();
     }
-    return { pct: 3, dayNum: 1, daysLeftLabel: '10–20 days' };
+    return { pct: 3, dayNum: 1, daysLeftLabel: '10–20 días' };
 }
 
 var APP_LABELS = {
@@ -113,7 +113,7 @@ function fixModalImages(modalBody, modalId) {
         var label = h6 ? h6.textContent.trim() : '';
         var src = img.getAttribute('src') || '';
 
-        if (label.indexOf('Warning') !== -1 || label.indexOf('Attention') !== -1) {
+        if (label.indexOf('Warning') !== -1 || label.indexOf('Attention') !== -1 || label.indexOf('Aviso') !== -1 || label.indexOf('Atención') !== -1) {
             var warnIcon = document.createElement('div');
             warnIcon.className = 'modal-warn-icon';
             warnIcon.innerHTML = '<i class="fa fa-exclamation-triangle"></i>';
@@ -367,7 +367,7 @@ function initDashboardStatAnimation() {
                 current = target;
                 clearInterval(timer);
             }
-            el.textContent = current.toLocaleString('en-US');
+            el.textContent = current.toLocaleString('es-ES');
         }, 120);
     });
 }
@@ -430,10 +430,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">' +
                     '<div class="modal-content">' +
                     '<div class="modal-header">' +
-                    '<h5 class="modal-title" id="dynamicModalLabel">Loading...</h5>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+                    '<h5 class="modal-title" id="dynamicModalLabel">Cargando...</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>' +
                     '</div>' +
-                    '<div class="modal-body"><p>Loading...</p></div>' +
+                    '<div class="modal-body"><p>Cargando...</p></div>' +
                     '</div></div></div>'
                 );
                 modalElement = document.getElementById('dynamicModal');
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var bodyEl = tempDiv.querySelector('.corpo-modal');
 
                 modalElement.querySelector('#dynamicModalLabel').textContent =
-                    titleEl ? titleEl.textContent : 'Details';
+                    titleEl ? titleEl.textContent : 'Detalles';
                 modalElement.querySelector('.modal-body').innerHTML =
                     bodyEl ? bodyEl.innerHTML : data;
 
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 dynamicModal.show();
             } catch (error) {
                 modalElement.querySelector('.modal-body').innerHTML =
-                    '<p class="text-danger">Failed to load. Please try again.</p>';
+                    '<p class="text-danger">Error al cargar. Por favor inténtalo de nuevo.</p>';
                 bootstrap.Modal.getOrCreateInstance(modalElement).show();
             } finally {
                 if (spinner) {

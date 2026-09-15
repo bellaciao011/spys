@@ -13,13 +13,13 @@
         hub.className = 'panel-support-hub';
         hub.innerHTML =
             '<div class="panel-support-head">' +
-            '<span><i class="fa fa-headphones"></i> Ana — 24/7 Support</span>' +
-            '<span class="live-badge" style="font-size:0.6rem">ONLINE</span></div>' +
-            '<p class="panel-support-desc">Need help? Ana can check analysis status (10–20 days), access or tracking in a few minutes.</p>' +
+            '<span><i class="fa fa-headphones"></i> Ana — Soporte 24/7</span>' +
+            '<span class="live-badge" style="font-size:0.6rem">EN LÍNEA</span></div>' +
+            '<p class="panel-support-desc">¿Necesitas ayuda? Ana puede verificar el estado del análisis (10–20 días), tu acceso o el rastreo en pocos minutos.</p>' +
             '<div class="panel-support-actions">' +
-            '<a href="' + CHAT_BASE + '#analise" class="btn-support-action primary"><i class="fa fa-hourglass-half"></i> Analysis status</a>' +
-            '<a href="' + CHAT_BASE + '" class="btn-support-action"><i class="fa fa-comments"></i> Open chat</a>' +
-            '<a href="' + CHAT_BASE + '#reembolso" class="btn-support-action"><i class="fa fa-credit-card"></i> Refund help</a>' +
+            '<a href="' + CHAT_BASE + '#analise" class="btn-support-action primary"><i class="fa fa-hourglass-half"></i> Estado del análisis</a>' +
+            '<a href="' + CHAT_BASE + '" class="btn-support-action"><i class="fa fa-comments"></i> Abrir chat</a>' +
+            '<a href="' + CHAT_BASE + '#reembolso" class="btn-support-action"><i class="fa fa-credit-card"></i> Ayuda con reembolso</a>' +
             '</div>';
 
         mount.appendChild(hub);
@@ -31,7 +31,7 @@
         fab.id = 'panel-chat-fab';
         fab.className = 'panel-chat-fab';
         fab.href = CHAT_BASE;
-        fab.title = '24/7 Support';
+        fab.title = 'Soporte 24/7';
         fab.innerHTML = '<i class="fa fa-comments"></i>';
         document.body.appendChild(fab);
     }
@@ -46,7 +46,7 @@
         topbar.addEventListener('click', function (e) {
             if (sessionStorage.getItem('zapp_refund_gate_seen')) return;
             sessionStorage.setItem('zapp_refund_gate_seen', '1');
-            if (!confirm('Our support team can help with analysis status or access before processing a refund.\n\nClick OK to continue to support.')) {
+            if (!confirm('Nuestro equipo de soporte puede ayudarte con el estado del análisis o tu acceso antes de procesar un reembolso.\n\nHaz clic en Aceptar para continuar al soporte.')) {
                 e.preventDefault();
                 window.location.href = CHAT_BASE;
             }

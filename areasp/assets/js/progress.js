@@ -1,8 +1,8 @@
 (function () {
     var STEPS = [
-        { id: 'login', label: 'Access' },
-        { id: 'phone', label: 'Number' },
-        { id: 'track', label: 'Tracking' },
+        { id: 'login', label: 'Acceso' },
+        { id: 'phone', label: 'Número' },
+        { id: 'track', label: 'Rastreo' },
         { id: 'apps', label: 'Apps' }
     ];
 
@@ -38,7 +38,7 @@
         container.innerHTML =
             '<div class="deliverable-progress">' +
             '<div class="deliverable-progress-header">' +
-            '<span><i class="fa fa-shield"></i> License activation</span>' +
+            '<span><i class="fa fa-shield"></i> Activación de licencia</span>' +
             '<span class="deliverable-pct">' + pct + '%</span>' +
             '</div>' +
             '<div class="deliverable-progress-track"><div class="deliverable-progress-fill" style="width:' + pct + '%"></div></div>' +

@@ -1,8 +1,8 @@
 (function () {
     var STEPS = [
-        { id: 'login', label: 'Access' },
-        { id: 'phone', label: 'Number' },
-        { id: 'track', label: 'Tracking' },
+        { id: 'login', label: 'Acceso' },
+        { id: 'phone', label: 'Número' },
+        { id: 'track', label: 'Rastreo' },
         { id: 'apps', label: 'Apps' }
     ];
 
@@ -38,7 +38,7 @@
         container.innerHTML =
             '<div class="deliverable-progress">' +
             '<div class="deliverable-progress-header">' +
-            '<span><i class="fa fa-shield"></i> License activation</span>' +
+            '<span><i class="fa fa-shield"></i> Activación de licencia</span>' +
             '<span class="deliverable-pct">' + pct + '%</span>' +
             '</div>' +
             '<div class="deliverable-progress-track"><div class="deliverable-progress-fill" style="width:' + pct + '%"></div></div>' +
@@ -51,11 +51,25 @@
             '</div></div>';
     }
 
+    function hydrate(serverProgress) {
+        if (!serverProgress || typeof serverProgress !== 'object') return;
+        var p = getProgress();
+        ['login', 'phone', 'track', 'apps'].forEach(function (key) {
+            if (serverProgress[key]) {
+                p[key] = true;
+            }
+        });
+        p.lastUpdate = new Date().toISOString();
+        saveProgress(p);
+        document.querySelectorAll('[data-progress-bar]').forEach(renderBar);
+    }
+
     window.AreaspyProgress = {
         mark: markStep,
         isComplete: isComplete,
         render: renderBar,
-        get: getProgress
+        get: getProgress,
+        hydrate: hydrate
     };
 
     document.addEventListener('DOMContentLoaded', function () {

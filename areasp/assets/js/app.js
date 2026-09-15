@@ -159,7 +159,7 @@ $(document).ready(function () {
 
     $('.unlock').on('click', function () {
         var button = $(this);
-        button.html('<i class="fa fa-spinner fa-spin"></i> Unlocking access...').prop('disabled', true);
+        button.html('<i class="fa fa-spinner fa-spin"></i> Desbloqueando acceso...').prop('disabled', true);
 
         setTimeout(function () {
             window.location.href = 'applications/index.html';
