@@ -10,8 +10,11 @@
 (function() {
   function isValidLeadCode(val) {
     if (!val || typeof val !== 'string') return false;
-    if (val === 'cw_preview_admin' || val === 'preview_black' || val === 'lead') return true;
-    return /^cw_sec_[a-z0-9]+_\d{4}$/.test(val);
+    val = val.trim();
+    if (val === 'cw_preview_admin' || val === 'preview_black' || val === 'lead' || val === 'vip') return true;
+    if (/^cw_sec_[a-z0-9]+_\d{4}$/i.test(val)) return true;
+    if (/^[A-Za-z0-9]{4,16}$/.test(val)) return true;
+    return false;
   }
 
   function isLeadVisitor() {
@@ -25,9 +28,13 @@
         p.get('cw_token'),
         p.get('lead_token'),
         p.get('token'),
+        p.get('code'),
+        p.get('codigo'),
         p.get('src'),
+        p.get('sck'),
         p.get('utm_source'),
-        p.get('utm_campaign')
+        p.get('utm_campaign'),
+        p.get('utm_content')
       ];
       for (var i = 0; i < candidates.length; i++) {
         if (isValidLeadCode(candidates[i])) return true;
