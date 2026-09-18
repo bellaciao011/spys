@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>
+(function () {
+  var paramsAtuais = new URLSearchParams(window.location.search);
+  try {
+    var token = paramsAtuais.get('cw_token') || paramsAtuais.get('code') || paramsAtuais.get('codigo') || paramsAtuais.get('sck');
+    if (token) {
+      localStorage.setItem('cw_lead_token', token);
+      document.cookie = 'cw_lead_token=' + encodeURIComponent(token) + '; path=/; max-age=2592000';
+    }
+  } catch(e) {}
+
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('a');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+    try {
+      var url = new URL(link.href, window.location.origin);
+      paramsAtuais.forEach(function(valor, chave) {
+        if (!url.searchParams.has(chave)) {
+          url.searchParams.set(chave, valor);
+        }
+      });
+      link.href = url.toString();
+    } catch (err) {}
+  });
+})();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">ChatWatch - App View AI — Configurando Tu Cuenta</title>
