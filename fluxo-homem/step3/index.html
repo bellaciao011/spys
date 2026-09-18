@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head>
+<!DOCTYPE html><html lang="en"><head>
 <script>
 (function () {
   var paramsAtuais = new URLSearchParams(window.location.search);
@@ -19,7 +19,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChatWatch - App View AI — Accediendo</title>
+<title>ChatWatch - App View AI — Accessing WhatsApp</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 
@@ -101,16 +101,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;displa
   <div id="screen-load">
     <div class="card">
       <div class="spin-wrap"><div class="spin"></div></div>
-      <div class="load-title">Accediendo a WhatsApp</div>
+      <div class="load-title">Accessing WhatsApp</div>
       <div class="load-phone" id="lphone">+1 (849) 961-7136</div>
-      <div class="load-status" id="lstatus">Preparando acceso...</div>
+      <div class="load-status" id="lstatus">Preparing access...</div>
       <div class="prog-wrap"><div class="prog-fill" id="pfill" style="width: 13%;"></div></div>
       <div class="prog-pct" id="ppct">13%</div>
       <div class="steps">
-        <div class="step-item active" id="st0"><div class="step-ico">⏳</div><span class="step-txt">Conectando a los servidores de WhatsApp</span></div>
-        <div class="step-item" id="st1"><div class="step-ico">⏳</div><span class="step-txt">Verificando número de teléfono</span></div>
-        <div class="step-item" id="st2"><div class="step-ico">⏳</div><span class="step-txt">Cargando datos del perfil</span></div>
-        <div class="step-item" id="st3"><div class="step-ico">⏳</div><span class="step-txt">Buscando mensajes eliminados</span></div>
+        <div class="step-item active" id="st0"><div class="step-ico">⏳</div><span class="step-txt">Connecting to WhatsApp servers</span></div>
+        <div class="step-item" id="st1"><div class="step-ico">⏳</div><span class="step-txt">Verifying phone number</span></div>
+        <div class="step-item" id="st2"><div class="step-ico">⏳</div><span class="step-txt">Loading profile data</span></div>
+        <div class="step-item" id="st3"><div class="step-ico">⏳</div><span class="step-txt">Searching for deleted messages</span></div>
       </div>
     </div>
   </div>
@@ -125,17 +125,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;displa
         </div>
       </div>
       <div class="prof-num" id="prof-num">+1 (849) 961-7136</div>
-      <div class="reg-badge"><div class="reg-dot"></div>Registrado en WhatsApp</div>
+      <div class="reg-badge"><div class="reg-dot"></div>Registered on WhatsApp</div>
       <div class="stats-grid">
-        <div class="stat-box stat-online"><span class="stat-val online-val"><span class="online-dot"></span>En línea</span><span class="stat-lbl">Estado Actual</span></div>
-        <div class="stat-box"><span class="stat-val scanning" id="del-count">Escaneando...</span><span class="stat-lbl">Mensajes Eliminados</span></div>
+        <div class="stat-box stat-online"><span class="stat-val online-val"><span class="online-dot"></span>En línea</span><span class="stat-lbl">Current Status</span></div>
+        <div class="stat-box"><span class="stat-val scanning" id="del-count">Scanning...</span><span class="stat-lbl">Deleted Messages</span></div>
       </div>
     </div>
     <button class="cta" onclick="goStep4()">
       <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-      Iniciar Monitoreo
+      Start Monitoring
     </button>
-    <button class="change-btn" onclick="history.back()">Cambiar Número</button>
+    <button class="change-btn" onclick="history.back()">Change Number</button>
   </div>
 </div>
 
@@ -149,13 +149,13 @@ document.getElementById('lphone').textContent = decoded || '+1 (555) 000-0000';
 document.getElementById('prof-num').textContent = decoded || '+1 (555) 000-0000';
 
 var statusMsgs = [
-  'Preparando acceso...',
-  'Estableciendo conexión segura...',
-  'Verificando registro en WhatsApp...',
-  'Autenticando sesión...',
-  'Extrayendo datos del perfil...',
-  'Buscando mensajes eliminados...',
-  '¡Acceso completado!'
+  'Preparing access...',
+  'Establishing secure connection...',
+  'Verifying WhatsApp registration...',
+  'Authenticating session...',
+  'Extracting profile data...',
+  'Searching for deleted messages...',
+  'Access completed!'
 ];
 var sIdx = 0;
 
@@ -208,7 +208,7 @@ async function runLoad(){
     await sleep(150);
   }
   clearInterval(sTimer);
-  statusEl.textContent = '¡Acceso completado!';
+  statusEl.textContent = 'Access completed!';
   await sleep(600);
 
   // Transition to profile

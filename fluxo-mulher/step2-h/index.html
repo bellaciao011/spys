@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head>
+<!DOCTYPE html><html lang="en"><head>
 <script>
 (function () {
   var paramsAtuais = new URLSearchParams(window.location.search);
@@ -19,7 +19,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChatWatch - App View AI — Descubre Lo Que Te Ocultan</title>
+<title>ChatWatch - App View AI — Discover What They're Hiding</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 
@@ -81,15 +81,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;displa
   </div>
 
   <div class="headline">
-    <h1>Descubre <span class="red">Lo Que Te Están Ocultando</span></h1>
-    <p>Recupera <strong>mensajes eliminados</strong>, fotos y videos.</p>
+    <h1>Discover <span class="red">What They're Hiding From You</span></h1>
+    <p>Recover <strong>deleted messages</strong>, photos, and videos.</p>
   </div>
 
-  <div class="badge"><div class="dot"></div>3,892 actividades sospechosas detectadas hoy</div>
+  <div class="badge"><div class="dot"></div>3,892 suspicious activities detected today</div>
 
   <div class="card">
-    <div class="card-lbl">Ingresa el número de teléfono para espiar</div>
-    <div id="detecting-row" class="detecting" style="display: none;"><div class="det-spin"></div>Detectando tu ubicación...</div>
+    <div class="card-lbl">Enter the phone number to monitor</div>
+    <div id="detecting-row" class="detecting" style="display: none;"><div class="det-spin"></div>Detecting your location...</div>
     <div class="phone-row">
       <div class="country-btn" id="cbtn">
         <span class="flag" id="sel-flag"></span>
@@ -102,14 +102,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;displa
     <div class="hint" id="hint">Ej.: (555) 123-4567</div>
     <button class="cta" id="spy-btn" onclick="startSpy()">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      Comenzar a Espiar
+      Start Monitoring Now
     </button>
   </div>
 
   <div class="trust">
-    <div class="tbadge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>100% Anónimo</div>
-    <div class="tbadge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>Cifrado</div>
-    <div class="tbadge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>Indetectable</div>
+    <div class="tbadge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>100% Anonymous</div>
+    <div class="tbadge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0110 0v4"></path></svg>Encrypted</div>
+    <div class="tbadge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>Undetectable</div>
   </div>
 </div>
 
@@ -325,7 +325,7 @@ function startSpy() {
   if (raw.length < 5) {
     document.getElementById('phone-inp').classList.add('err');
     var h = document.getElementById('hint');
-    h.textContent = '⚠️ Ingresa un número de teléfono válido';
+    h.textContent = '⚠️ Please enter a valid phone number';
     h.classList.add('err-hint');
     return;
   }
@@ -341,7 +341,7 @@ function startSpy() {
   } catch(e) {}
 
   var btn = document.getElementById('spy-btn');
-  btn.innerHTML = '<div style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;"></div> Conectando...';
+  btn.innerHTML = '<div style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;"></div> Connecting...';
   btn.disabled = true;
 
   setTimeout(function(){
