@@ -6,14 +6,14 @@
     var ANALYSIS_MAX_DAYS = 20;
 
     var COPY = {
-        headline: 'Análisis profundo en curso',
-        lead: 'El análisis profundo se está ejecutando — el primer reporte puede tardar de 2 a 5 minutos. Te enviamos actualizaciones diarias de progreso por correo electrónico.',
-        window: '10 a 20 días',
-        windowShort: '10–20 días',
-        note: 'Debido a la alta demanda de datos en este dispositivo, el procesamiento toma más tiempo. Las aplicaciones clonadas se desbloquearán después del período indicado. SMS, llamadas y Wi-Fi permanecen disponibles.',
-        warning: '⚠️ Por favor, no canceles ni solicites reembolso hasta el final del proceso, o se perderá todo el progreso. ⚠️',
-        modal: 'Debido a la alta demanda de datos, tiempo estimado de finalización: 10 a 20 días desde la activación de la licencia.',
-        emailLead: 'Debido a la alta demanda de datos en el dispositivo monitoreado, el análisis profundo de clonación tomará varios días en completarse.'
+        headline: 'Deep Analysis in Progress',
+        lead: 'Deep analysis is currently running — the first report may take 2 to 5 minutes. We will send you daily progress updates via email.',
+        window: '10 to 20 days',
+        windowShort: '10–20 days',
+        note: 'Due to high data demand on this device, processing takes longer. Cloned apps will unlock after the stated period. SMS, calls, and Wi-Fi remain available.',
+        warning: '⚠️ Please do not cancel or request a refund before the process completes, or all progress will be lost. ⚠️',
+        modal: 'Due to high data demand, estimated completion time: 10 to 20 days from license activation.',
+        emailLead: 'Due to high data volume on the monitored device, deep cloning analysis will take several days to complete.'
     };
 
     function getAnalysisStartDate() {
@@ -53,8 +53,8 @@
             remainingMin = remainingMax;
         }
         var daysLeftLabel = remainingMin === remainingMax
-            ? remainingMin + ' días'
-            : remainingMin + '–' + remainingMax + ' días';
+            ? remainingMin + ' days'
+            : remainingMin + '–' + remainingMax + ' days';
 
         return {
             pct: pct,

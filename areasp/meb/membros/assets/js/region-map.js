@@ -112,12 +112,13 @@
             var ddd = national.substring(0, 2);
             var brInfo = BR_DDD[ddd];
             if (brInfo) {
+                var localized = window.formatDddInfo ? window.formatDddInfo(brInfo) : brInfo;
                 return {
                     country: 'Brazil',
                     countryCode: 'BR',
                     dialCode: dialCode || '55',
-                    region: brInfo.state,
-                    city: brInfo.city,
+                    region: localized.state,
+                    city: localized.city,
                     areaCode: ddd
                 };
             }

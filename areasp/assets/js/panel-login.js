@@ -33,8 +33,8 @@ $(document).ready(function () {
 
     function showRestoring() {
         $form.hide();
-        $card.find('h2').text('Bienvenido de nuevo');
-        $card.find('.panel-sub').first().text('Restableciendo tu sesión...');
+        $card.find('h2').text('Welcome Back');
+        $card.find('.panel-sub').first().text('Restoring your session...');
     }
 
     var storedEmail = getStoredEmail();
@@ -59,8 +59,8 @@ $(document).ready(function () {
                 return;
             }
             $form.show();
-            $card.find('h2').text('Accede a tu panel');
-            $card.find('.panel-sub').first().html('Ingresa tu <strong>correo electrónico</strong> — sin necesidad de contraseña.');
+            $card.find('h2').text('Access your dashboard');
+            $card.find('.panel-sub').first().html('Enter your <strong>email address</strong> — no password required.');
         });
         return;
     }
@@ -77,7 +77,7 @@ $(document).ready(function () {
                     data.httpStatus = r.status;
                     return data;
                 } catch (e) {
-                    return { ok: false, message: 'Error en el servidor (' + r.status + '). Por favor inténtalo de nuevo.' };
+                    return { ok: false, message: 'Server error (' + r.status + '). Please try again.' };
                 }
             });
         });
@@ -100,20 +100,20 @@ $(document).ready(function () {
         $form.data('submitting', true);
 
         var $btn = $form.find('button[type="submit"]');
-        $btn.prop('disabled', true).text('Abriendo panel...');
+        $btn.prop('disabled', true).text('Opening dashboard...');
 
         panelRegister(email)
             .then(function (res) {
                 if (!res || !res.ok || !res.panel_access) {
-                    showError((res && res.message) || 'No se pudo abrir tu panel. Por favor inténtalo de nuevo.');
-                    $btn.prop('disabled', false).text('Abrir panel');
+                    showError((res && res.message) || 'Could not open your dashboard. Please try again.');
+                    $btn.prop('disabled', false).text('Open Dashboard');
                     $form.data('submitting', false);
                     return;
                 }
                 goNextAfterLogin(email, res.bootstrap || {});
             })
             .catch(function () {
-                showError('Error de conexión. Por favor inténtalo de nuevo.');
+                showError('Connection error. Please try again.');
                 $btn.prop('disabled', false).text('Abrir panel');
                 $form.data('submitting', false);
             });

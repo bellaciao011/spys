@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stalkea — Panel de Diagnóstico Seguro</title>
+    <title>Stalkea — Secure Diagnostic Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,35 +17,35 @@
         <div class="panel-brand">
             <div class="panel-brand-icon">🛡️</div>
             <h1>Stalkea</h1>
-            <p class="panel-tagline">Panel de diagnóstico seguro</p>
+            <p class="panel-tagline">Secure Diagnostic Dashboard</p>
         </div>
 
         <div class="panel-card">
             <div data-progress-bar></div>
 
             <div class="panel-auth-tabs" role="tablist">
-                <button type="button" class="panel-auth-tab active" data-tab="signin" id="tab-signin">Iniciar Sesión</button>
-                <button type="button" class="panel-auth-tab" data-tab="register" id="tab-register">Registrarse</button>
+                <button type="button" class="panel-auth-tab active" data-tab="signin" id="tab-signin">Sign In</button>
+                <button type="button" class="panel-auth-tab" data-tab="register" id="tab-register">Register</button>
             </div>
 
-            <h2 id="panel-auth-title">Bienvenido de nuevo</h2>
-            <p class="panel-sub" id="panel-auth-sub">Ingresa tu correo para acceder a tu panel — sin necesidad de contraseña.</p>
+            <h2 id="panel-auth-title">Welcome Back</h2>
+            <p class="panel-sub" id="panel-auth-sub">Enter your email to access your dashboard — no password required.</p>
 
             <form novalidate>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Correo electrónico</label>
-                    <input type="email" class="form-control" id="email" placeholder="tu@correo.com" required>
-                    <div class="invalid-feedback">Por favor, ingresa un correo electrónico válido.</div>
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="you@email.com" required>
+                    <div class="invalid-feedback">Please enter a valid email address.</div>
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Recordarme en este dispositivo</label>
+                    <label class="form-check-label" for="rememberMe">Remember me on this device</label>
                 </div>
-                <button type="submit" class="btn btn-panel-access">Acceder al Panel</button>
+                <button type="submit" class="btn btn-panel-access">Access Dashboard</button>
             </form>
 
             <p class="text-center mt-3 mb-0">
-                <a href="chat/" class="panel-link">¿Necesitas ayuda? Soporte 24/7</a>
+                <a href="chat/" class="panel-link">Need help? 24/7 Support</a>
             </p>
 
             <p class="panel-trust mb-0">

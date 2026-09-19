@@ -23,11 +23,11 @@
     }
 
     function formatLastSeen(mins) {
-        if (mins < 1) return 'Justo ahora';
-        if (mins === 1) return 'Hace 1 min';
-        if (mins < 60) return 'Hace ' + mins + ' min';
+        if (mins < 1) return 'Just now';
+        if (mins === 1) return '1 min ago';
+        if (mins < 60) return mins + ' min ago';
         var h = Math.floor(mins / 60);
-        return 'Hace ' + h + 'h';
+        return h + 'h ago';
     }
 
     function batteryIcon(level) {
@@ -49,7 +49,7 @@
 
         metaEl.innerHTML =
             '<span class="dev-meta-item"><i class="fa ' + batteryIcon(data.battery) + '"></i> ' + data.battery + '%</span>' +
-            '<span class="dev-meta-item" id="dev-last-seen"><i class="fa fa-clock-o"></i> Última actividad ' + formatLastSeen(data.lastSeenMins) + '</span>' +
+            '<span class="dev-meta-item" id="dev-last-seen"><i class="fa fa-clock-o"></i> Last active ' + formatLastSeen(data.lastSeenMins) + '</span>' +
             '<span class="dev-meta-item"><i class="fa fa-signal"></i> ' + data.network + '</span>';
     }
 
@@ -64,13 +64,13 @@
 
         el.innerHTML =
             '<div class="risk-card-head">' +
-            '<span>Puntuación de Riesgo de Conducta</span>' +
+            '<span>Behavior Risk Score</span>' +
             '<span class="risk-badge" style="background:' + color + '22;color:' + color + ';border-color:' + color + '55">' + data.riskLevel + '</span></div>' +
             '<div class="risk-score-row">' +
             '<div class="risk-score-num" style="color:' + color + '">' + data.riskScore + '</div>' +
             '<div class="risk-score-bar-wrap"><div class="risk-score-bar" style="width:' + data.riskScore + '%;background:' + color + '"></div></div></div>' +
             '<ul class="risk-flags">' + flagsHtml + '</ul>' +
-            '<p class="risk-note">Modelo de IA v3.2 · Actualizado en vivo desde búferes de intercepción</p>';
+            '<p class="risk-note">AI Model v3.2 · Live updated from interception buffers</p>';
     }
 
     function renderTimeline(data) {
@@ -158,7 +158,7 @@
         toast.className = 'panel-alert-toast';
         toast.innerHTML =
             '<span class="toast-dot"></span>' +
-            '<div><strong>Alerta en vivo</strong><p>' + text + '</p></div>';
+            '<div><strong>Live Alert</strong><p>' + text + '</p></div>';
         container.appendChild(toast);
 
         setTimeout(function () { toast.classList.add('show'); }, 50);
@@ -170,12 +170,12 @@
 
     function initAlertToasts(data) {
         var alerts = [
-            'Nuevo mensaje de WhatsApp interceptado en el dispositivo objetivo',
-            'Cambio de ubicación GPS detectado — revisar línea de tiempo',
-            'Conexión a red Wi-Fi sospechosa registrada',
-            'Actividad en MD de Instagram fuera del horario habitual',
-            'Llamada de voz grabada — 4m 12s de duración',
-            'Palabra clave confidencial en SMS marcada por el escáner de IA'
+            'New WhatsApp message intercepted on target device',
+            'GPS location change detected — review timeline',
+            'Suspicious Wi-Fi network connection logged',
+            'Instagram DM activity outside regular hours',
+            'Voice call recorded — 4m 12s duration',
+            'Sensitive keyword in SMS flagged by AI scanner'
         ];
 
         setTimeout(function () {
@@ -193,14 +193,14 @@
             mins += 1;
             var el = document.getElementById('dev-last-seen');
             if (el) {
-                el.innerHTML = '<i class="fa fa-clock-o"></i> Última actividad ' + formatLastSeen(mins);
+                el.innerHTML = '<i class="fa fa-clock-o"></i> Last active ' + formatLastSeen(mins);
             }
         }, 60000);
     }
 
     function initPlanBadge(data) {
         var el = document.getElementById('panel-plan-badge');
-        if (el) el.textContent = 'Licencia Premium · Activa';
+        if (el) el.textContent = 'Premium License · Active';
     }
 
     window.initPremiumDashboard = function () {

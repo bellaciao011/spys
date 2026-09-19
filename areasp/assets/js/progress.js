@@ -1,8 +1,8 @@
 (function () {
     var STEPS = [
-        { id: 'login', label: 'Acceso' },
-        { id: 'phone', label: 'Número' },
-        { id: 'track', label: 'Rastreo' },
+        { id: 'login', label: 'Access' },
+        { id: 'phone', label: 'Number' },
+        { id: 'track', label: 'Tracking' },
         { id: 'apps', label: 'Apps' }
     ];
 

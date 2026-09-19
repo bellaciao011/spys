@@ -19,7 +19,7 @@ function updateUserProfileInfo(cleanNumber) {
 
     var regionText = phoneCountryName && phoneRegion
         ? phoneCountryName + ' — ' + phoneRegion
-        : (phoneRegion || 'Región identificada');
+        : (phoneRegion || 'Identified region');
     $('.panel-device-region').text(regionText);
 
     var $avatar = $('.picture_profile');
@@ -81,10 +81,10 @@ var APP_LABELS = {
 };
 
 var PREVIEW_MESSAGES = [
-    { name: 'Contacto +1 (**)...', text: "Te espero esta noche, no le digas a nadie..." },
-    { name: 'Amor ❤️', text: 'Ya borré los mensajes, nadie se puede enterar de esto' },
-    { name: '+1 9****-**42', text: 'Mándame la ubicación en cuanto llegues...' },
-    { name: 'Desconocido', text: 'Lo de ayer estuvo increíble, ¿cuándo lo repetimos?' }
+    { name: 'Contact +1 (**)...', text: "I'll wait for you tonight, don't tell anyone..." },
+    { name: 'Babe ❤️', text: "I already deleted the messages, nobody can find out about this" },
+    { name: '+1 9****-**42', text: 'Send me the location as soon as you arrive...' },
+    { name: 'Unknown', text: 'Yesterday was incredible, when are we doing it again?' }
 ];
 
 function avatarColor(str) {
@@ -165,10 +165,10 @@ function runSyncAnimation(modalBody) {
     var pctEl = box.querySelector('.sync-pct');
     var logEl = box.querySelector('.unlock-sync-log');
     var logs = [
-        'Conectando al servidor espejo...',
-        'Descifrando paquetes TLS...',
-        'Sincronizando mensajes almacenados...',
-        'En cola en el clúster de análisis profundo...'
+        'Connecting to mirror server...',
+        'Decrypting TLS packets...',
+        'Syncing stored messages...',
+        'Queued in deep analysis cluster...'
     ];
     var pct = parseInt(box.getAttribute('data-start') || '3', 10);
     var maxPct = Math.min(86, pct + 2);
@@ -208,10 +208,10 @@ function buildDeepAnalysisExtras(modalBody, modalId) {
     var lead = modalBody.querySelector('.deep-analysis-lead');
     var moduleHtml =
         '<div class="deep-analysis-module-box unlock-sync-box" data-start="' + state.pct + '">' +
-        '<div class="sync-label"><span>📊 Análisis profundo de ' + appName + '</span><span class="sync-pct">' + state.pct + '%</span></div>' +
+        '<div class="sync-label"><span>📊 Deep Analysis of ' + appName + '</span><span class="sync-pct">' + state.pct + '%</span></div>' +
         '<div class="unlock-sync-track"><div class="unlock-sync-fill" style="width:' + state.pct + '%"></div></div>' +
-        '<div class="unlock-sync-log">Conectando al servidor espejo...</div>' +
-        '<div class="deep-analysis-eta">Tiempo restante estimado: <strong>' + state.daysLeftLabel + '</strong></div>' +
+        '<div class="unlock-sync-log">Connecting to mirror server...</div>' +
+        '<div class="deep-analysis-eta">Estimated remaining time: <strong>' + state.daysLeftLabel + '</strong></div>' +
         '</div>';
 
     if (lead) {
@@ -225,13 +225,13 @@ function buildDeepAnalysisExtras(modalBody, modalId) {
             return '<div class="unlock-preview-item">' +
                 '<img src="https://ui-avatars.com/api/?name=' + encodeURIComponent(m.name.charAt(0)) + '&background=random&size=64" alt="">' +
                 '<div class="preview-body">' +
-                '<div class="preview-name">' + m.name + ' <span class="preview-lock">⏳ análisis pendiente</span></div>' +
+                '<div class="preview-name">' + m.name + ' <span class="preview-lock">⏳ analysis pending</span></div>' +
                 '<p class="preview-text">' + m.text + '</p></div></div>';
         }).join('');
         var container = modalBody.querySelector('.deep-analysis-warn-wrap') || modalBody.querySelector('.container.sms');
         if (container) {
             container.insertAdjacentHTML('beforebegin',
-                '<div class="unlock-preview-list"><p class="p-12 mb-2 text-start"><strong>Vistas previas en búfer</strong> — contenido completo tras la ventana de análisis:</p>' + previews + '</div>'
+                '<div class="unlock-preview-list"><p class="p-12 mb-2 text-start"><strong>Buffered previews</strong> — full content following analysis window:</p>' + previews + '</div>'
             );
         }
     }
@@ -314,7 +314,7 @@ function initBackgroundAnalysis() {
         if (fillEl) fillEl.style.width = state.pct + '%';
         if (queueEl) {
             var batch = Math.min(4, Math.max(1, Math.ceil(state.dayNum / 5)));
-            queueEl.textContent = 'Procesando lote ' + batch + '/4...';
+            queueEl.textContent = 'Processing batch ' + batch + '/4...';
         }
         if (etaEl) etaEl.textContent = state.daysLeftLabel;
     }
@@ -328,24 +328,24 @@ function initBackgroundAnalysis() {
     }
 
     var messages = [
-        'Indexando archivos multimedia de aplicaciones clonadas...',
-        'Espejos de WhatsApp e Instagram en cola en clúster seguro',
-        'Alta demanda de datos — descifrando búferes de intercepción TLS',
-        'Grandes fragmentos de datos sincronizándose en orden de prioridad',
-        'Vistas previas parciales disponibles — desbloqueo total tras el período de análisis',
-        'Registros de transferencia del operador cotejados',
-        'Modelo de comportamiento de IA activándose para patrones de conversación',
-        'Archivos adjuntos multimedia indexándose en subproceso en segundo plano',
-        'Actualizaciones diarias de progreso enviadas a tu correo registrado'
+        'Indexing cloned application media files...',
+        'WhatsApp and Instagram mirrors queued in secure cluster',
+        'High data demand — decrypting TLS interception buffers',
+        'Large data fragments syncing in priority order',
+        'Partial previews available — full unlock following analysis period',
+        'Carrier handover logs cross-checked',
+        'AI behavior model engaging for conversation patterns',
+        'Media attachments indexing in background thread',
+        'Daily progress updates sent to your registered email'
     ];
     var msgIdx = 0;
 
     if (textEl) textEl.textContent = messages[0];
     if (noteEl) {
-        noteEl.textContent = copy.note || 'Debido a la alta demanda de datos en este dispositivo, el procesamiento toma más tiempo.';
+        noteEl.textContent = copy.note || 'Due to high data demand on this device, processing takes longer.';
     }
     if (warningEl) {
-        warningEl.textContent = copy.warning || '⚠️ Por favor, no canceles ni solicites reembolso hasta el final del proceso, o se perderá todo el progreso. ⚠️';
+        warningEl.textContent = copy.warning || '⚠️ Please do not cancel or request a refund before the process completes, or all progress will be lost. ⚠️';
     }
 
     setInterval(function () {
@@ -430,10 +430,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">' +
                     '<div class="modal-content">' +
                     '<div class="modal-header">' +
-                    '<h5 class="modal-title" id="dynamicModalLabel">Cargando...</h5>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>' +
+                    '<h5 class="modal-title" id="dynamicModalLabel">Loading...</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
                     '</div>' +
-                    '<div class="modal-body"><p>Cargando...</p></div>' +
+                    '<div class="modal-body"><p>Loading...</p></div>' +
                     '</div></div></div>'
                 );
                 modalElement = document.getElementById('dynamicModal');
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var bodyEl = tempDiv.querySelector('.corpo-modal');
 
                 modalElement.querySelector('#dynamicModalLabel').textContent =
-                    titleEl ? titleEl.textContent : 'Detalles';
+                    titleEl ? titleEl.textContent : 'Details';
                 modalElement.querySelector('.modal-body').innerHTML =
                     bodyEl ? bodyEl.innerHTML : data;
 
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 dynamicModal.show();
             } catch (error) {
                 modalElement.querySelector('.modal-body').innerHTML =
-                    '<p class="text-danger">Error al cargar. Por favor inténtalo de nuevo.</p>';
+                    '<p class="text-danger">Error loading. Please try again.</p>';
                 bootstrap.Modal.getOrCreateInstance(modalElement).show();
             } finally {
                 if (spinner) {

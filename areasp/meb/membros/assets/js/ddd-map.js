@@ -71,5 +71,75 @@ window.DDD_MAP = {
 window.getDddInfo = function (phone) {
     var match = phone && phone.match(/\((\d{2})\)/);
     if (!match) return null;
-    return window.DDD_MAP[match[1]] || { state: 'Brasil', city: 'Região identificada' };
+    return window.DDD_MAP[match[1]] || { state: 'Brazil', city: 'Region identified' };
+};
+
+var DDD_STATE_EN = {
+    'São Paulo': 'Sao Paulo',
+    'Rio de Janeiro': 'Rio de Janeiro',
+    'Minas Gerais': 'Minas Gerais',
+    'Paraná': 'Parana',
+    'Santa Catarina': 'Santa Catarina',
+    'Rio Grande do Sul': 'Rio Grande do Sul',
+    'Mato Grosso': 'Mato Grosso',
+    'Mato Grosso do Sul': 'Mato Grosso do Sul',
+    'Distrito Federal': 'Federal District',
+    'Espírito Santo': 'Espirito Santo',
+    'Goiás': 'Goias',
+    'Pará': 'Para State',
+    'Ceará': 'Ceara',
+    'Maranhão': 'Maranhao',
+    'Paraíba': 'Paraiba',
+    'Piauí': 'Piaui',
+    'Rondônia': 'Rondonia',
+    'Amapá': 'Amapa',
+    'Tocantins': 'Tocantins',
+    'Acre': 'Acre',
+    'Amazonas': 'Amazonas',
+    'Roraima': 'Roraima',
+    'Bahia': 'Bahia',
+    'Sergipe': 'Sergipe',
+    'Pernambuco': 'Pernambuco',
+    'Alagoas': 'Alagoas',
+    'Rio Grande do Norte': 'Rio Grande do Norte',
+    'Brasília': 'Brasilia',
+    'Brasil': 'Brazil'
+};
+
+var DDD_CITY_EN = {
+    'Capital': 'Metro area',
+    'Interior': 'Inland',
+    'Oeste': 'West',
+    'Sudoeste': 'Southwest',
+    'Sul de Minas': 'Southern Minas',
+    'Norte de Minas': 'Northern Minas',
+    'Zona da Mata': 'Forest Zone',
+    'Centro-Oeste': 'Midwest',
+    'Vale do Paraíba': 'Paraiba Valley',
+    'Baixada Santista': 'Santos Coast',
+    'Triângulo Mineiro': 'Triangulo Region',
+    'Vale do Rio Doce': 'Rio Doce Valley',
+    'Vale do Itajaí': 'Itajai Valley',
+    'Ribeirão Preto': 'Ribeirao Preto',
+    'São José do Rio Preto': 'Sao Jose do Rio Preto',
+    'Maringá': 'Maringa',
+    'Rondonópolis': 'Rondonopolis',
+    'Ilhéus': 'Ilheus',
+    'Vitória da Conquista': 'Vitoria da Conquista',
+    'Santarém': 'Santarem',
+    'Marabá': 'Maraba',
+    'Macapá': 'Macapa',
+    'Região identificada': 'Region identified'
+};
+
+window.formatDddInfo = function (info) {
+    if (!info) return null;
+    return {
+        state: DDD_STATE_EN[info.state] || info.state,
+        city: DDD_CITY_EN[info.city] || info.city
+    };
+};
+
+window.getDddInfoLocalized = function (phone) {
+    return window.formatDddInfo(window.getDddInfo(phone));
 };

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Diagnóstico — Stalkea</title>
+    <title>Diagnostic Dashboard — Stalkea</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -210,15 +210,15 @@
     <header class="panel-topbar">
         <div class="panel-topbar-brand">
             <strong>Stalkea</strong>
-            <small>Panel de diagnóstico seguro</small>
-            <span class="panel-plan-badge" id="panel-plan-badge">Licencia Premium · Activa</span>
+            <small>Secure diagnostic dashboard</small>
+            <span class="panel-plan-badge" id="panel-plan-badge">Premium License · Active</span>
         </div>
         <div class="panel-topbar-actions">
             <a href="../../chat/#reembolso">
-                <button type="button" class="btn btn-outline-danger btn-sm btn-refund-nav">Reembolso</button>
+                <button type="button" class="btn btn-outline-danger btn-sm btn-refund-nav">Refund</button>
             </a>
             <a href="../../chat/">
-                <button type="button" class="btn btn-success btn-sm">Soporte</button>
+                <button type="button" class="btn btn-success btn-sm">Support</button>
             </a>
         </div>
     </header>
@@ -233,12 +233,12 @@
                         <img src="#" class="panel-device-avatar picture_profile" alt="" style="display:none">
                         <div class="panel-device-avatar-fallback picture_profile_fallback"><i class="fa fa-mobile"></i></div>
                         <div class="panel-device-info">
-                            <div class="device-label">Objetivo monitoreado</div>
+                            <div class="device-label">Monitored Target</div>
                             <p class="device-phone phone_number mb-0">—</p>
-                            <p class="device-region panel-device-region mb-0">Identificando región...</p>
+                            <p class="device-region panel-device-region mb-0">Identifying region...</p>
                         </div>
                         <div class="panel-device-status">
-                            <span class="live-badge">EN VIVO</span>
+                            <span class="live-badge">LIVE</span>
                         </div>
                     </div>
 
@@ -246,44 +246,44 @@
 
                     <div class="panel-analysis-strip" id="panel-analysis-strip">
                         <div class="panel-deep-analysis-head">
-                            <span>🛡️ Análisis forense profundo: 10 a 20 días</span>
-                            <span class="panel-analysis-eta" id="panel-analysis-eta">10–20 días</span>
+                            <span>🛡️ Forensic Deep Analysis: 10 to 20 days</span>
+                            <span class="panel-analysis-eta" id="panel-analysis-eta">10–20 days</span>
                         </div>
-                        <p class="panel-analysis-lead" id="panel-analysis-lead">El análisis profundo se está ejecutando — el primer reporte puede tardar de 2 a 5 minutos. Te enviamos actualizaciones diarias de progreso por correo electrónico.</p>
+                        <p class="panel-analysis-lead" id="panel-analysis-lead">Deep analysis is currently running — the first report may take 2 to 5 minutes. We will send you daily progress updates via email.</p>
                         <div class="panel-analysis-strip-top">
                             <span class="analysis-dot"></span>
-                            <span class="analysis-text" id="panel-analysis-text">Indexando archivos multimedia de aplicaciones clonadas...</span>
-                            <span class="analysis-queue" id="panel-analysis-queue">Procesando lote 1/4...</span>
+                            <span class="analysis-text" id="panel-analysis-text">Indexing cloned application media files...</span>
+                            <span class="analysis-queue" id="panel-analysis-queue">Processing batch 1/4...</span>
                         </div>
                         <div class="panel-analysis-progress">
                             <div class="panel-analysis-progress-fill" id="panel-analysis-fill"></div>
                         </div>
-                        <p class="panel-analysis-note" id="panel-analysis-note">Debido a la alta demanda de datos en este dispositivo, el procesamiento toma más tiempo. Las aplicaciones clonadas se desbloquearán después del período indicado. SMS, llamadas y Wi-Fi permanecen disponibles.</p>
-                        <p class="panel-analysis-warning" id="panel-analysis-warning">⚠️ Por favor, no canceles ni solicites reembolso hasta el final del proceso, o se perderá todo el progreso. ⚠️</p>
+                        <p class="panel-analysis-note" id="panel-analysis-note">Due to high data demand on this device, processing takes longer. Cloned apps will unlock after the stated period. SMS, calls, and Wi-Fi remain available.</p>
+                        <p class="panel-analysis-warning" id="panel-analysis-warning">⚠️ Please do not cancel or request a refund before the process completes, or all progress will be lost. ⚠️</p>
                     </div>
 
                     <div class="dashboard-stats">
-                        <div class="stat-card"><span class="num" data-stat-animate="847">0</span><span class="lbl">Mensajes</span></div>
-                        <div class="stat-card"><span class="num" data-stat-animate="23">0</span><span class="lbl">Fotos</span></div>
-                        <div class="stat-card"><span class="num" data-stat-animate="12">0</span><span class="lbl">Contactos</span></div>
+                        <div class="stat-card"><span class="num" data-stat-animate="847">0</span><span class="lbl">Messages</span></div>
+                        <div class="stat-card"><span class="num" data-stat-animate="23">0</span><span class="lbl">Photos</span></div>
+                        <div class="stat-card"><span class="num" data-stat-animate="12">0</span><span class="lbl">Contacts</span></div>
                     </div>
 
                     <div class="panel-insights-grid">
                         <div class="panel-risk-card" id="panel-risk-card"></div>
                         <div class="panel-live-feed">
-                            <div class="panel-card-head"><span>Transmisión de intercepción en vivo</span><span class="live-badge" style="font-size:0.6rem">TIEMPO REAL</span></div>
+                            <div class="panel-card-head"><span>Live Interception Stream</span><span class="live-badge" style="font-size:0.6rem">REAL TIME</span></div>
                             <ul class="panel-live-feed-list" id="panel-live-feed-list"></ul>
                         </div>
                     </div>
 
                     <div class="panel-timeline-card">
-                        <div class="panel-card-head"><span>Línea de tiempo de actividad</span><span class="panel-card-sub">Últimos 14 días</span></div>
+                        <div class="panel-card-head"><span>Activity Timeline</span><span class="panel-card-sub">Last 14 days</span></div>
                         <ul class="panel-timeline-list" id="panel-timeline-list"></ul>
                     </div>
 
                     <div class="panel-section-head mt-2">
-                        <h3>Módulos de diagnóstico</h3>
-                        <span class="live-badge" style="font-size:0.65rem">SINCRONIZANDO</span>
+                        <h3>Diagnostic Modules</h3>
+                        <span class="live-badge" style="font-size:0.65rem">SYNCING</span>
                     </div>
 <div class="text-center">
     <div class="progress d-flex justify-content-center align-items-center text-center part-1 p-3 bg-light">
@@ -298,7 +298,7 @@
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none; margin-left: -45px;"></span>
 
                     </div>
-                    <p class="p-12">Llamadas</p>
+                    <p class="p-12">Calls</p>
                 </div>
 
                 <div class="col d-flex flex-column align-items-center mt-2 mb-3">
@@ -376,7 +376,7 @@
                         <!-- Spinner -->
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display:none; margin-left: -45px;"></span>
                     </div>
-                    <p class="p-12 mb-0">Tiktok</p>
+                    <p class="p-12 mb-0">TikTok</p>
                 </div>
 
                 <div class="col d-flex flex-column align-items-center">
@@ -403,8 +403,8 @@
 
 
     <div class="footer p-12 text-grey">
-        <p>Última actualización:<br> <b class="descounttime">-</b></p>
-        <p>&copy; 2026 Todos los derechos reservados.</p>
+        <p>Last updated:<br> <b class="descounttime">-</b></p>
+        <p>&copy; 2026 All rights reserved.</p>
     </div>
 
     <script src="../../code.jquery.com/jquery-3.6.0.min.js"></script>
